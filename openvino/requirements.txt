@@ -1,0 +1,6 @@
+# OpenVINO 벤치마크 전용 의존성. train/requirements.txt와 별개다.
+#   pip install -r openvino/requirements.txt
+openvino>=2026.3
+nncf>=3.3
+onnxruntime>=1.18
+numpy

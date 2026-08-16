@@ -1,0 +1,22 @@
+# 학습 이미지 원본 (17GB+, 모델에 이미 녹아있어서 필요 없음)
+train/dataset/
+train/_work/
+
+# 학습용 파이썬 가상환경 (기기마다 새로 만들어야 함)
+train/.venv/
+openvino/.venv/
+
+# 재생성 가능한 것들
+node_modules/
+dist/
+.wrangler/
+
+# OS·에디터 잡동사니
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 실수로라도 키가 들어가면 안 되는 파일
+.env
+.env.*
+*.pem

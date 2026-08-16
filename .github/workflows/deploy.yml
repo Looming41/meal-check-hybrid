@@ -1,0 +1,92 @@
+# 밥상 판정 — 빌드·검증·배포
+#
+# 건강 판정 앱이므로 테스트가 하나라도 깨지면 배포하지 않는다.
+# 룰 엔진이 잘못된 채로 배포되면 사용자가 잘못된 식이 판단을 하게 된다.
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포가 겹치면 나중 것만 살린다. 진행 중인 배포는 끊지 않는다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: 테스트
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: 룰 엔진 (143건)
+        run: npm run test:rules
+
+      - name: 데이터 계층 (55건)
+        run: npm run test:integration
+
+      - name: UI 흐름 (70건)
+        run: npm run test:ui
+
+      - name: 빌드
+        run: npm run build
+
+      - name: 배포 산출물 (file:// 환경 재현)
+        run: npm run test:dist
+
+      - name: 산출물 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  deploy:
+    name: GitHub Pages 배포
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # 배포 직전 마지막 안전장치: 산출물에 API 키가 섞였는지 본다.
+      # 키가 유출되면 남이 내 무료 등급을 소진시킨다.
+      # 프록시 주소(workers.dev)는 브라우저에 노출되는 것이 정상 설계이므로 차단하지 않는다.
+      - name: 키 유출 검사
+        run: |
+          if grep -rEq 'AIza[0-9A-Za-z_-]{30,}|sk-[0-9A-Za-z]{20,}|AKIA[0-9A-Z]{16}' dist/; then
+            echo "::error::산출물에 API 키로 보이는 문자열이 있습니다. 배포를 중단합니다."
+            exit 1
+          fi
+          echo "키 유출 없음"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

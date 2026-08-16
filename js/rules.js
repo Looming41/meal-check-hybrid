@@ -1,0 +1,743 @@
+/**
+ * rules.js — 지병별 식사 판정 룰 엔진
+ *
+ * 설계 원칙
+ * ─────────
+ * 1. 결정적(deterministic)이다. 같은 입력이면 항상 같은 출력이 나온다.
+ *    AI가 판정에 관여하지 않으므로 "왜 이 결과가 나왔는지" 항상 추적 가능하다.
+ * 2. 모든 임계값에 근거 주석(RATIONALE)을 단다. 보고서에 그대로 인용할 수 있어야 한다.
+ * 3. 임계값은 "1회 식사분" 기준이다. 1일 권장량을 끼니 수로 나눈 값에서 출발한다.
+ * 4. 판정은 3단계: good(좋음) < caution(주의) < avoid(피함)
+ *
+ * ⚠️ 임계값은 일반적인 식이 지침에서 유도한 것이며 개인의 병기·신기능·투약에 따라
+ *    달라진다. 임상 적용 전 영양사 검토가 필요하다.
+ */
+
+export const VERDICT = { GOOD: 'good', CAUTION: 'caution', AVOID: 'avoid' };
+const RANK = { good: 0, caution: 1, avoid: 2 };
+const VERDICT_KO = { good: '좋음', caution: '주의', avoid: '피함' };
+
+export function worse(a, b) { return RANK[a] >= RANK[b] ? a : b; }
+export function verdictKo(v) { return VERDICT_KO[v] || '?'; }
+
+/* ────────────────────────────────────────────────────────────
+   영양소 축 정의 — 표시 이름과 단위
+   ──────────────────────────────────────────────────────────── */
+export const AXES = {
+  sodium_mg:      { label: '나트륨',     unit: 'mg' },
+  potassium_mg:   { label: '칼륨',       unit: 'mg' },
+  phosphorus_mg:  { label: '인',         unit: 'mg' },
+  protein_g:      { label: '단백질',     unit: 'g'  },
+  carb_g:         { label: '탄수화물',   unit: 'g'  },
+  sugar_g:        { label: '당류',       unit: 'g'  },
+  fat_g:          { label: '지방',       unit: 'g'  },
+  satfat_g:       { label: '포화지방',   unit: 'g'  },
+  transfat_g:     { label: '트랜스지방', unit: 'g'  },
+  cholesterol_mg: { label: '콜레스테롤', unit: 'mg' },
+  calcium_mg:     { label: '칼슘',       unit: 'mg' },
+  purine_mg:      { label: '퓨린',       unit: 'mg' },
+  vitk_ug:        { label: '비타민K',    unit: 'µg' },
+  fluid_ml:       { label: '수분',       unit: 'ml' },
+  kcal:           { label: '열량',       unit: 'kcal' },
+  iron_mg:        { label: '철',         unit: 'mg' },
+  iodine_ug:      { label: '요오드',     unit: 'µg' },
+  caffeine_mg:    { label: '카페인',     unit: 'mg' },
+  vita_ug:        { label: '레티놀',     unit: 'µg' }
+};
+
+/* ────────────────────────────────────────────────────────────
+   개인 프로필 — 전부 선택 입력이다
+   ────────────────────────────────────────────────────────────
+   아무것도 입력하지 않아도 판정이 된다. 입력하면 정확해질 뿐이다.
+   건강 앱에서 개인정보 입력을 강제하면 쓰지 않게 되고, 강제해서 얻는
+   정확도보다 안 쓰게 되는 손실이 크다.
+*/
+export const PROFILE_DEFAULTS = { weightKg: 60, sex: null, ageYears: null };
+
+export function resolveProfile(p = {}) {
+  const w = Number(p.weightKg);
+  const a = Number(p.ageYears);
+  return {
+    weightKg:    w > 0 ? w : PROFILE_DEFAULTS.weightKg,
+    weightGiven: w > 0,
+    sex:         (p.sex === 'f' || p.sex === 'm') ? p.sex : null,
+    ageYears:    a > 0 ? a : null
+  };
+}
+
+/**
+ * 연령 보정 계수.
+ * RATIONALE: 한국인 영양소 섭취기준의 연령별 권장량은 체격에 거의 비례한다.
+ * 성인 기준을 그대로 소아에게 쓰면 아이가 성인 한 끼를 다 먹어도 '좋음'이 나온다.
+ * 정밀한 소아 기준표를 넣기 전까지의 보수적 근사이며, 나이를 입력하지 않으면 보정하지 않는다.
+ */
+export function ageFactor(age) {
+  if (age == null) return 1;
+  if (age < 6)  return 0.5;
+  if (age < 12) return 0.65;
+  if (age < 15) return 0.8;
+  if (age < 19) return 0.9;
+  if (age >= 75) return 0.9;   // 고령은 총 섭취량이 줄어 같은 절대량의 부담이 크다
+  return 1;
+}
+
+/* 수치형 룰 헬퍼. direction:'high'는 값이 높을수록 나쁨.
+   opts.perKg를 주면 체중이 입력됐을 때 체중 비례 임계값으로 바뀐다.
+   opts.ageScaled:false면 연령 보정을 적용하지 않는다. */
+const hi = (axis, caution, avoid, rationale, msg, opts = {}) =>
+  ({ axis, direction: 'high', caution, avoid, rationale, msg, ...opts });
+
+/* ────────────────────────────────────────────────────────────
+   질환 정의
+   ──────────────────────────────────────────────────────────── */
+export const DISEASES = [
+  {
+    id: 'htn', name: '고혈압', focus: '나트륨',
+    rules: [
+      hi('sodium_mg', 500, 900,
+        'RATIONALE: WHO·대한고혈압학회 1일 나트륨 2,000mg(소금 5g) 미만 권고. 3끼로 나누면 약 667mg. ' +
+        '반찬·간식 여유를 두어 500mg에서 주의, 하루치의 45%를 한 끼에 넘기는 900mg에서 피함으로 둔다.',
+        { caution: v => `나트륨이 ${v}mg입니다. 한 끼 권장(약 670mg)에 가까워 국물을 남기시는 게 좋습니다.`,
+          avoid:   v => `나트륨이 ${v}mg으로 하루 권장량(2,000mg)의 절반에 육박합니다. 혈압을 직접 올립니다.` })
+    ],
+    /* 칼륨은 고혈압에 이롭다(DASH). 다만 콩팥병이 함께 있으면 무효화된다 — resolveConflicts 참조 */
+    bonus: { axis: 'potassium_mg', min: 300,
+             msg: v => `칼륨이 ${v}mg으로 넉넉합니다. 칼륨은 나트륨 배출을 도와 혈압에 이롭습니다.` }
+  },
+
+  {
+    id: 'dm', name: '당뇨병', focus: '당류·탄수화물',
+    rules: [
+      hi('sugar_g', 15, 25,
+        'RATIONALE: WHO 유리당 1일 총열량의 10% 미만(2,000kcal 기준 50g), 가급적 5%(25g). ' +
+        '1끼 배분 시 약 16g. 15g 주의, 하루 목표 상한을 한 끼에 다 쓰는 25g에서 피함.',
+        { caution: v => `당류가 ${v}g입니다. 식후 혈당이 빠르게 오를 수 있습니다.`,
+          avoid:   v => `당류가 ${v}g으로 하루 목표치를 한 끼에 다 채웁니다. 혈당 급상승이 예상됩니다.` }),
+      hi('carb_g', 75, 100,
+        'RATIONALE: 1일 탄수화물 250~300g(총열량 55~60%) 기준 1끼 약 85~100g. ' +
+        '흰쌀밥 한 공기(210g)가 69g이므로 밥 한 공기만으로는 주의에 걸리지 않도록 75g에서 주의를 둔다.',
+        { caution: v => `탄수화물이 ${v}g입니다. 밥·면 양을 3분의 2로 줄이시면 좋습니다.`,
+          avoid:   v => `탄수화물이 ${v}g으로 한 끼 적정량을 크게 넘습니다.` })
+    ]
+  },
+
+  {
+    id: 'cad', name: '심근경색·협심증', focus: '포화지방·나트륨·콜레스테롤',
+    rules: [
+      hi('satfat_g', 6, 11,
+        'RATIONALE: 미국심장협회 포화지방 1일 총열량 6% 미만(2,000kcal 기준 13g). 1끼 약 4~5g.',
+        { caution: v => `포화지방이 ${v}g입니다. 기름진 부위와 국물 기름을 걷어내세요.`,
+          avoid:   v => `포화지방이 ${v}g으로 하루 권장(약 13g)에 육박합니다. 관상동맥에 부담이 됩니다.` }),
+      hi('transfat_g', 0.3, 0.6,
+        'RATIONALE: WHO 트랜스지방 1일 총열량 1% 미만(약 2.2g). 3끼 배분 시 0.7g.',
+        { caution: v => `트랜스지방이 ${v}g 들어 있습니다. 튀김·가공식품을 줄이세요.`,
+          avoid:   v => `트랜스지방이 ${v}g입니다. 트랜스지방은 섭취량에 안전한 하한이 없습니다.` }),
+      hi('cholesterol_mg', 120, 220,
+        'RATIONALE: 심혈관질환자 1일 콜레스테롤 200mg 미만 권고. 1끼 약 67mg이나 ' +
+        '계란 1개(약 190mg)를 곧바로 피함으로 판정하면 실용성이 떨어져 220mg에서 피함으로 둔다.',
+        { caution: v => `콜레스테롤이 ${v}mg입니다. 노른자·내장류는 횟수를 줄이세요.`,
+          avoid:   v => `콜레스테롤이 ${v}mg으로 하루 권장(200mg)을 한 끼에 넘습니다.` }),
+      hi('sodium_mg', 500, 900,
+        'RATIONALE: 고혈압과 동일. 나트륨은 혈압을 통해 심장 부담을 늘린다.',
+        { caution: v => `나트륨이 ${v}mg입니다. 혈압이 오르면 심장 부담도 함께 커집니다.`,
+          avoid:   v => `나트륨이 ${v}mg으로 과다합니다.` })
+    ]
+  },
+
+  {
+    id: 'hf', name: '심부전', focus: '나트륨·수분',
+    rules: [
+      hi('sodium_mg', 400, 700,
+        'RATIONALE: 심부전은 나트륨 저류가 곧 부종·호흡곤란으로 이어져 고혈압보다 엄격히 본다. ' +
+        '1일 2,000mg 이하를 3끼로 나눈 667mg을 상한선으로 잡고 한 단계씩 낮춘다.',
+        { caution: v => `나트륨이 ${v}mg입니다. 심부전에서는 고혈압보다 더 엄격하게 보셔야 합니다.`,
+          avoid:   v => `나트륨이 ${v}mg입니다. 몸이 물을 붙잡아 부종과 숨참을 유발할 수 있습니다.` }),
+      hi('fluid_ml', 300, 500,
+        'RATIONALE: 중등도 이상 심부전에서 1일 수분 1.5~2L 제한이 흔하다. 수분 제한은 통상 ' +
+        '25~30ml/kg/일로 처방되므로 체중이 입력되면 그 값을 3끼로 나눠 쓴다(주의 5ml/kg·피함 8.3ml/kg).',
+        { caution: v => `국물과 음료를 합쳐 수분이 약 ${v}ml입니다. 국물은 남기는 게 좋습니다.`,
+          avoid:   v => `수분이 약 ${v}ml입니다. 하루 수분 제한이 있다면 이 한 끼로 상당량을 쓰게 됩니다.` },
+        { perKg: { caution: 5, avoid: 8.3 } })
+    ]
+  },
+
+  {
+    id: 'lipid', name: '이상지질혈증', focus: '포화지방·트랜스지방',
+    rules: [
+      hi('satfat_g', 5, 9,
+        'RATIONALE: 이상지질혈증 치료 식이는 포화지방 1일 총열량 7% 미만. cad보다 한 단계 엄격하게 둔다.',
+        { caution: v => `포화지방이 ${v}g입니다. LDL 콜레스테롤을 직접 올리는 성분입니다.`,
+          avoid:   v => `포화지방이 ${v}g으로 과다합니다. 지질 수치 관리에 불리합니다.` }),
+      hi('transfat_g', 0.2, 0.5,
+        'RATIONALE: 트랜스지방은 LDL을 올리고 HDL을 낮춰 이상지질혈증에서 가장 불리하다.',
+        { caution: v => `트랜스지방이 ${v}g 들어 있습니다.`,
+          avoid:   v => `트랜스지방이 ${v}g입니다. 좋은 콜레스테롤까지 낮춥니다.` }),
+      hi('cholesterol_mg', 120, 220,
+        'RATIONALE: cad와 동일 근거.',
+        { caution: v => `콜레스테롤이 ${v}mg입니다.`,
+          avoid:   v => `콜레스테롤이 ${v}mg으로 하루 권장을 한 끼에 넘습니다.` })
+    ]
+  },
+
+  {
+    id: 'ckd', name: '만성콩팥병', focus: '칼륨·인·나트륨·단백질',
+    rules: [
+      hi('potassium_mg', 400, 700,
+        'RATIONALE: 진행된 만성콩팥병(3b기 이상)에서 1일 칼륨 2,000~2,500mg 제한이 흔하다. ' +
+        '3끼+간식으로 나누면 1끼 약 600mg. 고칼륨혈증은 부정맥·심정지로 직결되므로 보수적으로 잡는다.',
+        { caution: v => `칼륨이 ${v}mg입니다. 채소는 데쳐서 물을 버리면 칼륨이 줄어듭니다.`,
+          avoid:   v => `칼륨이 ${v}mg입니다. 콩팥이 칼륨을 못 걸러내면 부정맥 위험이 있습니다.` }),
+      hi('phosphorus_mg', 250, 400,
+        'RATIONALE: 만성콩팥병 1일 인 800~1,000mg 제한. 3끼로 나누면 약 300mg. ' +
+        '가공식품의 무기인은 흡수율이 90% 이상이라 같은 수치라도 더 위험하다.',
+        { caution: v => `인이 ${v}mg입니다. 가공식품·유제품·견과류에 특히 많습니다.`,
+          avoid:   v => `인이 ${v}mg입니다. 장기적으로 뼈와 혈관 석회화를 일으킵니다.` }),
+      hi('protein_g', 21, 30,
+        'RATIONALE: 투석 전 만성콩팥병 저단백식 0.6~0.8g/kg/일. 이 축은 체중에 정비례하므로 ' +
+        '체중을 입력하면 g/kg으로 환산한다(주의 0.35g/kg·피함 0.5g/kg, 1끼 기준). ' +
+        '미입력 시 60kg 가정. 투석 중이면 반대로 단백질을 늘려야 하므로 이 룰은 투석 전 기준이다.',
+        { caution: v => `단백질이 ${v}g입니다. (투석 전 기준입니다. 투석 중이시면 오히려 더 드셔야 합니다.)`,
+          avoid:   v => `단백질이 ${v}g으로 저단백 식이 기준을 넘습니다. 노폐물이 늘어 콩팥 부담이 커집니다.` },
+        { perKg: { caution: 0.35, avoid: 0.5 } }),
+      hi('sodium_mg', 500, 900,
+        'RATIONALE: 고혈압과 동일. 나트륨 제한은 만성콩팥병 전 단계에서 공통이다.',
+        { caution: v => `나트륨이 ${v}mg입니다.`,
+          avoid:   v => `나트륨이 ${v}mg으로 과다합니다. 혈압과 부종을 모두 악화시킵니다.` })
+    ]
+  },
+
+  {
+    id: 'gout', name: '통풍', focus: '퓨린·알코올',
+    rules: [
+      hi('purine_mg', 100, 200,
+        'RATIONALE: 통풍 급성기 1일 퓨린 400mg 이하, 관해기 완화. 3끼로 나누면 약 130mg. ' +
+        '주의: 이 축의 데이터는 전량 문헌 추정치이며 식약처 DB에 퓨린 항목이 없다.',
+        { caution: v => `퓨린이 약 ${v}mg입니다. 국물에 퓨린이 많이 녹아 있으니 건더기만 드세요.`,
+          avoid:   v => `퓨린이 약 ${v}mg입니다. 요산이 올라 발작을 유발할 수 있습니다.` }),
+      hi('sugar_g', 20, 35,
+        'RATIONALE: 과당은 ATP를 소모하며 요산 생성을 직접 늘린다. 통풍에서 당류는 퓨린과 별개의 위험요인이다.',
+        { caution: v => `당류가 ${v}g입니다. 과당은 요산을 직접 올립니다.`,
+          avoid:   v => `당류가 ${v}g으로 많습니다. 과당 섭취는 통풍 발작 위험을 높입니다.` })
+    ],
+    flags: [
+      { when: n => n.alcohol, verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 알코올은 요산 배설을 억제하고 맥주는 퓨린까지 공급한다. 통풍에서 가장 강한 유발 인자.',
+        msg: () => '술이 포함돼 있습니다. 알코올은 요산이 빠져나가는 것을 막아 발작을 직접 유발합니다.' }
+    ]
+  },
+
+  {
+    id: 'osteo', name: '골다공증', focus: '칼슘·나트륨',
+    rules: [
+      hi('sodium_mg', 900, 1500,
+        'RATIONALE: 나트륨 배설 시 칼슘이 함께 빠져나간다(나트륨 2,300mg당 칼슘 약 40mg 손실). ' +
+        '골다공증에서 나트륨은 직접 위험이 아닌 간접 위험이라 다른 질환보다 느슨하게 잡는다.',
+        { caution: v => `나트륨이 ${v}mg입니다. 짜게 먹으면 소변으로 칼슘이 함께 빠져나갑니다.`,
+          avoid:   v => `나트륨이 ${v}mg입니다. 칼슘 손실이 상당할 수 있습니다.` })
+    ],
+    bonus: { axis: 'calcium_mg', min: 250,
+             msg: v => `칼슘이 ${v}mg으로 넉넉합니다. 뼈에 좋습니다.` },
+    /* 한 끼만으로는 칼슘 부족을 단정할 수 없다. 낮다고 avoid를 주지 않고 팁으로만 안내한다. */
+    lowNote: { axis: 'calcium_mg', below: 100,
+               msg: () => '이 식사에는 칼슘이 거의 없습니다. 하루 중 우유·두부·멸치를 챙기세요.' }
+  },
+
+  {
+    id: 'gerd', name: '위염·역류성식도염', focus: '자극성·지방',
+    rules: [
+      hi('fat_g', 25, 40,
+        'RATIONALE: 지방은 위 배출을 늦추고 하부식도괄약근 압력을 낮춰 역류를 조장한다.',
+        { caution: v => `지방이 ${v}g입니다. 기름진 음식은 위에 오래 머물러 역류를 조장합니다.`,
+          avoid:   v => `지방이 ${v}g으로 많습니다. 식후 눕지 마시고 2~3시간 두세요.` })
+    ],
+    flags: [
+      { when: n => n.irritants.includes('spicy') && n.irritants.includes('acidic'),
+        verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 캡사이신과 산이 함께 있으면 식도 점막 자극이 가중된다.',
+        msg: () => '맵고 신맛이 함께 있습니다. 손상된 식도 점막을 강하게 자극합니다.' },
+      { when: n => n.irritants.includes('spicy') && n.irritants.includes('greasy'),
+        verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 고지방은 위 배출을 지연시켜 캡사이신이 위에 머무는 시간을 늘린다. ' +
+                   '두 자극이 단순 합산이 아니라 서로를 증폭시키므로 각각 주의가 아닌 피함으로 올린다.',
+        msg: () => '맵고 기름진 음식입니다. 기름이 위 배출을 늦춰 매운 성분이 위에 오래 머뭅니다.' },
+      { when: n => n.irritants.includes('spicy'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 캡사이신은 식도 통증 수용체를 자극한다.',
+        msg: () => '매운 음식입니다. 속쓰림이 있으시면 피하세요.' },
+      { when: n => n.irritants.includes('caffeine'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 카페인은 하부식도괄약근을 이완시켜 역류를 늘린다.',
+        msg: () => '카페인이 들어 있습니다. 식도 조임근을 느슨하게 만들어 역류를 늘립니다.' },
+      { when: n => n.irritants.includes('acidic'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 산성 식품은 이미 손상된 점막에 직접 자극이 된다.',
+        msg: () => '신맛이 강합니다. 공복에는 특히 피하세요.' }
+    ]
+  },
+
+  {
+    id: 'warf', name: '와파린 복용 중', focus: '비타민K 변동',
+    /* 이 질환만 판정의 성격이 다르다. "많으면 나쁨"이 아니라 "갑자기 바뀌면 나쁨"이다.
+       메시지에서 이 차이를 반드시 드러내야 사용자가 오해하지 않는다. */
+    inverted: true,
+    rules: [
+      hi('vitk_ug', 100, 250,
+        'RATIONALE: 와파린은 비타민K 길항제라 비타민K 섭취량이 INR을 직접 흔든다. ' +
+        '성인 1일 충분섭취량은 남 75µg·여 65µg. 핵심은 절대량이 아니라 일관성이므로 ' +
+        '"금지"가 아니라 "평소와 같은 양을 유지하라"는 메시지로 전달한다.',
+        { caution: v => `비타민K가 ${v}µg입니다. 드셔도 되지만 평소와 비슷한 양을 유지하세요. 갑자기 늘리면 약효가 떨어집니다.`,
+          avoid:   v => `비타민K가 ${v}µg으로 하루 권장(약 70µg)의 몇 배입니다. 이번 한 번만 많이 드시면 INR이 흔들릴 수 있습니다. 평소 이 정도를 드셔 오셨다면 문제없습니다.` })
+    ],
+    flags: [
+      { when: n => n.alcohol, verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 급성 음주는 와파린 대사를 억제해 INR을 올리고 출혈 위험을 높인다.',
+        msg: () => '술이 포함돼 있습니다. 와파린과 함께면 출혈 위험이 올라갑니다.' }
+    ]
+  },
+
+  {
+    id: 'dysph', name: '연하곤란(삼킴장애)', focus: '질감',
+    /* 유일하게 영양소가 아닌 물리적 성질로만 판정한다.
+       고령에서 가장 흔하지만 뇌졸중·파킨슨병·두경부암·근이영양증 등으로
+       젊은 층에도 생긴다. 연령과 무관한 상태로 다룬다. */
+    textureOnly: true,
+    rules: [],
+    flags: [
+      { when: n => n.textures.includes('sticky'), verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 떡류는 국내 질식사고 원인 1위. 점착성이 높아 기도에 들러붙는다. ' +
+                   '고령층에서 사고가 가장 많지만 소아 질식사고에서도 상위를 차지한다.',
+        msg: () => '떡처럼 끈적한 음식이 있습니다. 질식사고의 가장 흔한 원인입니다. 잘게 잘라 천천히 드세요.' },
+      { when: n => n.textures.includes('hard'), verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 저작·구강 준비기가 손상된 상태에서 단단한 음식은 덩어리째 삼켜질 위험이 크다.',
+        msg: () => '딱딱하거나 질긴 음식이 있습니다. 잘게 다지거나 갈아서 드리세요.' },
+      { when: n => n.textures.includes('dry'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 퍽퍽한 음식은 식괴 형성이 어려워 인두에 잔류하기 쉽다.',
+        msg: () => '퍽퍽한 음식이 있습니다. 목에 걸리기 쉬우니 국물이나 소스를 곁들이세요.' },
+      { when: n => n.textures.includes('mixed'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 국물+건더기 혼합식은 액체와 고체가 서로 다른 속도로 이동해 흡인 위험이 가장 크다.',
+        msg: () => '국물에 건더기가 섞인 형태입니다. 액체와 고체가 따로 넘어가 사레가 가장 잘 걸립니다. 건더기와 국물을 나눠 드세요.' },
+      { when: n => n.textures.includes('liquid'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 묽은 액체(thin liquid)는 흐름이 빨라 후두 폐쇄 전에 기도로 들어가기 쉽다. ' +
+                   '연하곤란에서는 오히려 점도증진제로 걸쭉하게 만들어야 안전하다.',
+        msg: () => '묽은 음료가 있습니다. 물처럼 묽은 것이 오히려 사레가 잘 걸립니다. 점도증진제로 걸쭉하게 하세요.' }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════════
+     아래 4개는 전 연령 대응으로 추가된 상태다.
+     질병이 아닌 생리적 상태(임신)도 포함하므로 '질환'이 아니라 '상태'로 부른다.
+     ══════════════════════════════════════════════════════════ */
+
+  {
+    id: 'preg', name: '임신·수유 중', focus: '알코올·카페인·레티놀·생식품',
+    rules: [
+      hi('caffeine_mg', 70, 200,
+        'RATIONALE: 임신 중 카페인 1일 200mg 이하 권고(식약처 300mg, 다수 산과 지침 200mg). ' +
+        '3끼로 나누면 1끼 약 67mg이므로 커피 한 잔(약 100mg)이 곧바로 주의에 걸리도록 70mg에 둔다. ' +
+        '한 끼에 하루 권장을 다 쓰는 200mg에서 피함. 카페인은 태반을 통과하고 태아는 대사 효소가 미성숙하다.',
+        { caution: v => `카페인이 ${v}mg입니다. 임신 중 하루 200mg 이하가 권장됩니다. 오늘 마신 양을 합쳐 세어 보세요.`,
+          avoid:   v => `카페인이 ${v}mg으로 하루 권장을 한 끼에 다 씁니다. 카페인은 태반을 그대로 통과합니다.` }),
+      hi('vita_ug', 1500, 3000,
+        'RATIONALE: 레티놀(동물성 비타민A) 1일 상한 3,000µg. 임신 초기 과잉은 최기형성이 보고돼 있다. ' +
+        '소간 100g의 레티놀이 약 9,000µg으로 상한의 세 배라 간·간유는 임신 중 금기로 다룬다. ' +
+        '식물성 베타카로틴은 전환이 조절돼 이 상한과 무관하므로 이 축에 넣지 않는다.',
+        { caution: v => `레티놀이 ${v}µg입니다. 임신 중 상한은 하루 3,000µg입니다.`,
+          avoid:   v => `레티놀이 ${v}µg으로 상한을 크게 넘습니다. 간·내장류는 임신 중 피하는 것이 원칙입니다.` }),
+      hi('iodine_ug', 400, 1200,
+        'RATIONALE: 요오드 1일 상한 2,400µg(한국인 영양소 섭취기준), 임신부 권장섭취량 240µg. ' +
+        '한 끼가 하루 상한의 절반(1,200µg)을 넘으면 피함, 권장량 상당(약 400µg)에서 주의. ' +
+        '임신 중 요구량은 늘지만 과잉은 태아 갑상선기능저하를 일으킬 수 있다. ' +
+        '산후 미역국을 매 끼 먹는 한국 관습이 실제로 상한을 넘길 수 있어 판정에 포함한다.',
+        { caution: v => `요오드가 ${v}µg입니다. 미역·다시마는 하루 한 번 정도가 적당합니다.`,
+          avoid:   v => `요오드가 ${v}µg으로 하루 상한(2,400µg)을 넘습니다. 과잉 요오드는 태아 갑상선에 영향을 줍니다.` }),
+      hi('sodium_mg', 700, 1200,
+        'RATIONALE: 임신성 고혈압·부종 관리를 위해 나트륨을 제한하나, 임신 중 극단적 저나트륨은 ' +
+        '오히려 해로워 일반 고혈압보다 느슨하게 잡는다.',
+        { caution: v => `나트륨이 ${v}mg입니다. 붓기와 혈압을 위해 조금 싱겁게 드세요.`,
+          avoid:   v => `나트륨이 ${v}mg입니다. 임신성 고혈압 위험이 있으면 특히 주의하세요.` })
+    ],
+    flags: [
+      { when: n => n.alcohol, verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 태아알코올스펙트럼장애에는 안전한 하한이 없다. 이 앱에서 유일하게 ' +
+                   '양과 무관하게 즉시 피함을 주는 항목이다.',
+        msg: () => '술이 포함돼 있습니다. 임신 중 알코올은 안전한 양이 없습니다. 한 모금도 권하지 않습니다.' },
+      { when: n => n.tags.includes('raw'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 비가열 식품은 리스테리아·톡소플라스마 감염 경로다. 임신 중 리스테리아증은 ' +
+                   '유산·사산으로 이어질 수 있어 일반인보다 훨씬 보수적으로 본다.',
+        msg: () => '익히지 않은 음식이 있습니다. 임신 중에는 회·젓갈 같은 생식품을 익혀 드시는 것이 안전합니다.' },
+      { when: n => n.tags.includes('high_mercury'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 메틸수은은 태반을 통과해 태아 신경계에 축적된다. 식약처는 임신부에게 ' +
+                   '심해성 대형어를 주 1회 이하로 권고한다.',
+        msg: () => '수은이 쌓일 수 있는 생선입니다. 임신 중에는 주 1회 정도로 줄이세요.' }
+    ],
+    bonus: { axis: 'iron_mg', min: 3,
+             msg: v => `철분이 ${v}mg으로 넉넉합니다. 임신 중에는 철 요구량이 크게 늘어 도움이 됩니다.` }
+  },
+
+  {
+    id: 'anemia', name: '빈혈', focus: '철 흡수 방해 요인',
+    /* 이 상태는 "나쁜 음식"보다 "나쁜 조합"이 핵심이다.
+       같은 음식이라도 무엇과 함께 먹느냐로 철 흡수율이 몇 배 달라진다. */
+    rules: [
+      hi('caffeine_mg', 50, 150,
+        'RATIONALE: 커피·차의 폴리페놀(탄닌)은 비헴철 흡수를 최대 60~90%까지 억제한다. ' +
+        '식사와 동시에 마실 때 영향이 가장 크고, 1시간 간격을 두면 대부분 회피된다. ' +
+        '카페인 자체보다 함께 든 폴리페놀이 원인이므로 카페인을 지표로 삼는다.',
+        { caution: v => `카페인 음료가 함께 있습니다(${v}mg). 식사 중 커피·차는 철 흡수를 크게 방해합니다. 1시간 뒤에 드세요.`,
+          avoid:   v => `카페인이 ${v}mg입니다. 이 식사의 철분이 거의 흡수되지 않을 수 있습니다.` }),
+      hi('calcium_mg', 500, 900,
+        'RATIONALE: 칼슘은 헴철·비헴철 모두의 흡수를 경쟁적으로 억제한다. 유제품과 철분 급원을 ' +
+        '같은 끼니에 몰아 먹으면 손해다.',
+        { caution: v => `칼슘이 ${v}mg입니다. 유제품과 철분 음식을 같은 끼니에 드시면 흡수가 줄어듭니다.`,
+          avoid:   v => `칼슘이 ${v}mg으로 많습니다. 철분 보충제를 드신다면 이 식사와 시간을 띄우세요.` })
+    ],
+    bonus: { axis: 'iron_mg', min: 3,
+             msg: v => `철분이 ${v}mg으로 넉넉합니다. 비타민C가 많은 채소·과일을 곁들이면 흡수가 더 좋아집니다.` },
+    lowNote: { axis: 'iron_mg', below: 1,
+               msg: () => '이 식사에는 철분이 거의 없습니다. 붉은 살코기·간·시금치·콩류를 하루 중에 챙기세요.' }
+  },
+
+  {
+    id: 'thyroid', name: '갑상선기능이상', focus: '요오드 과잉',
+    /* 항진증과 저하증은 원인이 다르지만, 한국 식단에서 실제로 문제가 되는 것은
+       결핍이 아니라 과잉이다(해조류 섭취량이 세계 최고 수준). 그래서 이 룰은
+       과잉만 판정하고, 결핍 쪽은 판정하지 않는다는 것을 화면에 명시한다. */
+    rules: [
+      hi('iodine_ug', 250, 1200,
+        'RATIONALE: 요오드 1일 상한 2,400µg(한국인 영양소 섭취기준), 권장섭취량 150µg. ' +
+        '1끼 권장 상당은 50µg이므로 그 5배인 250µg에서 주의, 하루 상한의 절반인 1,200µg에서 피함. ' +
+        '주의 기준을 상한보다 훨씬 낮게 두는 것은 김·미역·국물이 매 끼 누적되기 때문이다. ' +
+        '한국인 평균 섭취량은 이미 권장량의 몇 배이며 미역국 한 그릇이 하루 상한에 육박한다. ' +
+        '과잉 요오드는 하시모토 갑상선염을 악화시키고 항진증에서는 호르몬 합성을 늘린다.',
+        { caution: v => `요오드가 ${v}µg입니다. 미역·다시마·김이 겹치면 금방 넘습니다. 하루 한 번으로 줄이세요.`,
+          avoid:   v => `요오드가 ${v}µg으로 하루 상한(2,400µg)에 이릅니다. 해조류는 갑상선 상태를 직접 흔듭니다.` })
+    ],
+    flags: [
+      { when: n => n.tags.includes('cruciferous'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 십자화과 채소의 고이트로겐은 요오드 이용을 방해하나, 조리 시 대부분 파괴되고 ' +
+                   '통상 섭취량에서 임상적 영향은 작다. 금지가 아니라 정보 제공 수준으로만 표시한다.',
+        msg: () => '십자화과 채소(배추·브로콜리 등)가 있습니다. 익혀 드시면 갑상선에 미치는 영향은 거의 없습니다. 끊을 필요는 없습니다.' }
+    ],
+    note: '이 판정은 요오드 과잉만 봅니다. 항진증·저하증 구분과 약(레보티록신) 복용 시점은 반영하지 않으니 담당의 지시를 우선하세요.'
+  },
+
+  {
+    id: 'nafld', name: '지방간·비만', focus: '열량·과당·알코올',
+    rules: [
+      hi('kcal', 800, 1100,
+        'RATIONALE: 성인 1일 1,800~2,200kcal를 3끼로 나누면 1끼 600~730kcal. ' +
+        '체중 감량기에는 이보다 낮춰야 하므로 800kcal에서 주의를 둔다. 이 축은 연령 보정을 크게 받는다.',
+        { caution: v => `열량이 ${v}kcal입니다. 한 끼 적정량을 넘습니다.`,
+          avoid:   v => `열량이 ${v}kcal로 하루 필요량의 절반을 한 끼에 씁니다.` }),
+      hi('sugar_g', 15, 25,
+        'RATIONALE: 과당은 간에서만 대사되며 de novo 지방 생성을 직접 자극한다. ' +
+        '비알코올성 지방간에서 당류는 총 열량과 별개의 독립 위험요인이다.',
+        { caution: v => `당류가 ${v}g입니다. 과당은 간에서 곧바로 지방으로 바뀝니다.`,
+          avoid:   v => `당류가 ${v}g입니다. 지방간에는 총 열량보다 당류가 더 직접적인 원인입니다.` }),
+      hi('satfat_g', 7, 12,
+        'RATIONALE: 포화지방은 간 내 지방 축적과 인슐린 저항성을 함께 악화시킨다.',
+        { caution: v => `포화지방이 ${v}g입니다.`,
+          avoid:   v => `포화지방이 ${v}g으로 많습니다. 간 지방 축적을 직접 늘립니다.` })
+    ],
+    flags: [
+      { when: n => n.alcohol, verdict: VERDICT.AVOID,
+        rationale: 'RATIONALE: 알코올은 그 자체로 지방간의 원인이며, 비알코올성 지방간에 겹치면 ' +
+                   '섬유화 진행이 가속된다.',
+        msg: () => '술이 포함돼 있습니다. 지방간이 있으면 소량의 음주도 섬유화를 앞당깁니다.' },
+      { when: n => n.tags.includes('processed'), verdict: VERDICT.CAUTION,
+        rationale: 'RATIONALE: 초가공식품은 액상과당·정제 탄수화물·포화지방이 함께 들어 있어 ' +
+                   '개별 영양소 합계보다 대사에 불리하다는 관찰이 축적돼 있다.',
+        msg: () => '가공식품이 있습니다. 같은 열량이라도 가공식품은 간에 더 불리합니다.' }
+    ]
+  }
+];
+
+export const DISEASE_BY_ID = Object.fromEntries(DISEASES.map(d => [d.id, d]));
+
+/* 화면에서 15개를 한 줄로 늘어놓으면 찾기 어렵다. 신체 계통으로 묶는다.
+   임신은 질환이 아니므로 '생리 상태'로 따로 둔다. */
+export const DISEASE_GROUPS = [
+  { label: '심장·혈관',   ids: ['htn', 'cad', 'hf', 'lipid'] },
+  { label: '대사',        ids: ['dm', 'nafld', 'gout'] },
+  { label: '콩팥',        ids: ['ckd'] },
+  { label: '뼈·피',       ids: ['osteo', 'anemia', 'thyroid'] },
+  { label: '소화·삼킴',   ids: ['gerd', 'dysph'] },
+  { label: '약물·생리 상태', ids: ['warf', 'preg'] }
+];
+
+/* ────────────────────────────────────────────────────────────
+   충돌 규칙 — 두 질환의 권고가 반대 방향일 때
+   ──────────────────────────────────────────────────────────── */
+export const CONFLICTS = [
+  {
+    id: 'potassium',
+    when: ids => ids.includes('ckd') && (ids.includes('htn') || ids.includes('hf')),
+    winner: 'ckd',
+    suppressBonusOn: ['htn'],
+    msg: '고혈압에는 칼륨이 이롭지만 만성콩팥병에서는 위험합니다. ' +
+         '고칼륨혈증은 부정맥으로 바로 이어질 수 있어 콩팥병 기준을 우선 적용했습니다.'
+  },
+  {
+    id: 'protein',
+    when: ids => ids.includes('ckd') && ids.includes('osteo'),
+    winner: 'ckd',
+    msg: '골다공증에는 단백질이 필요하지만 만성콩팥병에서는 제한합니다. ' +
+         '콩팥병 기준을 우선했으니 뼈 건강은 칼슘·비타민D로 보완하세요.'
+  },
+  {
+    id: 'vitk',
+    when: ids => ids.includes('warf') && ids.length > 1,
+    winner: null,
+    msg: '와파린은 다른 질환과 판정 방식이 다릅니다. 다른 질환에 좋은 녹색채소가 ' +
+         '와파린에는 "양을 일정하게 유지하라"는 뜻이 됩니다. 끊으라는 뜻이 아닙니다.'
+  },
+  {
+    id: 'fluid',
+    when: ids => ids.includes('hf') && ids.includes('dysph'),
+    winner: null,
+    msg: '심부전은 수분을 줄여야 하고, 연하곤란은 액체를 걸쭉하게 만들어야 합니다. ' +
+         '두 조건이 겹치면 국물은 줄이되 마시는 물은 점도증진제를 쓰세요.'
+  },
+  {
+    id: 'iron_calcium',
+    when: ids => ids.includes('anemia') && ids.includes('osteo'),
+    winner: null,
+    msg: '골다공증에는 칼슘이 필요하지만 칼슘은 철 흡수를 방해합니다. 끊으라는 뜻이 아니라 ' +
+         '시간을 나누라는 뜻입니다. 유제품은 간식으로, 철분 음식은 식사로 나눠 드세요.'
+  },
+  {
+    id: 'iodine_preg',
+    when: ids => ids.includes('preg') && ids.includes('thyroid'),
+    winner: 'thyroid',
+    msg: '임신 중에는 요오드 요구량이 늘지만 갑상선 질환이 있으면 과잉이 더 위험합니다. ' +
+         '둘 중 엄격한 갑상선 기준을 적용했습니다. 요오드 보충제 여부는 반드시 담당의와 상의하세요.'
+  },
+  {
+    id: 'preg_energy',
+    when: ids => ids.includes('preg') && ids.includes('nafld'),
+    winner: null,
+    msg: '임신 중에는 체중 감량을 목표로 하지 않습니다. 지방간 기준의 열량 경고가 뜨더라도 ' +
+         '임신 중 식사량을 임의로 줄이지 마시고 담당의와 상의하세요.'
+  }
+];
+
+/* ────────────────────────────────────────────────────────────
+   판정 실행
+   ──────────────────────────────────────────────────────────── */
+
+/** 값을 보기 좋게 반올림 (mg/µg은 정수, g은 소수 1자리) */
+function fmt(axis, v) {
+  const unit = AXES[axis]?.unit;
+  return (unit === 'g') ? Math.round(v * 10) / 10 : Math.round(v);
+}
+
+/**
+ * 프로필에 맞춰 임계값을 조정한다.
+ * 체중이 입력됐고 perKg가 정의된 축이면 체중 비례로 갈아끼우고,
+ * 나이가 입력됐으면 연령 계수를 곱한다. 아무것도 없으면 원래 값 그대로.
+ */
+export function thresholds(rule, prof) {
+  let c = rule.caution, a = rule.avoid;
+  let scaledBy = null;
+
+  if (rule.perKg && prof.weightGiven) {
+    c = rule.perKg.caution * prof.weightKg;
+    a = rule.perKg.avoid * prof.weightKg;
+    scaledBy = `체중 ${prof.weightKg}kg`;
+  }
+  if (rule.ageScaled !== false && prof.ageYears != null) {
+    const f = ageFactor(prof.ageYears);
+    if (f !== 1) {
+      c *= f; a *= f;
+      scaledBy = scaledBy ? `${scaledBy}·나이 ${prof.ageYears}세` : `나이 ${prof.ageYears}세`;
+    }
+  }
+  const r = v => Math.round(v * 10) / 10;
+  return { caution: r(c), avoid: r(a), scaledBy };
+}
+
+function levelOf(th, value) {
+  if (value >= th.avoid) return VERDICT.AVOID;
+  if (value >= th.caution) return VERDICT.CAUTION;
+  return VERDICT.GOOD;
+}
+
+/**
+ * @param {object} n  식사 전체의 영양 합계.
+ *   { sodium_mg, potassium_mg, ..., textures:[], irritants:[], tags:[], alcohol:bool }
+ * @param {string[]} diseaseIds  선택한 질환·상태 id 배열
+ * @param {object} [profileInput]  { weightKg, sex, ageYears } — 전부 선택 사항
+ * @returns {{byDisease, overall, overallComment, tips, conflicts, profile, notes}}
+ */
+export function evaluate(n, diseaseIds, profileInput = {}) {
+  const nutri = normalize(n);
+  const prof = resolveProfile(profileInput);
+  const active = CONFLICTS.filter(c => c.when(diseaseIds));
+  const suppressedBonus = new Set(active.flatMap(c => c.suppressBonusOn || []));
+
+  const byDisease = diseaseIds.map(id => {
+    const d = DISEASE_BY_ID[id];
+    if (!d) return null;
+
+    const triggers = [];
+    let verdict = VERDICT.GOOD;
+
+    /* 수치형 룰 */
+    for (const r of d.rules) {
+      const raw = nutri[r.axis];
+      if (raw == null) continue;
+      const th = thresholds(r, prof);
+      const lv = levelOf(th, raw);
+      if (lv === VERDICT.GOOD) continue;
+      const shown = fmt(r.axis, raw);
+      triggers.push({
+        kind: 'numeric', axis: r.axis, label: AXES[r.axis].label, unit: AXES[r.axis].unit,
+        value: shown, threshold: lv === VERDICT.AVOID ? th.avoid : th.caution,
+        scaledBy: th.scaledBy,
+        level: lv, text: r.msg[lv](shown), rationale: r.rationale
+      });
+      verdict = worse(verdict, lv);
+    }
+
+    /* 플래그형 룰 (알코올·질감·자극성) */
+    for (const f of (d.flags || [])) {
+      if (!f.when(nutri)) continue;
+      triggers.push({
+        kind: 'flag', level: f.verdict, text: f.msg(nutri), rationale: f.rationale
+      });
+      verdict = worse(verdict, f.verdict);
+    }
+
+    /* 긍정 요소 (충돌로 무효화되지 않은 경우만) */
+    const positives = [];
+    if (d.bonus && !suppressedBonus.has(d.id)) {
+      const v = nutri[d.bonus.axis];
+      if (v != null && v >= d.bonus.min) positives.push(d.bonus.msg(fmt(d.bonus.axis, v)));
+    }
+    if (d.lowNote) {
+      const v = nutri[d.lowNote.axis];
+      if (v != null && v < d.lowNote.below) positives.push(d.lowNote.msg());
+    }
+
+    /* 사람이 읽을 이유 문장 — 가장 심한 트리거 최대 2개 */
+    const sorted = [...triggers].sort((a, b) => RANK[b.level] - RANK[a.level]);
+    let reason;
+    if (sorted.length === 0) {
+      reason = positives.length
+        ? positives[0]
+        : `${d.focus} 기준으로 문제될 만한 수치가 없습니다.`;
+    } else {
+      reason = sorted.slice(0, 2).map(t => t.text).join(' ');
+    }
+
+    return {
+      id: d.id, disease: d.name, verdict, reason,
+      triggers: sorted, positives, inverted: !!d.inverted, note: d.note || null
+    };
+  }).filter(Boolean);
+
+  /* overall = 가장 나쁜 판정.
+     단 와파린은 성격이 다르므로(금지가 아닌 일관성 경고) overall을 끌어내리지 않는다. */
+  const overall = byDisease
+    .filter(r => !r.inverted)
+    .reduce((acc, r) => worse(acc, r.verdict), VERDICT.GOOD);
+
+  return {
+    byDisease,
+    overall,
+    overallComment: buildComment(overall, byDisease),
+    tips: buildTips(byDisease, nutri),
+    conflicts: active.map(c => ({ id: c.id, msg: c.msg, winner: c.winner })),
+    profile: prof,
+    notes: byDisease.filter(r => r.note).map(r => ({ disease: r.disease, msg: r.note }))
+  };
+}
+
+/** 입력 누락에 강하게 — 없는 축은 0, 배열은 빈 배열로 채운다 */
+export function normalize(n = {}) {
+  const out = {};
+  for (const axis of Object.keys(AXES)) out[axis] = Number(n[axis]) || 0;
+  out.textures  = Array.isArray(n.textures)  ? n.textures  : [];
+  out.irritants = Array.isArray(n.irritants) ? n.irritants : [];
+  out.tags      = Array.isArray(n.tags)      ? n.tags      : [];
+  out.alcohol   = !!n.alcohol;
+  return out;
+}
+
+function buildComment(overall, byDisease) {
+  const bad = byDisease.filter(r => r.verdict === VERDICT.AVOID && !r.inverted).map(r => r.disease);
+  const mid = byDisease.filter(r => r.verdict === VERDICT.CAUTION && !r.inverted).map(r => r.disease);
+
+  if (overall === VERDICT.AVOID)
+    return `${bad.join('·')} 때문에 이 식사는 권하지 않습니다. 아래 이유를 보시고 양을 줄이거나 다른 반찬으로 바꿔 보세요.`;
+  if (overall === VERDICT.CAUTION)
+    return `${mid.join('·')}에 주의가 필요합니다. 아래 방법대로 조금만 조절하시면 드셔도 괜찮습니다.`;
+  return '고르신 질환 기준으로 특별히 문제될 것이 없는 식사입니다.';
+}
+
+/** 트리거를 실천 가능한 문장으로 바꾼다. 중복은 제거한다. */
+function buildTips(byDisease, n) {
+  const tips = new Set();
+  const hit = axis => byDisease.some(r => r.triggers.some(t => t.axis === axis));
+
+  if (hit('sodium_mg')) {
+    tips.add('국물은 남기고 건더기만 드세요. 국물 한 그릇에 하루 나트륨의 절반이 들어 있습니다.');
+    if (n.textures.includes('mixed')) tips.add('김치는 물에 한 번 헹궈 드시면 나트륨이 3분의 1가량 줄어듭니다.');
+  }
+  if (hit('potassium_mg'))
+    tips.add('채소는 잘게 썰어 물에 30분 담갔다가 데쳐서 그 물을 버리면 칼륨이 절반 가까이 빠집니다.');
+  if (hit('phosphorus_mg'))
+    tips.add('가공식품·인스턴트에 든 인은 흡수가 잘 되니 자연식품 위주로 드세요.');
+  if (hit('sugar_g') || hit('carb_g'))
+    tips.add('채소 반찬을 먼저 드시고 밥을 나중에 드시면 혈당이 천천히 오릅니다.');
+  if (hit('satfat_g') || hit('fat_g') || hit('cholesterol_mg'))
+    tips.add('고기는 기름 부위를 떼어내고, 국은 식혀서 굳은 기름을 걷어내세요.');
+  if (hit('purine_mg'))
+    tips.add('퓨린은 국물에 많이 녹아 나옵니다. 탕·찌개는 건더기만 드시고 물을 충분히 드세요.');
+  if (hit('fluid_ml'))
+    tips.add('오늘 마신 물·국·음료를 합쳐서 세어 보세요. 컵에 눈금을 표시해 두면 편합니다.');
+  if (hit('vitk_ug'))
+    tips.add('녹색채소를 끊지 마시고, 매일 비슷한 양으로 드시는 것이 가장 중요합니다.');
+  if (n.textures.some(t => ['sticky', 'hard', 'dry', 'mixed', 'liquid'].includes(t)))
+    tips.add('식사 중에는 TV를 끄고, 한 입 삼킨 뒤 다음 입을 드세요. 턱을 살짝 당기면 사레가 줄어듭니다.');
+  if (hit('iodine_ug'))
+    tips.add('미역·다시마·김이 겹치지 않게 하루 한 가지만 드세요. 국물에 요오드가 특히 많이 우러납니다.');
+  if (hit('caffeine_mg'))
+    tips.add('커피·차는 식사와 1시간 이상 띄워서 드세요. 같이 마시면 철분 흡수가 크게 줄어듭니다.');
+  if (hit('vita_ug'))
+    tips.add('간·간유는 레티놀이 몰려 있습니다. 채소의 베타카로틴은 과잉 걱정이 없으니 그쪽으로 드세요.');
+  if (hit('kcal'))
+    tips.add('밥 양을 3분의 2로 줄이고 채소 반찬을 늘리면 포만감은 그대로면서 열량이 줄어듭니다.');
+  if (n.tags.includes('raw'))
+    tips.add('생식품은 익혀 드시면 감염 위험이 사라집니다. 회는 익힌 생선으로, 젓갈은 조리해서 드세요.');
+
+  if (tips.size === 0) tips.add('지금처럼 드시면 됩니다. 다음 끼니도 이 정도 짜기를 유지해 보세요.');
+  return [...tips].slice(0, 4);
+}
+
+/* ────────────────────────────────────────────────────────────
+   음식 목록 → 식사 전체 영양 합계
+   ──────────────────────────────────────────────────────────── */
+/**
+ * @param {Array<{food:object, portion:number}>} items
+ *   food는 foods-ko.json의 항목(또는 식약처 API에서 매핑된 동일 형태),
+ *   portion은 제공량 배수(1 = 1인분, 0.5 = 반 그릇)
+ */
+export function sumMeal(items) {
+  const total = { textures: [], irritants: [], tags: [], alcohol: false };
+  for (const axis of Object.keys(AXES)) total[axis] = 0;
+
+  for (const { food, portion = 1 } of items) {
+    for (const axis of Object.keys(AXES)) {
+      total[axis] += (Number(food[axis]) || 0) * portion;
+    }
+    /* 질감·자극성·태그는 합산이 아니라 합집합이다.
+       떡이 반 개여도 질식 위험은 반으로 줄지 않는다. */
+    if (food.texture && !total.textures.includes(food.texture)) total.textures.push(food.texture);
+    for (const ir of (food.irritant || [])) {
+      if (!total.irritants.includes(ir)) total.irritants.push(ir);
+    }
+    for (const tg of (food.tags || [])) {
+      if (!total.tags.includes(tg)) total.tags.push(tg);
+    }
+    if (food.alcohol) total.alcohol = true;
+  }
+  return total;
+}

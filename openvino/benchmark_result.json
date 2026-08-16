@@ -1,0 +1,15 @@
+{
+  "cpu_name": "Intel(R) Xeon(R) CPU E3-1230 v5 @ 3.40GHz",
+  "available_devices": [
+    "CPU",
+    "GPU"
+  ],
+  "ms_per_inference": {
+    "onnxruntime_fp32_cpu": 12.408256530761719,
+    "openvino_fp32_CPU": 15.880336761474611,
+    "openvino_int8_CPU": 16.288862228393555,
+    "deployed_onnxruntime_int8_cpu": 74.04067993164062
+  },
+  "input_size": 224,
+  "note": "더미 입력·50회 평균. 실제 사진은 전처리(리사이즈·정규화) 시간이 추가로 든다. 이 기기(Xeon E3-1230 v5)는 Core Ultra가 아니라 NPU가 없다."
+}

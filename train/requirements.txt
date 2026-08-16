@@ -1,0 +1,13 @@
+# 학습 파이프라인 의존성
+#   pip install -r train/requirements.txt
+#
+# GPU가 있으면 pytorch.org에서 CUDA 버전 설치 명령을 확인해 torch를 먼저 까세요.
+# 아래는 CPU/Mac(MPS) 기본 설치입니다.
+
+torch>=2.2
+torchvision>=0.17
+pillow>=10.0
+
+# ONNX 내보내기·양자화용 (5_export.py)
+onnx>=1.16
+onnxruntime>=1.18
