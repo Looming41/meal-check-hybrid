@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "version": "0.4.0",
-    "updated": "2026-08-04",
+    "version": "0.6.0",
+    "updated": "2026-08-18",
     "unit_note": "모든 영양소 값은 serving_g(1회 제공량) 전체에 대한 값입니다. 100g 기준이 아닙니다.",
     "src_legend": {
       "mfds": "식약처 식품영양성분DB 값을 옮겨 적음",
@@ -174,7 +174,9 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 30,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "kimchi_jjigae",
@@ -247,7 +249,9 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 40,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "miyeokguk",
@@ -318,7 +322,9 @@
       "iodine_ug": 15,
       "caffeine_mg": 0,
       "vita_ug": 10,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "galbitang",
@@ -422,7 +428,8 @@
       "caffeine_mg": 0,
       "vita_ug": 300,
       "tags": [
-        "organ"
+        "organ",
+        "tyramine"
       ]
     },
     {
@@ -458,7 +465,9 @@
       "iodine_ug": 10,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "kimchi",
@@ -497,7 +506,8 @@
       "vita_ug": 0,
       "tags": [
         "cruciferous",
-        "raw"
+        "raw",
+        "tyramine"
       ]
     },
     {
@@ -600,7 +610,9 @@
       "iodine_ug": 5,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "gim",
@@ -704,7 +716,10 @@
       "iodine_ug": 5,
       "caffeine_mg": 0,
       "vita_ug": 5,
-      "tags": []
+      "tags": [
+        "egg",
+        "soy"
+      ]
     },
     {
       "id": "dubu_jorim",
@@ -739,7 +754,9 @@
       "iodine_ug": 3,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "gyeranmari",
@@ -772,7 +789,9 @@
       "iodine_ug": 25,
       "caffeine_mg": 0,
       "vita_ug": 180,
-      "tags": []
+      "tags": [
+        "egg"
+      ]
     },
     {
       "id": "godeungeo_gui",
@@ -1028,7 +1047,9 @@
     {
       "id": "bibimbap",
       "ko": "비빔밥",
-      "aliases": [],
+      "aliases": [
+        "bibimbap"
+      ],
       "en": "a bowl of rice topped with colourful vegetable strips and a fried egg",
       "serving_g": 450,
       "kcal": 600,
@@ -1057,7 +1078,9 @@
       "iodine_ug": 20,
       "caffeine_mg": 0,
       "vita_ug": 60,
-      "tags": []
+      "tags": [
+        "egg"
+      ]
     },
     {
       "id": "kimbap",
@@ -1125,6 +1148,7 @@
       "caffeine_mg": 0,
       "vita_ug": 20,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -1160,7 +1184,10 @@
       "iodine_ug": 120,
       "caffeine_mg": 0,
       "vita_ug": 40,
-      "tags": []
+      "tags": [
+        "gluten",
+        "shellfish"
+      ]
     },
     {
       "id": "naengmyeon",
@@ -1229,7 +1256,9 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 20,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "ramyeon",
@@ -1267,6 +1296,7 @@
       "caffeine_mg": 0,
       "vita_ug": 5,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -1571,7 +1601,10 @@
       "iodine_ug": 2,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "peanut",
+        "treenut"
+      ]
     },
     {
       "id": "milk",
@@ -1604,7 +1637,9 @@
       "iodine_ug": 50,
       "caffeine_mg": 0,
       "vita_ug": 60,
-      "tags": []
+      "tags": [
+        "dairy"
+      ]
     },
     {
       "id": "yogurt",
@@ -1639,7 +1674,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 30,
-      "tags": []
+      "tags": [
+        "dairy"
+      ]
     },
     {
       "id": "coffee",
@@ -1744,7 +1781,9 @@
       "iodine_ug": 2,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "tyramine"
+      ]
     },
     {
       "id": "jeon",
@@ -1782,7 +1821,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 60,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "japchae",
@@ -1993,7 +2034,9 @@
       "caffeine_mg": 0,
       "vita_ug": 10,
       "tags": [
-        "raw"
+        "raw",
+        "shellfish",
+        "tyramine"
       ]
     },
     {
@@ -2031,7 +2074,9 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 10,
-      "tags": []
+      "tags": [
+        "shellfish"
+      ]
     },
     {
       "id": "saengseonhoe",
@@ -2065,8 +2110,8 @@
       "caffeine_mg": 0,
       "vita_ug": 20,
       "tags": [
-        "raw",
-        "high_mercury"
+        "high_mercury",
+        "raw"
       ]
     },
     {
@@ -2100,7 +2145,9 @@
       "iodine_ug": 2,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "gyeran_jjim",
@@ -2133,7 +2180,10 @@
       "iodine_ug": 20,
       "caffeine_mg": 0,
       "vita_ug": 150,
-      "tags": []
+      "tags": [
+        "dairy",
+        "egg"
+      ]
     },
     {
       "id": "hobak_juk",
@@ -2238,7 +2288,10 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 220,
-      "tags": []
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
     },
     {
       "id": "pasta_tomato",
@@ -2275,14 +2328,17 @@
       "iodine_ug": 15,
       "caffeine_mg": 0,
       "vita_ug": 40,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "pizza",
       "ko": "피자",
       "aliases": [
         "페퍼로니피자",
-        "치즈피자"
+        "치즈피자",
+        "pizza"
       ],
       "en": "a triangular pizza slice with melted cheese and pepperoni",
       "serving_g": 250,
@@ -2313,7 +2369,10 @@
       "caffeine_mg": 0,
       "vita_ug": 180,
       "tags": [
-        "processed"
+        "dairy",
+        "gluten",
+        "processed",
+        "tyramine"
       ]
     },
     {
@@ -2321,7 +2380,8 @@
       "ko": "햄버거",
       "aliases": [
         "치즈버거",
-        "불고기버거"
+        "불고기버거",
+        "hamburger"
       ],
       "en": "a hamburger with sesame bun, beef patty, cheese and lettuce",
       "serving_g": 240,
@@ -2352,6 +2412,8 @@
       "caffeine_mg": 0,
       "vita_ug": 100,
       "tags": [
+        "dairy",
+        "gluten",
         "processed"
       ]
     },
@@ -2390,6 +2452,7 @@
       "caffeine_mg": 0,
       "vita_ug": 0,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -2398,7 +2461,8 @@
       "ko": "스테이크",
       "aliases": [
         "등심스테이크",
-        "안심스테이크"
+        "안심스테이크",
+        "steak"
       ],
       "en": "a thick seared beef steak with grill marks",
       "serving_g": 200,
@@ -2432,7 +2496,9 @@
     {
       "id": "risotto",
       "ko": "리조또",
-      "aliases": [],
+      "aliases": [
+        "risotto"
+      ],
       "en": "creamy pale rice with mushrooms in a shallow plate",
       "serving_g": 350,
       "kcal": 560,
@@ -2575,6 +2641,8 @@
       "caffeine_mg": 0,
       "vita_ug": 90,
       "tags": [
+        "dairy",
+        "gluten",
         "processed"
       ]
     },
@@ -2612,7 +2680,10 @@
       "iodine_ug": 8,
       "caffeine_mg": 0,
       "vita_ug": 90,
-      "tags": []
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
     },
     {
       "id": "croissant",
@@ -2648,7 +2719,9 @@
       "iodine_ug": 6,
       "caffeine_mg": 0,
       "vita_ug": 120,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "cereal_milk",
@@ -2683,6 +2756,7 @@
       "caffeine_mg": 0,
       "vita_ug": 110,
       "tags": [
+        "dairy",
         "processed"
       ]
     },
@@ -2690,7 +2764,8 @@
       "id": "omelet",
       "ko": "오믈렛",
       "aliases": [
-        "스크램블에그"
+        "스크램블에그",
+        "omelette"
       ],
       "en": "a folded yellow omelette with melted cheese",
       "serving_g": 180,
@@ -2719,7 +2794,10 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 320,
-      "tags": []
+      "tags": [
+        "dairy",
+        "egg"
+      ]
     },
     {
       "id": "soup_cream",
@@ -2755,7 +2833,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 90,
-      "tags": []
+      "tags": [
+        "dairy"
+      ]
     },
     {
       "id": "budae_jjigae",
@@ -2793,7 +2873,9 @@
       "caffeine_mg": 0,
       "vita_ug": 90,
       "tags": [
-        "processed"
+        "gluten",
+        "processed",
+        "tyramine"
       ]
     },
     {
@@ -3002,7 +3084,10 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 20,
-      "tags": []
+      "tags": [
+        "soy",
+        "tyramine"
+      ]
     },
     {
       "id": "kongguksu",
@@ -3035,7 +3120,10 @@
       "iodine_ug": 10,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "gluten",
+        "soy"
+      ]
     },
     {
       "id": "bibim_guksu",
@@ -3072,7 +3160,9 @@
       "iodine_ug": 12,
       "caffeine_mg": 0,
       "vita_ug": 15,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "tteokguk",
@@ -3107,14 +3197,18 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 60,
-      "tags": []
+      "tags": [
+        "egg"
+      ]
     },
     {
       "id": "mandu",
       "ko": "만두",
       "aliases": [
         "군만두",
-        "물만두"
+        "물만두",
+        "dumplings",
+        "gyoza"
       ],
       "en": "pleated Korean dumplings with thin wrappers",
       "serving_g": 200,
@@ -3145,6 +3239,7 @@
       "caffeine_mg": 0,
       "vita_ug": 40,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -3180,7 +3275,9 @@
       "caffeine_mg": 0,
       "vita_ug": 250,
       "tags": [
-        "organ"
+        "gluten",
+        "organ",
+        "tyramine"
       ]
     },
     {
@@ -3219,7 +3316,9 @@
       "caffeine_mg": 0,
       "vita_ug": 20,
       "tags": [
-        "processed"
+        "gluten",
+        "processed",
+        "shellfish"
       ]
     },
     {
@@ -3256,6 +3355,7 @@
       "caffeine_mg": 0,
       "vita_ug": 10,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -3295,6 +3395,7 @@
       "caffeine_mg": 0,
       "vita_ug": 70,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -3364,7 +3465,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 230,
-      "tags": []
+      "tags": [
+        "egg"
+      ]
     },
     {
       "id": "rabokki",
@@ -3438,7 +3541,9 @@
       "iodine_ug": 60,
       "caffeine_mg": 0,
       "vita_ug": 30,
-      "tags": []
+      "tags": [
+        "shellfish"
+      ]
     },
     {
       "id": "gopchang",
@@ -3511,6 +3616,7 @@
       "caffeine_mg": 0,
       "vita_ug": 30,
       "tags": [
+        "egg",
         "raw"
       ]
     },
@@ -3618,14 +3724,17 @@
       "iodine_ug": 12,
       "caffeine_mg": 0,
       "vita_ug": 30,
-      "tags": []
+      "tags": [
+        "soy"
+      ]
     },
     {
       "id": "bokkeumbap",
       "ko": "볶음밥",
       "aliases": [
         "새우볶음밥",
-        "김치볶음밥"
+        "김치볶음밥",
+        "fried_rice"
       ],
       "en": "a mound of stir-fried rice with diced vegetables",
       "serving_g": 400,
@@ -3655,7 +3764,9 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 110,
-      "tags": []
+      "tags": [
+        "shellfish"
+      ]
     },
     {
       "id": "maratang",
@@ -3699,7 +3810,8 @@
       "ko": "초밥",
       "aliases": [
         "스시",
-        "회덮밥"
+        "회덮밥",
+        "sushi"
       ],
       "en": "small oval rice pieces topped with slices of raw fish",
       "serving_g": 250,
@@ -3763,7 +3875,9 @@
       "iodine_ug": 120,
       "caffeine_mg": 0,
       "vita_ug": 15,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "tonkotsu_ramen",
@@ -3799,7 +3913,10 @@
       "iodine_ug": 40,
       "caffeine_mg": 0,
       "vita_ug": 120,
-      "tags": []
+      "tags": [
+        "egg",
+        "gluten"
+      ]
     },
     {
       "id": "gyudon",
@@ -3943,6 +4060,7 @@
       "caffeine_mg": 0,
       "vita_ug": 5,
       "tags": [
+        "gluten",
         "processed"
       ]
     },
@@ -3982,7 +4100,8 @@
       "caffeine_mg": 0,
       "vita_ug": 20,
       "tags": [
-        "processed"
+        "processed",
+        "tyramine"
       ]
     },
     {
@@ -4159,7 +4278,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 160,
-      "tags": []
+      "tags": [
+        "egg"
+      ]
     },
     {
       "id": "salmon",
@@ -4195,7 +4316,9 @@
       "iodine_ug": 30,
       "caffeine_mg": 0,
       "vita_ug": 45,
-      "tags": []
+      "tags": [
+        "tyramine"
+      ]
     },
     {
       "id": "dubu_gangjeong",
@@ -4232,7 +4355,10 @@
       "iodine_ug": 5,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "gluten",
+        "soy"
+      ]
     },
     {
       "id": "gimjaban",
@@ -4698,7 +4824,9 @@
       "iodine_ug": 70,
       "caffeine_mg": 130,
       "vita_ug": 90,
-      "tags": []
+      "tags": [
+        "dairy"
+      ]
     },
     {
       "id": "energy_drink",
@@ -4957,7 +5085,9 @@
       "iodine_ug": 2,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "tyramine"
+      ]
     },
     {
       "id": "wine",
@@ -4993,7 +5123,9 @@
       "iodine_ug": 1,
       "caffeine_mg": 0,
       "vita_ug": 0,
-      "tags": []
+      "tags": [
+        "tyramine"
+      ]
     },
     {
       "id": "whisky",
@@ -5066,13 +5198,17 @@
       "caffeine_mg": 5,
       "vita_ug": 130,
       "tags": [
+        "dairy",
+        "gluten",
         "processed"
       ]
     },
     {
       "id": "donut",
       "ko": "도넛",
-      "aliases": [],
+      "aliases": [
+        "donuts"
+      ],
       "en": "a ring shaped glazed donut",
       "serving_g": 70,
       "kcal": 280,
@@ -5107,7 +5243,9 @@
     {
       "id": "ice_cream",
       "ko": "아이스크림",
-      "aliases": [],
+      "aliases": [
+        "ice_cream"
+      ],
       "en": "a scoop of pale vanilla ice cream",
       "serving_g": 100,
       "kcal": 210,
@@ -5134,6 +5272,7 @@
       "caffeine_mg": 0,
       "vita_ug": 90,
       "tags": [
+        "dairy",
         "processed"
       ]
     },
@@ -5248,7 +5387,9 @@
       "iodine_ug": 10,
       "caffeine_mg": 0,
       "vita_ug": 20,
-      "tags": []
+      "tags": [
+        "gluten"
+      ]
     },
     {
       "id": "popcorn",
@@ -5284,6 +5425,5674 @@
       "vita_ug": 15,
       "tags": [
         "processed"
+      ]
+    },
+    {
+      "id": "kodari_jorim",
+      "ko": "코다리조림",
+      "aliases": [],
+      "en": "a glossy dark soy-braised semi-dried pollock fish with green chili rings",
+      "serving_g": 150,
+      "kcal": 230,
+      "carb_g": 12,
+      "protein_g": 22,
+      "fat_g": 8,
+      "satfat_g": 1.8,
+      "transfat_g": 0,
+      "sugar_g": 7,
+      "sodium_mg": 980,
+      "cholesterol_mg": 60,
+      "potassium_mg": 420,
+      "phosphorus_mg": 240,
+      "calcium_mg": 25,
+      "purine_mg": 160,
+      "vitk_ug": 5,
+      "fluid_ml": 20,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 180,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "meonge",
+      "ko": "멍게",
+      "aliases": [
+        "우렁쉥이"
+      ],
+      "en": "a small dish of orange raw sea squirt slices on ice",
+      "serving_g": 80,
+      "kcal": 55,
+      "carb_g": 4,
+      "protein_g": 9,
+      "fat_g": 1,
+      "satfat_g": 0.2,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 280,
+      "cholesterol_mg": 40,
+      "potassium_mg": 200,
+      "phosphorus_mg": 110,
+      "calcium_mg": 20,
+      "purine_mg": 140,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 80,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": [
+        "raw",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "san_nakji",
+      "ko": "산낙지",
+      "aliases": [],
+      "en": "small pieces of raw octopus tentacle still moving on a plate",
+      "serving_g": 100,
+      "kcal": 85,
+      "carb_g": 2,
+      "protein_g": 15,
+      "fat_g": 1.5,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 280,
+      "cholesterol_mg": 95,
+      "potassium_mg": 350,
+      "phosphorus_mg": 200,
+      "calcium_mg": 30,
+      "purine_mg": 150,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 40,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "raw",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "gochu_twigim",
+      "ko": "고추튀김",
+      "aliases": [],
+      "en": "battered and deep-fried green chili peppers, golden and crisp",
+      "serving_g": 100,
+      "kcal": 220,
+      "carb_g": 18,
+      "protein_g": 8,
+      "fat_g": 13,
+      "satfat_g": 2,
+      "transfat_g": 0.1,
+      "sugar_g": 1,
+      "sodium_mg": 420,
+      "cholesterol_mg": 20,
+      "potassium_mg": 220,
+      "phosphorus_mg": 120,
+      "calcium_mg": 30,
+      "purine_mg": 40,
+      "vitk_ug": 10,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "spicy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "galchi_jorim",
+      "ko": "갈치조림",
+      "aliases": [],
+      "en": "a spicy red soy-braised hairtail fish with radish in a shallow pot",
+      "serving_g": 180,
+      "kcal": 280,
+      "carb_g": 14,
+      "protein_g": 26,
+      "fat_g": 12,
+      "satfat_g": 2.5,
+      "transfat_g": 0,
+      "sugar_g": 6,
+      "sodium_mg": 1050,
+      "cholesterol_mg": 70,
+      "potassium_mg": 480,
+      "phosphorus_mg": 260,
+      "calcium_mg": 35,
+      "purine_mg": 180,
+      "vitk_ug": 5,
+      "fluid_ml": 40,
+      "texture": "normal",
+      "irritant": [
+        "salty",
+        "spicy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.3,
+      "iodine_ug": 150,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "ueong_jorim",
+      "ko": "우엉조림",
+      "aliases": [],
+      "en": "a small dish of dark glossy soy-braised burdock root strips",
+      "serving_g": 60,
+      "kcal": 80,
+      "carb_g": 15,
+      "protein_g": 2,
+      "fat_g": 1,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 8,
+      "sodium_mg": 320,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 40,
+      "calcium_mg": 20,
+      "purine_mg": 20,
+      "vitk_ug": 2,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "kkomak_jjim",
+      "ko": "꼬막찜",
+      "aliases": [
+        "꼬막무침"
+      ],
+      "en": "a plate of steamed dark cockle shells with soy chili dressing",
+      "serving_g": 120,
+      "kcal": 100,
+      "carb_g": 6,
+      "protein_g": 14,
+      "fat_g": 2,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 520,
+      "cholesterol_mg": 60,
+      "potassium_mg": 260,
+      "phosphorus_mg": 170,
+      "calcium_mg": 40,
+      "purine_mg": 130,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 6.0,
+      "iodine_ug": 100,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "shellfish",
+        "soy"
+      ]
+    },
+    {
+      "id": "yaksik",
+      "ko": "약식",
+      "aliases": [
+        "약밥"
+      ],
+      "en": "a dark sweet glutinous rice dessert studded with chestnuts jujubes and pine nuts",
+      "serving_g": 120,
+      "kcal": 280,
+      "carb_g": 52,
+      "protein_g": 4,
+      "fat_g": 6,
+      "satfat_g": 1,
+      "transfat_g": 0,
+      "sugar_g": 22,
+      "sodium_mg": 120,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 90,
+      "calcium_mg": 20,
+      "purine_mg": 15,
+      "vitk_ug": 2,
+      "fluid_ml": 0,
+      "texture": "sticky",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "treenut"
+      ]
+    },
+    {
+      "id": "gwamegi",
+      "ko": "과메기",
+      "aliases": [],
+      "en": "strips of semi-dried glossy herring or saury served with raw garlic and lettuce",
+      "serving_g": 100,
+      "kcal": 210,
+      "carb_g": 0,
+      "protein_g": 20,
+      "fat_g": 14,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 350,
+      "cholesterol_mg": 80,
+      "potassium_mg": 380,
+      "phosphorus_mg": 250,
+      "calcium_mg": 25,
+      "purine_mg": 200,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 25,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "sausage_bokkeum",
+      "ko": "소세지볶음",
+      "aliases": [
+        "소시지볶음"
+      ],
+      "en": "sliced sausages stir-fried with onion and bell pepper in ketchup glaze",
+      "serving_g": 100,
+      "kcal": 230,
+      "carb_g": 10,
+      "protein_g": 10,
+      "fat_g": 16,
+      "satfat_g": 5.5,
+      "transfat_g": 0.2,
+      "sugar_g": 6,
+      "sodium_mg": 650,
+      "cholesterol_mg": 45,
+      "potassium_mg": 220,
+      "phosphorus_mg": 140,
+      "calcium_mg": 15,
+      "purine_mg": 60,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "processed",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "dak_gyejang",
+      "ko": "닭계장",
+      "aliases": [
+        "닭개장"
+      ],
+      "en": "a fiery red spicy chicken soup with shredded chicken scallion and bean sprouts",
+      "serving_g": 400,
+      "kcal": 280,
+      "carb_g": 10,
+      "protein_g": 26,
+      "fat_g": 14,
+      "satfat_g": 3.5,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 1050,
+      "cholesterol_mg": 80,
+      "potassium_mg": 520,
+      "phosphorus_mg": 280,
+      "calcium_mg": 40,
+      "purine_mg": 140,
+      "vitk_ug": 20,
+      "fluid_ml": 320,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": []
+    },
+    {
+      "id": "jjimdak",
+      "ko": "찜닭",
+      "aliases": [],
+      "en": "braised chicken pieces with potato carrot and glass noodles in dark soy sauce",
+      "serving_g": 350,
+      "kcal": 480,
+      "carb_g": 38,
+      "protein_g": 34,
+      "fat_g": 20,
+      "satfat_g": 5,
+      "transfat_g": 0.2,
+      "sugar_g": 14,
+      "sodium_mg": 1150,
+      "cholesterol_mg": 110,
+      "potassium_mg": 650,
+      "phosphorus_mg": 320,
+      "calcium_mg": 40,
+      "purine_mg": 150,
+      "vitk_ug": 10,
+      "fluid_ml": 60,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 8,
+      "caffeine_mg": 0,
+      "vita_ug": 25,
+      "tags": [
+        "soy",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "saeu_twigim",
+      "ko": "새우튀김",
+      "aliases": [],
+      "en": "golden deep-fried battered shrimp tempura pieces",
+      "serving_g": 100,
+      "kcal": 250,
+      "carb_g": 18,
+      "protein_g": 14,
+      "fat_g": 14,
+      "satfat_g": 2,
+      "transfat_g": 0.1,
+      "sugar_g": 1,
+      "sodium_mg": 380,
+      "cholesterol_mg": 110,
+      "potassium_mg": 200,
+      "phosphorus_mg": 180,
+      "calcium_mg": 50,
+      "purine_mg": 120,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 30,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": [
+        "gluten",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "dotori_muk",
+      "ko": "도토리묵",
+      "aliases": [
+        "묵무침"
+      ],
+      "en": "a plate of dark translucent acorn jelly cubes with seasoned soy dressing",
+      "serving_g": 150,
+      "kcal": 90,
+      "carb_g": 16,
+      "protein_g": 2,
+      "fat_g": 2,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 420,
+      "cholesterol_mg": 0,
+      "potassium_mg": 120,
+      "phosphorus_mg": 40,
+      "calcium_mg": 15,
+      "purine_mg": 15,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "juggumi_bokkeum",
+      "ko": "주꾸미볶음",
+      "aliases": [],
+      "en": "spicy red stir-fried baby octopus with vegetables in gochujang sauce",
+      "serving_g": 180,
+      "kcal": 230,
+      "carb_g": 16,
+      "protein_g": 24,
+      "fat_g": 8,
+      "satfat_g": 1.5,
+      "transfat_g": 0,
+      "sugar_g": 8,
+      "sodium_mg": 900,
+      "cholesterol_mg": 180,
+      "potassium_mg": 450,
+      "phosphorus_mg": 260,
+      "calcium_mg": 35,
+      "purine_mg": 160,
+      "vitk_ug": 10,
+      "fluid_ml": 20,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "dak_bokkeumtang",
+      "ko": "닭볶음탕",
+      "aliases": [
+        "닭도리탕"
+      ],
+      "en": "a red spicy braised chicken stew with potato and carrot chunks",
+      "serving_g": 350,
+      "kcal": 420,
+      "carb_g": 22,
+      "protein_g": 34,
+      "fat_g": 20,
+      "satfat_g": 5.5,
+      "transfat_g": 0.2,
+      "sugar_g": 10,
+      "sodium_mg": 1050,
+      "cholesterol_mg": 110,
+      "potassium_mg": 600,
+      "phosphorus_mg": 300,
+      "calcium_mg": 30,
+      "purine_mg": 150,
+      "vitk_ug": 8,
+      "fluid_ml": 60,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.2,
+      "iodine_ug": 8,
+      "caffeine_mg": 0,
+      "vita_ug": 25,
+      "tags": []
+    },
+    {
+      "id": "ganjang_gejang",
+      "ko": "간장게장",
+      "aliases": [
+        "게장"
+      ],
+      "en": "a raw blue crab marinated whole in dark soy sauce",
+      "serving_g": 150,
+      "kcal": 190,
+      "carb_g": 6,
+      "protein_g": 24,
+      "fat_g": 7,
+      "satfat_g": 1.2,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 1300,
+      "cholesterol_mg": 130,
+      "potassium_mg": 420,
+      "phosphorus_mg": 280,
+      "calcium_mg": 80,
+      "purine_mg": 200,
+      "vitk_ug": 3,
+      "fluid_ml": 10,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "raw",
+        "shellfish",
+        "soy",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "gamja_jeon",
+      "ko": "감자전",
+      "aliases": [],
+      "en": "a golden pan-fried grated potato pancake",
+      "serving_g": 150,
+      "kcal": 220,
+      "carb_g": 34,
+      "protein_g": 5,
+      "fat_g": 8,
+      "satfat_g": 1.2,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 380,
+      "cholesterol_mg": 40,
+      "potassium_mg": 450,
+      "phosphorus_mg": 100,
+      "calcium_mg": 20,
+      "purine_mg": 25,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "kimchi_jeon",
+      "ko": "김치전",
+      "aliases": [],
+      "en": "a savory pan-fried red kimchi pancake",
+      "serving_g": 150,
+      "kcal": 260,
+      "carb_g": 30,
+      "protein_g": 7,
+      "fat_g": 12,
+      "satfat_g": 1.8,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 620,
+      "cholesterol_mg": 40,
+      "potassium_mg": 280,
+      "phosphorus_mg": 100,
+      "calcium_mg": 25,
+      "purine_mg": 30,
+      "vitk_ug": 25,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "greasy",
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "gamja_jorim",
+      "ko": "감자조림",
+      "aliases": [],
+      "en": "a small dish of glossy soy-braised baby potatoes",
+      "serving_g": 100,
+      "kcal": 130,
+      "carb_g": 24,
+      "protein_g": 3,
+      "fat_g": 2,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 6,
+      "sodium_mg": 400,
+      "cholesterol_mg": 0,
+      "potassium_mg": 400,
+      "phosphorus_mg": 60,
+      "calcium_mg": 15,
+      "purine_mg": 20,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "maeuntang",
+      "ko": "매운탕",
+      "aliases": [],
+      "en": "a fiery red spicy fish stew with vegetables in a hot pot",
+      "serving_g": 400,
+      "kcal": 220,
+      "carb_g": 10,
+      "protein_g": 28,
+      "fat_g": 6,
+      "satfat_g": 1.2,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 1100,
+      "cholesterol_mg": 70,
+      "potassium_mg": 550,
+      "phosphorus_mg": 300,
+      "calcium_mg": 40,
+      "purine_mg": 180,
+      "vitk_ug": 10,
+      "fluid_ml": 320,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 80,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": []
+    },
+    {
+      "id": "galbi_gui",
+      "ko": "갈비구이",
+      "aliases": [
+        "소갈비구이",
+        "돼지갈비구이"
+      ],
+      "en": "grilled marinated beef short ribs with caramelized char edges",
+      "serving_g": 200,
+      "kcal": 520,
+      "carb_g": 12,
+      "protein_g": 34,
+      "fat_g": 38,
+      "satfat_g": 15,
+      "transfat_g": 1,
+      "sugar_g": 9,
+      "sodium_mg": 780,
+      "cholesterol_mg": 100,
+      "potassium_mg": 450,
+      "phosphorus_mg": 260,
+      "calcium_mg": 25,
+      "purine_mg": 150,
+      "vitk_ug": 4,
+      "fluid_ml": 10,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": []
+    },
+    {
+      "id": "deodeok_gui",
+      "ko": "더덕구이",
+      "aliases": [],
+      "en": "grilled gochujang-glazed deodeok mountain root strips with a fibrous texture",
+      "serving_g": 100,
+      "kcal": 150,
+      "carb_g": 22,
+      "protein_g": 4,
+      "fat_g": 4,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 10,
+      "sodium_mg": 420,
+      "cholesterol_mg": 0,
+      "potassium_mg": 280,
+      "phosphorus_mg": 60,
+      "calcium_mg": 30,
+      "purine_mg": 15,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "jogae_gui",
+      "ko": "조개구이",
+      "aliases": [],
+      "en": "an assortment of grilled shellfish in their shells over an open flame",
+      "serving_g": 200,
+      "kcal": 160,
+      "carb_g": 8,
+      "protein_g": 22,
+      "fat_g": 3,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 550,
+      "cholesterol_mg": 80,
+      "potassium_mg": 380,
+      "phosphorus_mg": 250,
+      "calcium_mg": 60,
+      "purine_mg": 150,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 5.0,
+      "iodine_ug": 100,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "jogi_gui",
+      "ko": "조기구이",
+      "aliases": [
+        "굴비구이"
+      ],
+      "en": "a whole grilled yellow croaker fish with golden crisp skin",
+      "serving_g": 120,
+      "kcal": 220,
+      "carb_g": 0,
+      "protein_g": 24,
+      "fat_g": 13,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 480,
+      "cholesterol_mg": 70,
+      "potassium_mg": 350,
+      "phosphorus_mg": 260,
+      "calcium_mg": 30,
+      "purine_mg": 180,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": []
+    },
+    {
+      "id": "hwangtae_gui",
+      "ko": "황태구이",
+      "aliases": [],
+      "en": "a gochujang-glazed grilled dried pollock fillet, fibrous and flattened",
+      "serving_g": 100,
+      "kcal": 180,
+      "carb_g": 14,
+      "protein_g": 24,
+      "fat_g": 3,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 7,
+      "sodium_mg": 750,
+      "cholesterol_mg": 50,
+      "potassium_mg": 400,
+      "phosphorus_mg": 280,
+      "calcium_mg": 30,
+      "purine_mg": 150,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 200,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": []
+    },
+    {
+      "id": "hunje_ori",
+      "ko": "훈제오리",
+      "aliases": [],
+      "en": "sliced smoked duck breast with a deep brown edge",
+      "serving_g": 120,
+      "kcal": 280,
+      "carb_g": 2,
+      "protein_g": 20,
+      "fat_g": 22,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 1,
+      "sodium_mg": 650,
+      "cholesterol_mg": 90,
+      "potassium_mg": 280,
+      "phosphorus_mg": 180,
+      "calcium_mg": 10,
+      "purine_mg": 100,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 40,
+      "tags": [
+        "tyramine"
+      ]
+    },
+    {
+      "id": "mu_guk",
+      "ko": "무국",
+      "aliases": [],
+      "en": "a clear light broth with soft translucent radish slices",
+      "serving_g": 300,
+      "kcal": 60,
+      "carb_g": 5,
+      "protein_g": 5,
+      "fat_g": 2,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 750,
+      "cholesterol_mg": 5,
+      "potassium_mg": 220,
+      "phosphorus_mg": 60,
+      "calcium_mg": 25,
+      "purine_mg": 30,
+      "vitk_ug": 2,
+      "fluid_ml": 260,
+      "texture": "liquid",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 2,
+      "tags": []
+    },
+    {
+      "id": "bugeo_guk",
+      "ko": "북엇국",
+      "aliases": [],
+      "en": "a milky white clear broth with shredded dried pollock and egg ribbons",
+      "serving_g": 350,
+      "kcal": 120,
+      "carb_g": 5,
+      "protein_g": 16,
+      "fat_g": 3,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 850,
+      "cholesterol_mg": 60,
+      "potassium_mg": 300,
+      "phosphorus_mg": 200,
+      "calcium_mg": 30,
+      "purine_mg": 130,
+      "vitk_ug": 2,
+      "fluid_ml": 300,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 180,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "egg"
+      ]
+    },
+    {
+      "id": "siraegi_guk",
+      "ko": "시래기국",
+      "aliases": [],
+      "en": "a soybean-paste broth with soft dried radish green leaves",
+      "serving_g": 350,
+      "kcal": 90,
+      "carb_g": 8,
+      "protein_g": 7,
+      "fat_g": 3,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 820,
+      "cholesterol_mg": 0,
+      "potassium_mg": 350,
+      "phosphorus_mg": 100,
+      "calcium_mg": 60,
+      "purine_mg": 50,
+      "vitk_ug": 80,
+      "fluid_ml": 300,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "kongjaban",
+      "ko": "콩자반",
+      "aliases": [],
+      "en": "a small dish of glossy dark soy-braised black soybeans",
+      "serving_g": 40,
+      "kcal": 80,
+      "carb_g": 8,
+      "protein_g": 6,
+      "fat_g": 2.5,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 4,
+      "sodium_mg": 280,
+      "cholesterol_mg": 0,
+      "potassium_mg": 200,
+      "phosphorus_mg": 90,
+      "calcium_mg": 30,
+      "purine_mg": 60,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "pyeonyuk",
+      "ko": "편육",
+      "aliases": [],
+      "en": "thin slices of boiled pork or beef arranged on a plate",
+      "serving_g": 120,
+      "kcal": 260,
+      "carb_g": 0,
+      "protein_g": 24,
+      "fat_g": 18,
+      "satfat_g": 6.5,
+      "transfat_g": 0.3,
+      "sugar_g": 0,
+      "sodium_mg": 280,
+      "cholesterol_mg": 80,
+      "potassium_mg": 320,
+      "phosphorus_mg": 200,
+      "calcium_mg": 15,
+      "purine_mg": 140,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.8,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": []
+    },
+    {
+      "id": "mu_saengchae",
+      "ko": "무생채",
+      "aliases": [],
+      "en": "a bright red spicy shredded raw radish salad",
+      "serving_g": 60,
+      "kcal": 40,
+      "carb_g": 7,
+      "protein_g": 1,
+      "fat_g": 0.5,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 280,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 25,
+      "calcium_mg": 20,
+      "purine_mg": 15,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.4,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "yeolmu_kimchi",
+      "ko": "열무김치",
+      "aliases": [],
+      "en": "young radish greens kimchi in a light red brine",
+      "serving_g": 50,
+      "kcal": 20,
+      "carb_g": 3,
+      "protein_g": 1,
+      "fat_g": 0.3,
+      "satfat_g": 0,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 20,
+      "calcium_mg": 30,
+      "purine_mg": 15,
+      "vitk_ug": 40,
+      "fluid_ml": 10,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "pa_kimchi",
+      "ko": "파김치",
+      "aliases": [],
+      "en": "whole scallion stalks fermented in red chili kimchi paste",
+      "serving_g": 50,
+      "kcal": 30,
+      "carb_g": 4,
+      "protein_g": 1.2,
+      "fat_g": 0.5,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 400,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 20,
+      "calcium_mg": 25,
+      "purine_mg": 15,
+      "vitk_ug": 60,
+      "fluid_ml": 10,
+      "texture": "normal",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "tyramine"
+      ]
+    },
+    {
+      "id": "gaji_bokkeum",
+      "ko": "가지볶음",
+      "aliases": [],
+      "en": "soft purple stir-fried eggplant strips with garlic and soy",
+      "serving_g": 60,
+      "kcal": 60,
+      "carb_g": 6,
+      "protein_g": 1.5,
+      "fat_g": 3.5,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 260,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 20,
+      "calcium_mg": 10,
+      "purine_mg": 15,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.4,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "gosari_namul",
+      "ko": "고사리나물",
+      "aliases": [],
+      "en": "a small dish of seasoned dark brown fern shoots",
+      "serving_g": 60,
+      "kcal": 55,
+      "carb_g": 4,
+      "protein_g": 2.5,
+      "fat_g": 3.5,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 0.5,
+      "sodium_mg": 260,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 40,
+      "calcium_mg": 20,
+      "purine_mg": 25,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.7,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "sukju_namul",
+      "ko": "숙주나물",
+      "aliases": [],
+      "en": "a small dish of blanched translucent mung bean sprouts with sesame",
+      "serving_g": 60,
+      "kcal": 35,
+      "carb_g": 3,
+      "protein_g": 2,
+      "fat_g": 1.8,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 200,
+      "cholesterol_mg": 0,
+      "potassium_mg": 120,
+      "phosphorus_mg": 30,
+      "calcium_mg": 10,
+      "purine_mg": 20,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.4,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "aehobak_bokkeum",
+      "ko": "애호박볶음",
+      "aliases": [],
+      "en": "soft stir-fried pale green zucchini half-moons with garlic",
+      "serving_g": 60,
+      "kcal": 45,
+      "carb_g": 4,
+      "protein_g": 1.5,
+      "fat_g": 2.8,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 1.5,
+      "sodium_mg": 220,
+      "cholesterol_mg": 0,
+      "potassium_mg": 170,
+      "phosphorus_mg": 25,
+      "calcium_mg": 10,
+      "purine_mg": 15,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.3,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "gyeongdan",
+      "ko": "경단",
+      "aliases": [],
+      "en": "small round glutinous rice balls coated in bean or sesame powder",
+      "serving_g": 100,
+      "kcal": 230,
+      "carb_g": 44,
+      "protein_g": 5,
+      "fat_g": 4,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 14,
+      "sodium_mg": 60,
+      "cholesterol_mg": 0,
+      "potassium_mg": 120,
+      "phosphorus_mg": 70,
+      "calcium_mg": 20,
+      "purine_mg": 15,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "sticky",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "songpyeon",
+      "ko": "송편",
+      "aliases": [],
+      "en": "small half-moon shaped rice cakes filled with sweet bean or sesame paste",
+      "serving_g": 100,
+      "kcal": 210,
+      "carb_g": 44,
+      "protein_g": 4,
+      "fat_g": 2.5,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 10,
+      "sodium_mg": 60,
+      "cholesterol_mg": 0,
+      "potassium_mg": 100,
+      "phosphorus_mg": 60,
+      "calcium_mg": 15,
+      "purine_mg": 12,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "sticky",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.7,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "jjolmyeon",
+      "ko": "쫄면",
+      "aliases": [],
+      "en": "thick chewy cold noodles tossed in a spicy red sauce with vegetables",
+      "serving_g": 400,
+      "kcal": 480,
+      "carb_g": 90,
+      "protein_g": 12,
+      "fat_g": 8,
+      "satfat_g": 1.2,
+      "transfat_g": 0,
+      "sugar_g": 20,
+      "sodium_mg": 1150,
+      "cholesterol_mg": 10,
+      "potassium_mg": 400,
+      "phosphorus_mg": 150,
+      "calcium_mg": 40,
+      "purine_mg": 40,
+      "vitk_ug": 15,
+      "fluid_ml": 40,
+      "texture": "sticky",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "doraji_muchim",
+      "ko": "도라지무침",
+      "aliases": [],
+      "en": "a spicy seasoned salad of fibrous white bellflower root strips",
+      "serving_g": 60,
+      "kcal": 60,
+      "carb_g": 9,
+      "protein_g": 1.5,
+      "fat_g": 1.8,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 300,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 30,
+      "calcium_mg": 20,
+      "purine_mg": 15,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "hongeo_muchim",
+      "ko": "홍어무침",
+      "aliases": [],
+      "en": "a spicy seasoned salad of pungent fermented skate slices with vegetables",
+      "serving_g": 100,
+      "kcal": 120,
+      "carb_g": 8,
+      "protein_g": 16,
+      "fat_g": 2.5,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 550,
+      "cholesterol_mg": 60,
+      "potassium_mg": 280,
+      "phosphorus_mg": 180,
+      "calcium_mg": 20,
+      "purine_mg": 150,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "raw",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "nurungji",
+      "ko": "누룽지",
+      "aliases": [],
+      "en": "crispy golden scorched rice crust, sometimes served with hot water as a snack",
+      "serving_g": 80,
+      "kcal": 290,
+      "carb_g": 64,
+      "protein_g": 6,
+      "fat_g": 0.5,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 0.5,
+      "sodium_mg": 5,
+      "cholesterol_mg": 0,
+      "potassium_mg": 80,
+      "phosphorus_mg": 90,
+      "calcium_mg": 8,
+      "purine_mg": 25,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "yubu_chobap",
+      "ko": "유부초밥",
+      "aliases": [],
+      "en": "small sweet fried tofu pockets stuffed with seasoned vinegar rice",
+      "serving_g": 200,
+      "kcal": 340,
+      "carb_g": 58,
+      "protein_g": 10,
+      "fat_g": 8,
+      "satfat_g": 1.2,
+      "transfat_g": 0,
+      "sugar_g": 10,
+      "sodium_mg": 650,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 130,
+      "calcium_mg": 40,
+      "purine_mg": 50,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "gamja_chae_bokkeum",
+      "ko": "감자채볶음",
+      "aliases": [],
+      "en": "pale julienned potato strips stir-fried with carrot and onion",
+      "serving_g": 100,
+      "kcal": 120,
+      "carb_g": 20,
+      "protein_g": 2.5,
+      "fat_g": 3.5,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 280,
+      "cholesterol_mg": 0,
+      "potassium_mg": 350,
+      "phosphorus_mg": 50,
+      "calcium_mg": 12,
+      "purine_mg": 20,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "geonsaeu_bokkeum",
+      "ko": "건새우볶음",
+      "aliases": [],
+      "en": "a small dish of tiny stir-fried dried shrimp glazed with soy and sugar",
+      "serving_g": 40,
+      "kcal": 100,
+      "carb_g": 6,
+      "protein_g": 12,
+      "fat_g": 3,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 380,
+      "cholesterol_mg": 90,
+      "potassium_mg": 150,
+      "phosphorus_mg": 150,
+      "calcium_mg": 200,
+      "purine_mg": 150,
+      "vitk_ug": 2,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 40,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "shellfish",
+        "soy"
+      ]
+    },
+    {
+      "id": "dubu_kimchi",
+      "ko": "두부김치",
+      "aliases": [],
+      "en": "warm plain white tofu slices beside stir-fried red kimchi and pork",
+      "serving_g": 250,
+      "kcal": 320,
+      "carb_g": 12,
+      "protein_g": 20,
+      "fat_g": 20,
+      "satfat_g": 6,
+      "transfat_g": 0.2,
+      "sugar_g": 5,
+      "sodium_mg": 800,
+      "cholesterol_mg": 45,
+      "potassium_mg": 420,
+      "phosphorus_mg": 220,
+      "calcium_mg": 150,
+      "purine_mg": 90,
+      "vitk_ug": 25,
+      "fluid_ml": 20,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "yangnyeom_gejang",
+      "ko": "양념게장",
+      "aliases": [],
+      "en": "a raw blue crab marinated in a spicy red chili sauce",
+      "serving_g": 150,
+      "kcal": 210,
+      "carb_g": 12,
+      "protein_g": 22,
+      "fat_g": 8,
+      "satfat_g": 1.4,
+      "transfat_g": 0,
+      "sugar_g": 6,
+      "sodium_mg": 1250,
+      "cholesterol_mg": 130,
+      "potassium_mg": 400,
+      "phosphorus_mg": 270,
+      "calcium_mg": 80,
+      "purine_mg": 200,
+      "vitk_ug": 5,
+      "fluid_ml": 10,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "raw",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "gopchang_jeongol",
+      "ko": "곱창전골",
+      "aliases": [],
+      "en": "a bubbling hot pot of beef or pork intestines with vegetables and glass noodles",
+      "serving_g": 400,
+      "kcal": 420,
+      "carb_g": 16,
+      "protein_g": 26,
+      "fat_g": 28,
+      "satfat_g": 10,
+      "transfat_g": 0.5,
+      "sugar_g": 4,
+      "sodium_mg": 1150,
+      "cholesterol_mg": 220,
+      "potassium_mg": 500,
+      "phosphorus_mg": 280,
+      "calcium_mg": 35,
+      "purine_mg": 220,
+      "vitk_ug": 10,
+      "fluid_ml": 200,
+      "texture": "mixed",
+      "irritant": [
+        "greasy",
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "organ"
+      ]
+    },
+    {
+      "id": "yeonkeun_jorim",
+      "ko": "연근조림",
+      "aliases": [],
+      "en": "a small dish of glossy soy-braised lotus root slices with visible holes",
+      "serving_g": 60,
+      "kcal": 75,
+      "carb_g": 15,
+      "protein_g": 1.5,
+      "fat_g": 0.8,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 7,
+      "sodium_mg": 300,
+      "cholesterol_mg": 0,
+      "potassium_mg": 220,
+      "phosphorus_mg": 40,
+      "calcium_mg": 15,
+      "purine_mg": 15,
+      "vitk_ug": 2,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "dongtae_jjigae",
+      "ko": "동태찌개",
+      "aliases": [],
+      "en": "a spicy red stew with chunks of frozen pollock fish and radish",
+      "serving_g": 400,
+      "kcal": 210,
+      "carb_g": 10,
+      "protein_g": 26,
+      "fat_g": 5,
+      "satfat_g": 1,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 1100,
+      "cholesterol_mg": 65,
+      "potassium_mg": 500,
+      "phosphorus_mg": 280,
+      "calcium_mg": 35,
+      "purine_mg": 170,
+      "vitk_ug": 8,
+      "fluid_ml": 320,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 180,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": []
+    },
+    {
+      "id": "galbi_jjim",
+      "ko": "갈비찜",
+      "aliases": [],
+      "en": "braised short ribs with carrot chestnut and taro in a shiny dark soy sauce",
+      "serving_g": 250,
+      "kcal": 520,
+      "carb_g": 20,
+      "protein_g": 34,
+      "fat_g": 34,
+      "satfat_g": 13,
+      "transfat_g": 0.8,
+      "sugar_g": 14,
+      "sodium_mg": 950,
+      "cholesterol_mg": 110,
+      "potassium_mg": 520,
+      "phosphorus_mg": 270,
+      "calcium_mg": 30,
+      "purine_mg": 160,
+      "vitk_ug": 5,
+      "fluid_ml": 40,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.2,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "soy",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "jangeo_gui",
+      "ko": "장어구이",
+      "aliases": [
+        "민물장어구이",
+        "붕장어구이"
+      ],
+      "en": "a grilled and sauce-glazed eel fillet with a dark caramelized surface",
+      "serving_g": 150,
+      "kcal": 380,
+      "carb_g": 8,
+      "protein_g": 24,
+      "fat_g": 26,
+      "satfat_g": 6,
+      "transfat_g": 0,
+      "sugar_g": 5,
+      "sodium_mg": 520,
+      "cholesterol_mg": 180,
+      "potassium_mg": 300,
+      "phosphorus_mg": 220,
+      "calcium_mg": 130,
+      "purine_mg": 130,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 20,
+      "caffeine_mg": 0,
+      "vita_ug": 1500,
+      "tags": []
+    },
+    {
+      "id": "nabak_kimchi",
+      "ko": "나박김치",
+      "aliases": [],
+      "en": "thin square radish and cabbage pieces in a light pink watery brine",
+      "serving_g": 150,
+      "kcal": 25,
+      "carb_g": 5,
+      "protein_g": 0.8,
+      "fat_g": 0.2,
+      "satfat_g": 0,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 15,
+      "calcium_mg": 20,
+      "purine_mg": 10,
+      "vitk_ug": 8,
+      "fluid_ml": 100,
+      "texture": "liquid",
+      "irritant": [
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.3,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "yeolmu_guksu",
+      "ko": "열무국수",
+      "aliases": [],
+      "en": "noodles topped with tangy young radish kimchi in cold broth",
+      "serving_g": 450,
+      "kcal": 420,
+      "carb_g": 80,
+      "protein_g": 12,
+      "fat_g": 4,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 10,
+      "sodium_mg": 950,
+      "cholesterol_mg": 0,
+      "potassium_mg": 380,
+      "phosphorus_mg": 130,
+      "calcium_mg": 40,
+      "purine_mg": 40,
+      "vitk_ug": 40,
+      "fluid_ml": 200,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 2,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "janchi_guksu",
+      "ko": "잔치국수",
+      "aliases": [],
+      "en": "thin wheat noodles in a warm clear anchovy broth with egg and zucchini garnish",
+      "serving_g": 450,
+      "kcal": 380,
+      "carb_g": 72,
+      "protein_g": 12,
+      "fat_g": 4,
+      "satfat_g": 0.8,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 1050,
+      "cholesterol_mg": 40,
+      "potassium_mg": 280,
+      "phosphorus_mg": 130,
+      "calcium_mg": 30,
+      "purine_mg": 50,
+      "vitk_ug": 8,
+      "fluid_ml": 300,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 15,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "egg",
+        "gluten"
+      ]
+    },
+    {
+      "id": "kkongchi_jorim",
+      "ko": "꽁치조림",
+      "aliases": [],
+      "en": "dark soy-braised whole saury fish with radish slices",
+      "serving_g": 150,
+      "kcal": 260,
+      "carb_g": 10,
+      "protein_g": 24,
+      "fat_g": 14,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 6,
+      "sodium_mg": 950,
+      "cholesterol_mg": 70,
+      "potassium_mg": 420,
+      "phosphorus_mg": 250,
+      "calcium_mg": 35,
+      "purine_mg": 190,
+      "vitk_ug": 5,
+      "fluid_ml": 30,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "baek_kimchi",
+      "ko": "백김치",
+      "aliases": [],
+      "en": "pale white non-spicy stuffed cabbage kimchi with fruit and nut fillings",
+      "serving_g": 60,
+      "kcal": 25,
+      "carb_g": 5,
+      "protein_g": 1,
+      "fat_g": 0.2,
+      "satfat_g": 0,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 320,
+      "cholesterol_mg": 0,
+      "potassium_mg": 200,
+      "phosphorus_mg": 20,
+      "calcium_mg": 30,
+      "purine_mg": 15,
+      "vitk_ug": 50,
+      "fluid_ml": 10,
+      "texture": "soft",
+      "irritant": [
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "treenut"
+      ]
+    },
+    {
+      "id": "chonggak_kimchi",
+      "ko": "총각김치",
+      "aliases": [
+        "알타리김치"
+      ],
+      "en": "small whole baby radishes with greens fermented in red chili paste",
+      "serving_g": 60,
+      "kcal": 30,
+      "carb_g": 5,
+      "protein_g": 1,
+      "fat_g": 0.3,
+      "satfat_g": 0,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 360,
+      "cholesterol_mg": 0,
+      "potassium_mg": 220,
+      "phosphorus_mg": 25,
+      "calcium_mg": 35,
+      "purine_mg": 15,
+      "vitk_ug": 45,
+      "fluid_ml": 10,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "tyramine"
+      ]
+    },
+    {
+      "id": "kkwari_gochu_muchim",
+      "ko": "꽈리고추무침",
+      "aliases": [],
+      "en": "a small dish of wrinkled green shishito-type peppers in savory seasoning",
+      "serving_g": 50,
+      "kcal": 50,
+      "carb_g": 5,
+      "protein_g": 2,
+      "fat_g": 2.5,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 280,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 25,
+      "calcium_mg": 15,
+      "purine_mg": 15,
+      "vitk_ug": 8,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "kimchi_jjim",
+      "ko": "김치찜",
+      "aliases": [],
+      "en": "long-braised whole kimchi leaves with pork belly in a red sauce",
+      "serving_g": 300,
+      "kcal": 420,
+      "carb_g": 12,
+      "protein_g": 22,
+      "fat_g": 30,
+      "satfat_g": 11,
+      "transfat_g": 0.5,
+      "sugar_g": 6,
+      "sodium_mg": 1100,
+      "cholesterol_mg": 75,
+      "potassium_mg": 450,
+      "phosphorus_mg": 220,
+      "calcium_mg": 40,
+      "purine_mg": 130,
+      "vitk_ug": 40,
+      "fluid_ml": 60,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": []
+    },
+    {
+      "id": "buchu_kimchi",
+      "ko": "부추김치",
+      "aliases": [],
+      "en": "whole garlic chive stalks fermented in a thin red chili sauce",
+      "serving_g": 50,
+      "kcal": 30,
+      "carb_g": 4,
+      "protein_g": 1.5,
+      "fat_g": 0.8,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 20,
+      "calcium_mg": 25,
+      "purine_mg": 15,
+      "vitk_ug": 50,
+      "fluid_ml": 10,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "tyramine"
+      ]
+    },
+    {
+      "id": "sujebi",
+      "ko": "수제비",
+      "aliases": [],
+      "en": "a warm broth soup with soft hand-torn flat dough pieces and vegetables",
+      "serving_g": 450,
+      "kcal": 380,
+      "carb_g": 70,
+      "protein_g": 12,
+      "fat_g": 5,
+      "satfat_g": 0.8,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 950,
+      "cholesterol_mg": 5,
+      "potassium_mg": 320,
+      "phosphorus_mg": 120,
+      "calcium_mg": 30,
+      "purine_mg": 35,
+      "vitk_ug": 10,
+      "fluid_ml": 320,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 8,
+      "caffeine_mg": 0,
+      "vita_ug": 2,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "makguksu",
+      "ko": "막국수",
+      "aliases": [],
+      "en": "chewy buckwheat noodles tossed with spicy sauce or in a cold broth",
+      "serving_g": 400,
+      "kcal": 420,
+      "carb_g": 82,
+      "protein_g": 12,
+      "fat_g": 4,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 8,
+      "sodium_mg": 900,
+      "cholesterol_mg": 0,
+      "potassium_mg": 300,
+      "phosphorus_mg": 130,
+      "calcium_mg": 25,
+      "purine_mg": 40,
+      "vitk_ug": 10,
+      "fluid_ml": 150,
+      "texture": "sticky",
+      "irritant": [
+        "spicy",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.8,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 2,
+      "tags": []
+    },
+    {
+      "id": "gat_kimchi",
+      "ko": "갓김치",
+      "aliases": [],
+      "en": "purple-tinged mustard leaf kimchi fermented in red chili paste",
+      "serving_g": 60,
+      "kcal": 30,
+      "carb_g": 4,
+      "protein_g": 1.5,
+      "fat_g": 0.8,
+      "satfat_g": 0.1,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 400,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 20,
+      "calcium_mg": 40,
+      "purine_mg": 15,
+      "vitk_ug": 90,
+      "fluid_ml": 10,
+      "texture": "soft",
+      "irritant": [
+        "spicy",
+        "salty",
+        "acidic"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.9,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "cruciferous",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "apple_pie",
+      "ko": "애플파이",
+      "aliases": [
+        "apple_pie"
+      ],
+      "en": "a wedge of golden lattice-top pie with soft spiced apple filling",
+      "serving_g": 120,
+      "kcal": 290,
+      "carb_g": 42,
+      "protein_g": 3,
+      "fat_g": 12,
+      "satfat_g": 4,
+      "transfat_g": 0,
+      "sugar_g": 22,
+      "sodium_mg": 220,
+      "cholesterol_mg": 10,
+      "potassium_mg": 110,
+      "phosphorus_mg": 40,
+      "calcium_mg": 15,
+      "purine_mg": 10,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "baby_back_ribs",
+      "ko": "베이비백립",
+      "aliases": [
+        "baby_back_ribs"
+      ],
+      "en": "glazed pork rib rack with dark barbecue sauce and charred edges",
+      "serving_g": 250,
+      "kcal": 520,
+      "carb_g": 20,
+      "protein_g": 32,
+      "fat_g": 34,
+      "satfat_g": 12,
+      "transfat_g": 0.5,
+      "sugar_g": 16,
+      "sodium_mg": 780,
+      "cholesterol_mg": 110,
+      "potassium_mg": 420,
+      "phosphorus_mg": 300,
+      "calcium_mg": 30,
+      "purine_mg": 180,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": []
+    },
+    {
+      "id": "baklava",
+      "ko": "바클라바",
+      "aliases": [
+        "baklava"
+      ],
+      "en": "a diamond of flaky layered pastry glistening with honey syrup and chopped nuts",
+      "serving_g": 70,
+      "kcal": 330,
+      "carb_g": 38,
+      "protein_g": 5,
+      "fat_g": 19,
+      "satfat_g": 4,
+      "transfat_g": 0,
+      "sugar_g": 24,
+      "sodium_mg": 150,
+      "cholesterol_mg": 15,
+      "potassium_mg": 90,
+      "phosphorus_mg": 60,
+      "calcium_mg": 30,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "sticky",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 5,
+      "tags": [
+        "gluten",
+        "treenut"
+      ]
+    },
+    {
+      "id": "beef_carpaccio",
+      "ko": "비프카르파치오",
+      "aliases": [
+        "beef_carpaccio"
+      ],
+      "en": "thin translucent raw beef slices drizzled with olive oil on a white plate",
+      "serving_g": 100,
+      "kcal": 180,
+      "carb_g": 1,
+      "protein_g": 20,
+      "fat_g": 10,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 320,
+      "cholesterol_mg": 55,
+      "potassium_mg": 320,
+      "phosphorus_mg": 180,
+      "calcium_mg": 10,
+      "purine_mg": 140,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "beef_tartare",
+      "ko": "비프타르타르",
+      "aliases": [
+        "beef_tartare"
+      ],
+      "en": "finely chopped raw beef mound topped with a raw egg yolk",
+      "serving_g": 130,
+      "kcal": 250,
+      "carb_g": 3,
+      "protein_g": 22,
+      "fat_g": 16,
+      "satfat_g": 6,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 420,
+      "cholesterol_mg": 180,
+      "potassium_mg": 340,
+      "phosphorus_mg": 190,
+      "calcium_mg": 15,
+      "purine_mg": 150,
+      "vitk_ug": 2,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "egg",
+        "raw"
+      ]
+    },
+    {
+      "id": "beet_salad",
+      "ko": "비트샐러드",
+      "aliases": [
+        "beet_salad"
+      ],
+      "en": "a colorful salad of dark red beet cubes with greens and cheese crumbles",
+      "serving_g": 150,
+      "kcal": 160,
+      "carb_g": 14,
+      "protein_g": 4,
+      "fat_g": 10,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 10,
+      "sodium_mg": 300,
+      "cholesterol_mg": 10,
+      "potassium_mg": 380,
+      "phosphorus_mg": 70,
+      "calcium_mg": 80,
+      "purine_mg": 20,
+      "vitk_ug": 60,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "dairy",
+        "raw"
+      ]
+    },
+    {
+      "id": "beignets",
+      "ko": "베녜",
+      "aliases": [
+        "beignets"
+      ],
+      "en": "square pillowy fried dough puffs dusted heavily with powdered sugar",
+      "serving_g": 90,
+      "kcal": 280,
+      "carb_g": 32,
+      "protein_g": 5,
+      "fat_g": 14,
+      "satfat_g": 4,
+      "transfat_g": 0.3,
+      "sugar_g": 12,
+      "sodium_mg": 190,
+      "cholesterol_mg": 20,
+      "potassium_mg": 80,
+      "phosphorus_mg": 60,
+      "calcium_mg": 20,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "bread_pudding",
+      "ko": "브레드푸딩",
+      "aliases": [
+        "bread_pudding"
+      ],
+      "en": "a warm custardy baked bread dessert with a caramel-brown top",
+      "serving_g": 150,
+      "kcal": 320,
+      "carb_g": 45,
+      "protein_g": 7,
+      "fat_g": 12,
+      "satfat_g": 6,
+      "transfat_g": 0.3,
+      "sugar_g": 28,
+      "sodium_mg": 240,
+      "cholesterol_mg": 90,
+      "potassium_mg": 150,
+      "phosphorus_mg": 100,
+      "calcium_mg": 80,
+      "purine_mg": 15,
+      "vitk_ug": 1,
+      "fluid_ml": 20,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "breakfast_burrito",
+      "ko": "브렉퍼스트부리토",
+      "aliases": [
+        "breakfast_burrito"
+      ],
+      "en": "a large rolled tortilla stuffed with scrambled egg cheese and sausage",
+      "serving_g": 250,
+      "kcal": 480,
+      "carb_g": 38,
+      "protein_g": 22,
+      "fat_g": 26,
+      "satfat_g": 10,
+      "transfat_g": 0.4,
+      "sugar_g": 3,
+      "sodium_mg": 850,
+      "cholesterol_mg": 260,
+      "potassium_mg": 380,
+      "phosphorus_mg": 300,
+      "calcium_mg": 180,
+      "purine_mg": 60,
+      "vitk_ug": 2,
+      "fluid_ml": 20,
+      "texture": "mixed",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 120,
+      "tags": [
+        "dairy",
+        "egg",
+        "gluten",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "bruschetta",
+      "ko": "브루스케타",
+      "aliases": [
+        "bruschetta"
+      ],
+      "en": "toasted baguette slices topped with diced tomato basil and garlic",
+      "serving_g": 90,
+      "kcal": 150,
+      "carb_g": 20,
+      "protein_g": 4,
+      "fat_g": 6,
+      "satfat_g": 1,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 320,
+      "cholesterol_mg": 0,
+      "potassium_mg": 180,
+      "phosphorus_mg": 40,
+      "calcium_mg": 15,
+      "purine_mg": 10,
+      "vitk_ug": 20,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "caesar_salad",
+      "ko": "시저샐러드",
+      "aliases": [
+        "caesar_salad"
+      ],
+      "en": "romaine lettuce tossed in creamy dressing with croutons and shaved parmesan",
+      "serving_g": 180,
+      "kcal": 320,
+      "carb_g": 12,
+      "protein_g": 10,
+      "fat_g": 26,
+      "satfat_g": 6,
+      "transfat_g": 0.2,
+      "sugar_g": 3,
+      "sodium_mg": 650,
+      "cholesterol_mg": 30,
+      "potassium_mg": 320,
+      "phosphorus_mg": 180,
+      "calcium_mg": 180,
+      "purine_mg": 15,
+      "vitk_ug": 90,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 40,
+      "tags": [
+        "dairy",
+        "raw",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "cannoli",
+      "ko": "카놀리",
+      "aliases": [
+        "cannoli"
+      ],
+      "en": "a crisp fried pastry tube filled with sweet ricotta cream and chocolate chips",
+      "serving_g": 90,
+      "kcal": 300,
+      "carb_g": 30,
+      "protein_g": 6,
+      "fat_g": 18,
+      "satfat_g": 10,
+      "transfat_g": 0.3,
+      "sugar_g": 18,
+      "sodium_mg": 120,
+      "cholesterol_mg": 35,
+      "potassium_mg": 150,
+      "phosphorus_mg": 120,
+      "calcium_mg": 90,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 50,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "caprese_salad",
+      "ko": "카프레제샐러드",
+      "aliases": [
+        "caprese_salad"
+      ],
+      "en": "alternating slices of tomato and fresh mozzarella with basil leaves",
+      "serving_g": 150,
+      "kcal": 220,
+      "carb_g": 7,
+      "protein_g": 13,
+      "fat_g": 16,
+      "satfat_g": 7,
+      "transfat_g": 0,
+      "sugar_g": 5,
+      "sodium_mg": 320,
+      "cholesterol_mg": 40,
+      "potassium_mg": 300,
+      "phosphorus_mg": 220,
+      "calcium_mg": 280,
+      "purine_mg": 10,
+      "vitk_ug": 15,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 80,
+      "tags": [
+        "dairy",
+        "raw"
+      ]
+    },
+    {
+      "id": "carrot_cake",
+      "ko": "당근케이크",
+      "aliases": [
+        "carrot_cake"
+      ],
+      "en": "a moist orange-flecked cake slice with thick white cream cheese frosting",
+      "serving_g": 130,
+      "kcal": 410,
+      "carb_g": 52,
+      "protein_g": 5,
+      "fat_g": 21,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 38,
+      "sodium_mg": 300,
+      "cholesterol_mg": 50,
+      "potassium_mg": 150,
+      "phosphorus_mg": 90,
+      "calcium_mg": 40,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "ceviche",
+      "ko": "세비체",
+      "aliases": [
+        "ceviche"
+      ],
+      "en": "cubes of white fish marinated in citrus juice with onion and cilantro",
+      "serving_g": 150,
+      "kcal": 140,
+      "carb_g": 8,
+      "protein_g": 20,
+      "fat_g": 2,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 380,
+      "cholesterol_mg": 45,
+      "potassium_mg": 420,
+      "phosphorus_mg": 220,
+      "calcium_mg": 20,
+      "purine_mg": 120,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "acidic",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "cheesecake",
+      "ko": "치즈케이크",
+      "aliases": [
+        "cheesecake"
+      ],
+      "en": "a dense creamy pale slice of cheesecake with a graham cracker crust",
+      "serving_g": 120,
+      "kcal": 400,
+      "carb_g": 32,
+      "protein_g": 7,
+      "fat_g": 28,
+      "satfat_g": 16,
+      "transfat_g": 0.5,
+      "sugar_g": 26,
+      "sodium_mg": 340,
+      "cholesterol_mg": 90,
+      "potassium_mg": 120,
+      "phosphorus_mg": 110,
+      "calcium_mg": 90,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "cheese_plate",
+      "ko": "치즈플레이트",
+      "aliases": [
+        "cheese_plate"
+      ],
+      "en": "an assortment of cheese wedges with crackers grapes and nuts on a board",
+      "serving_g": 150,
+      "kcal": 480,
+      "carb_g": 20,
+      "protein_g": 24,
+      "fat_g": 34,
+      "satfat_g": 18,
+      "transfat_g": 0.6,
+      "sugar_g": 8,
+      "sodium_mg": 700,
+      "cholesterol_mg": 90,
+      "potassium_mg": 220,
+      "phosphorus_mg": 320,
+      "calcium_mg": 500,
+      "purine_mg": 25,
+      "vitk_ug": 15,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 180,
+      "tags": [
+        "dairy",
+        "processed",
+        "treenut"
+      ]
+    },
+    {
+      "id": "chicken_curry",
+      "ko": "치킨커리",
+      "aliases": [
+        "chicken_curry"
+      ],
+      "en": "chunks of chicken in a thick yellow-orange curry sauce",
+      "serving_g": 350,
+      "kcal": 420,
+      "carb_g": 18,
+      "protein_g": 30,
+      "fat_g": 24,
+      "satfat_g": 10,
+      "transfat_g": 0,
+      "sugar_g": 6,
+      "sodium_mg": 900,
+      "cholesterol_mg": 110,
+      "potassium_mg": 480,
+      "phosphorus_mg": 280,
+      "calcium_mg": 60,
+      "purine_mg": 120,
+      "vitk_ug": 15,
+      "fluid_ml": 150,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": []
+    },
+    {
+      "id": "chicken_quesadilla",
+      "ko": "치킨퀘사디아",
+      "aliases": [
+        "chicken_quesadilla"
+      ],
+      "en": "a folded grilled tortilla oozing melted cheese and chicken",
+      "serving_g": 220,
+      "kcal": 450,
+      "carb_g": 32,
+      "protein_g": 28,
+      "fat_g": 24,
+      "satfat_g": 11,
+      "transfat_g": 0.4,
+      "sugar_g": 3,
+      "sodium_mg": 780,
+      "cholesterol_mg": 80,
+      "potassium_mg": 320,
+      "phosphorus_mg": 300,
+      "calcium_mg": 350,
+      "purine_mg": 60,
+      "vitk_ug": 3,
+      "fluid_ml": 10,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "chicken_wings",
+      "ko": "치킨윙(양념)",
+      "aliases": [
+        "chicken_wings"
+      ],
+      "en": "glossy sauce-glazed fried chicken wings piled on a plate",
+      "serving_g": 200,
+      "kcal": 470,
+      "carb_g": 10,
+      "protein_g": 30,
+      "fat_g": 32,
+      "satfat_g": 9,
+      "transfat_g": 0.2,
+      "sugar_g": 5,
+      "sodium_mg": 850,
+      "cholesterol_mg": 150,
+      "potassium_mg": 320,
+      "phosphorus_mg": 240,
+      "calcium_mg": 25,
+      "purine_mg": 150,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "spicy",
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 25,
+      "tags": []
+    },
+    {
+      "id": "chocolate_cake",
+      "ko": "초콜릿케이크",
+      "aliases": [
+        "chocolate_cake"
+      ],
+      "en": "a dense dark chocolate cake slice with glossy chocolate ganache",
+      "serving_g": 120,
+      "kcal": 420,
+      "carb_g": 52,
+      "protein_g": 6,
+      "fat_g": 22,
+      "satfat_g": 10,
+      "transfat_g": 0.4,
+      "sugar_g": 36,
+      "sodium_mg": 320,
+      "cholesterol_mg": 55,
+      "potassium_mg": 220,
+      "phosphorus_mg": 140,
+      "calcium_mg": 50,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 25,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "chocolate_mousse",
+      "ko": "초콜릿무스",
+      "aliases": [
+        "chocolate_mousse"
+      ],
+      "en": "a light airy dark chocolate dessert in a small glass cup",
+      "serving_g": 100,
+      "kcal": 280,
+      "carb_g": 22,
+      "protein_g": 5,
+      "fat_g": 20,
+      "satfat_g": 12,
+      "transfat_g": 0.3,
+      "sugar_g": 18,
+      "sodium_mg": 60,
+      "cholesterol_mg": 80,
+      "potassium_mg": 180,
+      "phosphorus_mg": 90,
+      "calcium_mg": 40,
+      "purine_mg": 5,
+      "vitk_ug": 1,
+      "fluid_ml": 20,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 2,
+      "caffeine_mg": 10,
+      "vita_ug": 60,
+      "tags": []
+    },
+    {
+      "id": "churros",
+      "ko": "추로스",
+      "aliases": [
+        "churros"
+      ],
+      "en": "ridged golden fried dough sticks rolled in cinnamon sugar",
+      "serving_g": 100,
+      "kcal": 320,
+      "carb_g": 42,
+      "protein_g": 4,
+      "fat_g": 15,
+      "satfat_g": 4,
+      "transfat_g": 0.3,
+      "sugar_g": 20,
+      "sodium_mg": 150,
+      "cholesterol_mg": 15,
+      "potassium_mg": 90,
+      "phosphorus_mg": 60,
+      "calcium_mg": 20,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "clam_chowder",
+      "ko": "클램차우더",
+      "aliases": [
+        "clam_chowder"
+      ],
+      "en": "a thick creamy white soup studded with clams and potato",
+      "serving_g": 300,
+      "kcal": 280,
+      "carb_g": 20,
+      "protein_g": 12,
+      "fat_g": 17,
+      "satfat_g": 9,
+      "transfat_g": 0.3,
+      "sugar_g": 4,
+      "sodium_mg": 850,
+      "cholesterol_mg": 55,
+      "potassium_mg": 420,
+      "phosphorus_mg": 220,
+      "calcium_mg": 120,
+      "purine_mg": 110,
+      "vitk_ug": 3,
+      "fluid_ml": 150,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "club_sandwich",
+      "ko": "클럽샌드위치",
+      "aliases": [
+        "club_sandwich"
+      ],
+      "en": "a triple-decker toasted sandwich stacked with turkey bacon lettuce and tomato",
+      "serving_g": 280,
+      "kcal": 520,
+      "carb_g": 38,
+      "protein_g": 28,
+      "fat_g": 28,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 5,
+      "sodium_mg": 1150,
+      "cholesterol_mg": 80,
+      "potassium_mg": 420,
+      "phosphorus_mg": 300,
+      "calcium_mg": 90,
+      "purine_mg": 90,
+      "vitk_ug": 10,
+      "fluid_ml": 10,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "gluten",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "crab_cakes",
+      "ko": "크랩케이크",
+      "aliases": [
+        "crab_cakes"
+      ],
+      "en": "golden pan-fried patties packed with lump crab meat",
+      "serving_g": 120,
+      "kcal": 280,
+      "carb_g": 12,
+      "protein_g": 16,
+      "fat_g": 18,
+      "satfat_g": 3,
+      "transfat_g": 0.2,
+      "sugar_g": 2,
+      "sodium_mg": 620,
+      "cholesterol_mg": 90,
+      "potassium_mg": 280,
+      "phosphorus_mg": 220,
+      "calcium_mg": 60,
+      "purine_mg": 150,
+      "vitk_ug": 3,
+      "fluid_ml": 90,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 80,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "creme_brulee",
+      "ko": "크렘브륄레",
+      "aliases": [
+        "creme_brulee"
+      ],
+      "en": "a custard ramekin with a thin cracked caramelized sugar crust on top",
+      "serving_g": 120,
+      "kcal": 340,
+      "carb_g": 26,
+      "protein_g": 5,
+      "fat_g": 24,
+      "satfat_g": 14,
+      "transfat_g": 0.5,
+      "sugar_g": 22,
+      "sodium_mg": 60,
+      "cholesterol_mg": 220,
+      "potassium_mg": 140,
+      "phosphorus_mg": 110,
+      "calcium_mg": 90,
+      "purine_mg": 5,
+      "vitk_ug": 1,
+      "fluid_ml": 60,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.3,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 180,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "croque_madame",
+      "ko": "크로크마담",
+      "aliases": [
+        "croque_madame"
+      ],
+      "en": "a grilled ham and cheese sandwich topped with a fried egg and bechamel",
+      "serving_g": 250,
+      "kcal": 540,
+      "carb_g": 32,
+      "protein_g": 30,
+      "fat_g": 32,
+      "satfat_g": 16,
+      "transfat_g": 0.4,
+      "sugar_g": 6,
+      "sodium_mg": 1100,
+      "cholesterol_mg": 220,
+      "potassium_mg": 380,
+      "phosphorus_mg": 320,
+      "calcium_mg": 350,
+      "purine_mg": 60,
+      "vitk_ug": 3,
+      "fluid_ml": 90,
+      "texture": "mixed",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "dairy",
+        "egg",
+        "gluten"
+      ]
+    },
+    {
+      "id": "cup_cakes",
+      "ko": "컵케이크",
+      "aliases": [
+        "cup_cakes"
+      ],
+      "en": "a small frosted cupcake with swirled buttercream on top",
+      "serving_g": 70,
+      "kcal": 260,
+      "carb_g": 36,
+      "protein_g": 3,
+      "fat_g": 12,
+      "satfat_g": 6,
+      "transfat_g": 0.3,
+      "sugar_g": 26,
+      "sodium_mg": 180,
+      "cholesterol_mg": 35,
+      "potassium_mg": 80,
+      "phosphorus_mg": 50,
+      "calcium_mg": 30,
+      "purine_mg": 5,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": []
+    },
+    {
+      "id": "deviled_eggs",
+      "ko": "데블드에그",
+      "aliases": [
+        "deviled_eggs"
+      ],
+      "en": "halved hard-boiled eggs with creamy yellow yolk filling and paprika dust",
+      "serving_g": 80,
+      "kcal": 160,
+      "carb_g": 2,
+      "protein_g": 7,
+      "fat_g": 13,
+      "satfat_g": 3,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 220,
+      "cholesterol_mg": 280,
+      "potassium_mg": 90,
+      "phosphorus_mg": 120,
+      "calcium_mg": 30,
+      "purine_mg": 15,
+      "vitk_ug": 3,
+      "fluid_ml": 90,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.9,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "egg"
+      ]
+    },
+    {
+      "id": "edamame",
+      "ko": "에다마메",
+      "aliases": [
+        "edamame"
+      ],
+      "en": "a bowl of bright green boiled soybean pods lightly salted",
+      "serving_g": 100,
+      "kcal": 120,
+      "carb_g": 10,
+      "protein_g": 11,
+      "fat_g": 5,
+      "satfat_g": 0.6,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 300,
+      "cholesterol_mg": 0,
+      "potassium_mg": 450,
+      "phosphorus_mg": 180,
+      "calcium_mg": 60,
+      "purine_mg": 45,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.3,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "eggs_benedict",
+      "ko": "에그베네딕트",
+      "aliases": [
+        "eggs_benedict"
+      ],
+      "en": "a poached egg oozing yolk over ham and English muffin with hollandaise",
+      "serving_g": 220,
+      "kcal": 460,
+      "carb_g": 24,
+      "protein_g": 20,
+      "fat_g": 32,
+      "satfat_g": 15,
+      "transfat_g": 0.4,
+      "sugar_g": 3,
+      "sodium_mg": 900,
+      "cholesterol_mg": 340,
+      "potassium_mg": 280,
+      "phosphorus_mg": 280,
+      "calcium_mg": 150,
+      "purine_mg": 50,
+      "vitk_ug": 3,
+      "fluid_ml": 220,
+      "texture": "soft",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 180,
+      "tags": [
+        "egg"
+      ]
+    },
+    {
+      "id": "escargots",
+      "ko": "에스카르고",
+      "aliases": [
+        "escargots"
+      ],
+      "en": "small snail shells filled with garlic herb butter",
+      "serving_g": 90,
+      "kcal": 180,
+      "carb_g": 3,
+      "protein_g": 8,
+      "fat_g": 15,
+      "satfat_g": 9,
+      "transfat_g": 0.3,
+      "sugar_g": 0,
+      "sodium_mg": 350,
+      "cholesterol_mg": 50,
+      "potassium_mg": 150,
+      "phosphorus_mg": 110,
+      "calcium_mg": 50,
+      "purine_mg": 120,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "dairy",
+        "organ"
+      ]
+    },
+    {
+      "id": "falafel",
+      "ko": "팔라펠",
+      "aliases": [
+        "falafel"
+      ],
+      "en": "golden fried chickpea balls with a crisp exterior and herby green interior",
+      "serving_g": 120,
+      "kcal": 280,
+      "carb_g": 28,
+      "protein_g": 11,
+      "fat_g": 14,
+      "satfat_g": 2,
+      "transfat_g": 0,
+      "sugar_g": 4,
+      "sodium_mg": 480,
+      "cholesterol_mg": 0,
+      "potassium_mg": 420,
+      "phosphorus_mg": 190,
+      "calcium_mg": 60,
+      "purine_mg": 55,
+      "vitk_ug": 15,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.8,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "filet_mignon",
+      "ko": "필레미뇽",
+      "aliases": [
+        "filet_mignon"
+      ],
+      "en": "a thick round cut of tender grilled beef steak with a seared crust",
+      "serving_g": 200,
+      "kcal": 420,
+      "carb_g": 0,
+      "protein_g": 42,
+      "fat_g": 28,
+      "satfat_g": 11,
+      "transfat_g": 0.6,
+      "sugar_g": 0,
+      "sodium_mg": 420,
+      "cholesterol_mg": 120,
+      "potassium_mg": 480,
+      "phosphorus_mg": 300,
+      "calcium_mg": 20,
+      "purine_mg": 180,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "fish_and_chips",
+      "ko": "피시앤칩스",
+      "aliases": [
+        "fish_and_chips"
+      ],
+      "en": "a golden battered fried fish fillet beside a pile of thick chips",
+      "serving_g": 320,
+      "kcal": 780,
+      "carb_g": 60,
+      "protein_g": 34,
+      "fat_g": 44,
+      "satfat_g": 8,
+      "transfat_g": 0.3,
+      "sugar_g": 2,
+      "sodium_mg": 900,
+      "cholesterol_mg": 90,
+      "potassium_mg": 780,
+      "phosphorus_mg": 380,
+      "calcium_mg": 40,
+      "purine_mg": 60,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "foie_gras",
+      "ko": "푸아그라",
+      "aliases": [
+        "foie_gras"
+      ],
+      "en": "a seared thick slab of pale pink duck liver with a glossy crust",
+      "serving_g": 60,
+      "kcal": 220,
+      "carb_g": 2,
+      "protein_g": 5,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0.2,
+      "sugar_g": 1,
+      "sodium_mg": 180,
+      "cholesterol_mg": 220,
+      "potassium_mg": 90,
+      "phosphorus_mg": 140,
+      "calcium_mg": 20,
+      "purine_mg": 300,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 4.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 3000,
+      "tags": [
+        "gluten",
+        "organ"
+      ]
+    },
+    {
+      "id": "french_fries",
+      "ko": "프렌치프라이",
+      "aliases": [
+        "french_fries"
+      ],
+      "en": "a paper cone of golden crispy thin-cut fried potatoes",
+      "serving_g": 150,
+      "kcal": 380,
+      "carb_g": 50,
+      "protein_g": 5,
+      "fat_g": 18,
+      "satfat_g": 3,
+      "transfat_g": 0.3,
+      "sugar_g": 0,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 700,
+      "phosphorus_mg": 110,
+      "calcium_mg": 15,
+      "purine_mg": 15,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "french_onion_soup",
+      "ko": "프렌치어니언수프",
+      "aliases": [
+        "french_onion_soup"
+      ],
+      "en": "a crock of dark broth topped with a bubbling melted cheese crust",
+      "serving_g": 350,
+      "kcal": 320,
+      "carb_g": 22,
+      "protein_g": 14,
+      "fat_g": 18,
+      "satfat_g": 10,
+      "transfat_g": 0.3,
+      "sugar_g": 8,
+      "sodium_mg": 1050,
+      "cholesterol_mg": 45,
+      "potassium_mg": 320,
+      "phosphorus_mg": 220,
+      "calcium_mg": 300,
+      "purine_mg": 25,
+      "vitk_ug": 3,
+      "fluid_ml": 280,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "french_toast",
+      "ko": "프렌치토스트",
+      "aliases": [
+        "french_toast"
+      ],
+      "en": "thick golden egg-battered bread slices drizzled with maple syrup",
+      "serving_g": 180,
+      "kcal": 380,
+      "carb_g": 52,
+      "protein_g": 10,
+      "fat_g": 15,
+      "satfat_g": 6,
+      "transfat_g": 0.3,
+      "sugar_g": 28,
+      "sodium_mg": 380,
+      "cholesterol_mg": 140,
+      "potassium_mg": 180,
+      "phosphorus_mg": 140,
+      "calcium_mg": 90,
+      "purine_mg": 15,
+      "vitk_ug": 2,
+      "fluid_ml": 90,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 90,
+      "tags": [
+        "egg",
+        "gluten"
+      ]
+    },
+    {
+      "id": "fried_calamari",
+      "ko": "프라이드칼라마리",
+      "aliases": [
+        "fried_calamari"
+      ],
+      "en": "golden battered fried squid rings served with lemon wedges",
+      "serving_g": 150,
+      "kcal": 320,
+      "carb_g": 22,
+      "protein_g": 16,
+      "fat_g": 18,
+      "satfat_g": 3,
+      "transfat_g": 0.2,
+      "sugar_g": 1,
+      "sodium_mg": 520,
+      "cholesterol_mg": 300,
+      "potassium_mg": 280,
+      "phosphorus_mg": 220,
+      "calcium_mg": 40,
+      "purine_mg": 150,
+      "vitk_ug": 3,
+      "fluid_ml": 120,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "gluten",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "frozen_yogurt",
+      "ko": "프로즌요거트",
+      "aliases": [
+        "frozen_yogurt"
+      ],
+      "en": "a swirl of pale soft-serve frozen yogurt in a cup with toppings",
+      "serving_g": 150,
+      "kcal": 220,
+      "carb_g": 38,
+      "protein_g": 6,
+      "fat_g": 4,
+      "satfat_g": 2,
+      "transfat_g": 0.1,
+      "sugar_g": 32,
+      "sodium_mg": 80,
+      "cholesterol_mg": 10,
+      "potassium_mg": 240,
+      "phosphorus_mg": 150,
+      "calcium_mg": 180,
+      "purine_mg": 5,
+      "vitk_ug": 0,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.2,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "dairy"
+      ]
+    },
+    {
+      "id": "garlic_bread",
+      "ko": "갈릭브레드",
+      "aliases": [
+        "garlic_bread"
+      ],
+      "en": "slices of toasted baguette brushed with garlic butter and parsley",
+      "serving_g": 80,
+      "kcal": 260,
+      "carb_g": 28,
+      "protein_g": 6,
+      "fat_g": 14,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 2,
+      "sodium_mg": 380,
+      "cholesterol_mg": 20,
+      "potassium_mg": 80,
+      "phosphorus_mg": 60,
+      "calcium_mg": 50,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "gnocchi",
+      "ko": "뇨끼",
+      "aliases": [
+        "gnocchi"
+      ],
+      "en": "small soft potato dumplings tossed in butter or tomato sauce",
+      "serving_g": 250,
+      "kcal": 380,
+      "carb_g": 60,
+      "protein_g": 10,
+      "fat_g": 11,
+      "satfat_g": 5,
+      "transfat_g": 0.2,
+      "sugar_g": 4,
+      "sodium_mg": 620,
+      "cholesterol_mg": 25,
+      "potassium_mg": 480,
+      "phosphorus_mg": 180,
+      "calcium_mg": 60,
+      "purine_mg": 25,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "greek_salad",
+      "ko": "그릭샐러드",
+      "aliases": [
+        "greek_salad"
+      ],
+      "en": "chunky cucumber tomato and olive salad topped with a slab of feta",
+      "serving_g": 200,
+      "kcal": 260,
+      "carb_g": 12,
+      "protein_g": 7,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0,
+      "sugar_g": 8,
+      "sodium_mg": 650,
+      "cholesterol_mg": 30,
+      "potassium_mg": 380,
+      "phosphorus_mg": 150,
+      "calcium_mg": 220,
+      "purine_mg": 10,
+      "vitk_ug": 20,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "raw"
+      ]
+    },
+    {
+      "id": "grilled_cheese_sandwich",
+      "ko": "그릴드치즈샌드위치",
+      "aliases": [
+        "grilled_cheese_sandwich"
+      ],
+      "en": "two golden buttery grilled toast slices with melted cheese oozing out",
+      "serving_g": 150,
+      "kcal": 420,
+      "carb_g": 32,
+      "protein_g": 16,
+      "fat_g": 26,
+      "satfat_g": 14,
+      "transfat_g": 0.5,
+      "sugar_g": 4,
+      "sodium_mg": 780,
+      "cholesterol_mg": 60,
+      "potassium_mg": 150,
+      "phosphorus_mg": 220,
+      "calcium_mg": 350,
+      "purine_mg": 20,
+      "vitk_ug": 3,
+      "fluid_ml": 90,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.8,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 120,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "grilled_salmon",
+      "ko": "구운연어",
+      "aliases": [
+        "grilled_salmon"
+      ],
+      "en": "a grilled salmon fillet with crisp orange-pink flaky flesh",
+      "serving_g": 180,
+      "kcal": 350,
+      "carb_g": 0,
+      "protein_g": 34,
+      "fat_g": 22,
+      "satfat_g": 4,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 380,
+      "cholesterol_mg": 80,
+      "potassium_mg": 550,
+      "phosphorus_mg": 340,
+      "calcium_mg": 25,
+      "purine_mg": 80,
+      "vitk_ug": 3,
+      "fluid_ml": 20,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 40,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": []
+    },
+    {
+      "id": "guacamole",
+      "ko": "과카몰레",
+      "aliases": [
+        "guacamole"
+      ],
+      "en": "a bowl of chunky pale green mashed avocado dip with lime and cilantro",
+      "serving_g": 100,
+      "kcal": 160,
+      "carb_g": 9,
+      "protein_g": 2,
+      "fat_g": 15,
+      "satfat_g": 2,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 220,
+      "cholesterol_mg": 0,
+      "potassium_mg": 480,
+      "phosphorus_mg": 55,
+      "calcium_mg": 15,
+      "purine_mg": 15,
+      "vitk_ug": 10,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "acidic",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "hot_and_sour_soup",
+      "ko": "산라탕",
+      "aliases": [
+        "hot_and_sour_soup"
+      ],
+      "en": "a dark tangy Chinese soup with tofu strips egg ribbons and mushroom",
+      "serving_g": 300,
+      "kcal": 140,
+      "carb_g": 10,
+      "protein_g": 9,
+      "fat_g": 7,
+      "satfat_g": 1,
+      "transfat_g": 0.1,
+      "sugar_g": 3,
+      "sodium_mg": 900,
+      "cholesterol_mg": 80,
+      "potassium_mg": 220,
+      "phosphorus_mg": 150,
+      "calcium_mg": 60,
+      "purine_mg": 45,
+      "vitk_ug": 3,
+      "fluid_ml": 150,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "acidic",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "egg",
+        "soy"
+      ]
+    },
+    {
+      "id": "hot_dog",
+      "ko": "핫도그(미국식)",
+      "aliases": [
+        "hot_dog"
+      ],
+      "en": "a grilled sausage in a soft bun with mustard and ketchup lines",
+      "serving_g": 150,
+      "kcal": 340,
+      "carb_g": 28,
+      "protein_g": 12,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0.4,
+      "sugar_g": 7,
+      "sodium_mg": 900,
+      "cholesterol_mg": 45,
+      "potassium_mg": 220,
+      "phosphorus_mg": 150,
+      "calcium_mg": 40,
+      "purine_mg": 55,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "gluten",
+        "processed",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "huevos_rancheros",
+      "ko": "우에보스란체로스",
+      "aliases": [
+        "huevos_rancheros"
+      ],
+      "en": "fried eggs over a tortilla topped with red salsa and beans",
+      "serving_g": 280,
+      "kcal": 420,
+      "carb_g": 30,
+      "protein_g": 20,
+      "fat_g": 24,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 5,
+      "sodium_mg": 780,
+      "cholesterol_mg": 340,
+      "potassium_mg": 580,
+      "phosphorus_mg": 300,
+      "calcium_mg": 150,
+      "purine_mg": 45,
+      "vitk_ug": 10,
+      "fluid_ml": 180,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 180,
+      "tags": [
+        "egg",
+        "gluten"
+      ]
+    },
+    {
+      "id": "hummus",
+      "ko": "후무스",
+      "aliases": [
+        "hummus"
+      ],
+      "en": "a bowl of pale creamy chickpea dip swirled with olive oil",
+      "serving_g": 100,
+      "kcal": 180,
+      "carb_g": 14,
+      "protein_g": 7,
+      "fat_g": 11,
+      "satfat_g": 1.5,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 300,
+      "cholesterol_mg": 0,
+      "potassium_mg": 220,
+      "phosphorus_mg": 110,
+      "calcium_mg": 40,
+      "purine_mg": 25,
+      "vitk_ug": 10,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.6,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "lasagna",
+      "ko": "라자냐",
+      "aliases": [
+        "lasagna"
+      ],
+      "en": "layers of pasta sheets meat sauce and melted cheese in a baking dish",
+      "serving_g": 350,
+      "kcal": 480,
+      "carb_g": 36,
+      "protein_g": 28,
+      "fat_g": 26,
+      "satfat_g": 13,
+      "transfat_g": 0.5,
+      "sugar_g": 10,
+      "sodium_mg": 850,
+      "cholesterol_mg": 90,
+      "potassium_mg": 480,
+      "phosphorus_mg": 340,
+      "calcium_mg": 400,
+      "purine_mg": 110,
+      "vitk_ug": 5,
+      "fluid_ml": 15,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "lobster_bisque",
+      "ko": "랍스터비스크",
+      "aliases": [
+        "lobster_bisque"
+      ],
+      "en": "a smooth creamy pale orange lobster soup in a bowl",
+      "serving_g": 300,
+      "kcal": 320,
+      "carb_g": 14,
+      "protein_g": 12,
+      "fat_g": 24,
+      "satfat_g": 14,
+      "transfat_g": 0.3,
+      "sugar_g": 5,
+      "sodium_mg": 900,
+      "cholesterol_mg": 110,
+      "potassium_mg": 380,
+      "phosphorus_mg": 220,
+      "calcium_mg": 90,
+      "purine_mg": 150,
+      "vitk_ug": 3,
+      "fluid_ml": 180,
+      "texture": "liquid",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 90,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "lobster_roll_sandwich",
+      "ko": "랍스터롤",
+      "aliases": [
+        "lobster_roll_sandwich"
+      ],
+      "en": "chunks of lobster meat in a buttered split-top hot dog bun",
+      "serving_g": 180,
+      "kcal": 380,
+      "carb_g": 26,
+      "protein_g": 20,
+      "fat_g": 22,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 3,
+      "sodium_mg": 780,
+      "cholesterol_mg": 150,
+      "potassium_mg": 380,
+      "phosphorus_mg": 260,
+      "calcium_mg": 80,
+      "purine_mg": 180,
+      "vitk_ug": 3,
+      "fluid_ml": 20,
+      "texture": "normal",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 100,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "gluten",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "macaroni_and_cheese",
+      "ko": "맥앤치즈",
+      "aliases": [
+        "macaroni_and_cheese"
+      ],
+      "en": "a baking dish of elbow pasta coated in thick orange cheese sauce",
+      "serving_g": 280,
+      "kcal": 450,
+      "carb_g": 38,
+      "protein_g": 18,
+      "fat_g": 26,
+      "satfat_g": 15,
+      "transfat_g": 0.5,
+      "sugar_g": 6,
+      "sodium_mg": 780,
+      "cholesterol_mg": 70,
+      "potassium_mg": 220,
+      "phosphorus_mg": 320,
+      "calcium_mg": 400,
+      "purine_mg": 45,
+      "vitk_ug": 3,
+      "fluid_ml": 20,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "macarons",
+      "ko": "마카롱",
+      "aliases": [
+        "macarons"
+      ],
+      "en": "small round pastel almond meringue sandwich cookies with cream filling",
+      "serving_g": 40,
+      "kcal": 180,
+      "carb_g": 20,
+      "protein_g": 3,
+      "fat_g": 10,
+      "satfat_g": 4,
+      "transfat_g": 0.2,
+      "sugar_g": 17,
+      "sodium_mg": 30,
+      "cholesterol_mg": 10,
+      "potassium_mg": 50,
+      "phosphorus_mg": 40,
+      "calcium_mg": 15,
+      "purine_mg": 5,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.4,
+      "iodine_ug": 0,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "dairy",
+        "gluten",
+        "treenut"
+      ]
+    },
+    {
+      "id": "miso_soup",
+      "ko": "미소된장국",
+      "aliases": [
+        "miso_soup"
+      ],
+      "en": "a small bowl of clear brown broth with tofu cubes and seaweed",
+      "serving_g": 250,
+      "kcal": 60,
+      "carb_g": 5,
+      "protein_g": 5,
+      "fat_g": 2,
+      "satfat_g": 0.3,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 700,
+      "cholesterol_mg": 0,
+      "potassium_mg": 220,
+      "phosphorus_mg": 90,
+      "calcium_mg": 40,
+      "purine_mg": 25,
+      "vitk_ug": 2,
+      "fluid_ml": 220,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 300,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "soy"
+      ]
+    },
+    {
+      "id": "mussels",
+      "ko": "홍합찜",
+      "aliases": [
+        "mussels"
+      ],
+      "en": "a pot of steamed mussel shells opened wide in a garlic wine broth",
+      "serving_g": 250,
+      "kcal": 220,
+      "carb_g": 8,
+      "protein_g": 26,
+      "fat_g": 8,
+      "satfat_g": 1.5,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 620,
+      "cholesterol_mg": 70,
+      "potassium_mg": 480,
+      "phosphorus_mg": 340,
+      "calcium_mg": 60,
+      "purine_mg": 180,
+      "vitk_ug": 3,
+      "fluid_ml": 180,
+      "texture": "hard",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 5.5,
+      "iodine_ug": 120,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "shellfish",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "nachos",
+      "ko": "나초",
+      "aliases": [
+        "nachos"
+      ],
+      "en": "a heaping plate of tortilla chips smothered in melted cheese and jalapeno",
+      "serving_g": 250,
+      "kcal": 580,
+      "carb_g": 48,
+      "protein_g": 20,
+      "fat_g": 36,
+      "satfat_g": 14,
+      "transfat_g": 0.5,
+      "sugar_g": 3,
+      "sodium_mg": 980,
+      "cholesterol_mg": 55,
+      "potassium_mg": 420,
+      "phosphorus_mg": 320,
+      "calcium_mg": 400,
+      "purine_mg": 30,
+      "vitk_ug": 15,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 120,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "onion_rings",
+      "ko": "어니언링",
+      "aliases": [
+        "onion_rings"
+      ],
+      "en": "golden battered fried onion rings stacked in a pile",
+      "serving_g": 120,
+      "kcal": 320,
+      "carb_g": 36,
+      "protein_g": 4,
+      "fat_g": 17,
+      "satfat_g": 3,
+      "transfat_g": 0.3,
+      "sugar_g": 4,
+      "sodium_mg": 480,
+      "cholesterol_mg": 0,
+      "potassium_mg": 220,
+      "phosphorus_mg": 90,
+      "calcium_mg": 40,
+      "purine_mg": 10,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "oysters",
+      "ko": "생굴",
+      "aliases": [
+        "oysters"
+      ],
+      "en": "a plate of raw oysters on the half shell over crushed ice",
+      "serving_g": 90,
+      "kcal": 80,
+      "carb_g": 4,
+      "protein_g": 9,
+      "fat_g": 2,
+      "satfat_g": 0.5,
+      "transfat_g": 0,
+      "sugar_g": 1,
+      "sodium_mg": 180,
+      "cholesterol_mg": 50,
+      "potassium_mg": 180,
+      "phosphorus_mg": 150,
+      "calcium_mg": 50,
+      "purine_mg": 110,
+      "vitk_ug": 1,
+      "fluid_ml": 110,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 5.0,
+      "iodine_ug": 90,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "raw",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "pad_thai",
+      "ko": "팟타이",
+      "aliases": [
+        "pad_thai"
+      ],
+      "en": "stir-fried rice noodles with shrimp egg and bean sprouts in tamarind sauce",
+      "serving_g": 350,
+      "kcal": 480,
+      "carb_g": 60,
+      "protein_g": 20,
+      "fat_g": 16,
+      "satfat_g": 3,
+      "transfat_g": 0.2,
+      "sugar_g": 14,
+      "sodium_mg": 980,
+      "cholesterol_mg": 140,
+      "potassium_mg": 380,
+      "phosphorus_mg": 220,
+      "calcium_mg": 80,
+      "purine_mg": 90,
+      "vitk_ug": 10,
+      "fluid_ml": 20,
+      "texture": "mixed",
+      "irritant": [
+        "spicy",
+        "acidic",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 30,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "egg",
+        "shellfish"
+      ]
+    },
+    {
+      "id": "paella",
+      "ko": "빠에야",
+      "aliases": [
+        "paella"
+      ],
+      "en": "a wide pan of saffron-yellow rice studded with shrimp mussels and chicken",
+      "serving_g": 380,
+      "kcal": 520,
+      "carb_g": 62,
+      "protein_g": 28,
+      "fat_g": 16,
+      "satfat_g": 4,
+      "transfat_g": 0.2,
+      "sugar_g": 3,
+      "sodium_mg": 900,
+      "cholesterol_mg": 140,
+      "potassium_mg": 480,
+      "phosphorus_mg": 320,
+      "calcium_mg": 80,
+      "purine_mg": 150,
+      "vitk_ug": 5,
+      "fluid_ml": 90,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "pancakes",
+      "ko": "팬케이크",
+      "aliases": [
+        "pancakes"
+      ],
+      "en": "a tall stack of fluffy golden pancakes with syrup dripping down",
+      "serving_g": 200,
+      "kcal": 420,
+      "carb_g": 58,
+      "protein_g": 10,
+      "fat_g": 15,
+      "satfat_g": 6,
+      "transfat_g": 0.3,
+      "sugar_g": 20,
+      "sodium_mg": 580,
+      "cholesterol_mg": 90,
+      "potassium_mg": 220,
+      "phosphorus_mg": 180,
+      "calcium_mg": 180,
+      "purine_mg": 15,
+      "vitk_ug": 2,
+      "fluid_ml": 60,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "panna_cotta",
+      "ko": "판나코타",
+      "aliases": [
+        "panna_cotta"
+      ],
+      "en": "a wobbly pale cream dessert dome with berry sauce on top",
+      "serving_g": 120,
+      "kcal": 280,
+      "carb_g": 20,
+      "protein_g": 4,
+      "fat_g": 20,
+      "satfat_g": 12,
+      "transfat_g": 0.4,
+      "sugar_g": 18,
+      "sodium_mg": 40,
+      "cholesterol_mg": 55,
+      "potassium_mg": 150,
+      "phosphorus_mg": 90,
+      "calcium_mg": 110,
+      "purine_mg": 3,
+      "vitk_ug": 1,
+      "fluid_ml": 60,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.1,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 90,
+      "tags": [
+        "dairy"
+      ]
+    },
+    {
+      "id": "peking_duck",
+      "ko": "베이징덕",
+      "aliases": [
+        "peking_duck"
+      ],
+      "en": "thin slices of crispy-skinned duck wrapped in a soft pancake with scallion",
+      "serving_g": 180,
+      "kcal": 380,
+      "carb_g": 14,
+      "protein_g": 22,
+      "fat_g": 24,
+      "satfat_g": 7,
+      "transfat_g": 0.2,
+      "sugar_g": 6,
+      "sodium_mg": 650,
+      "cholesterol_mg": 110,
+      "potassium_mg": 280,
+      "phosphorus_mg": 190,
+      "calcium_mg": 20,
+      "purine_mg": 110,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 80,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "pho",
+      "ko": "쌀국수(포)",
+      "aliases": [
+        "pho"
+      ],
+      "en": "a large bowl of clear beef broth with rice noodles herbs and thin beef slices",
+      "serving_g": 450,
+      "kcal": 420,
+      "carb_g": 50,
+      "protein_g": 26,
+      "fat_g": 10,
+      "satfat_g": 4,
+      "transfat_g": 0.2,
+      "sugar_g": 3,
+      "sodium_mg": 1150,
+      "cholesterol_mg": 55,
+      "potassium_mg": 480,
+      "phosphorus_mg": 280,
+      "calcium_mg": 40,
+      "purine_mg": 60,
+      "vitk_ug": 5,
+      "fluid_ml": 300,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 10,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": []
+    },
+    {
+      "id": "pork_chop",
+      "ko": "포크찹",
+      "aliases": [
+        "pork_chop"
+      ],
+      "en": "a thick bone-in grilled pork chop with grill marks",
+      "serving_g": 220,
+      "kcal": 380,
+      "carb_g": 0,
+      "protein_g": 38,
+      "fat_g": 24,
+      "satfat_g": 9,
+      "transfat_g": 0.4,
+      "sugar_g": 0,
+      "sodium_mg": 420,
+      "cholesterol_mg": 110,
+      "potassium_mg": 480,
+      "phosphorus_mg": 320,
+      "calcium_mg": 15,
+      "purine_mg": 180,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": []
+    },
+    {
+      "id": "poutine",
+      "ko": "푸틴",
+      "aliases": [
+        "poutine"
+      ],
+      "en": "a plate of french fries smothered in brown gravy and cheese curds",
+      "serving_g": 300,
+      "kcal": 650,
+      "carb_g": 52,
+      "protein_g": 18,
+      "fat_g": 42,
+      "satfat_g": 18,
+      "transfat_g": 0.6,
+      "sugar_g": 3,
+      "sodium_mg": 1100,
+      "cholesterol_mg": 60,
+      "potassium_mg": 700,
+      "phosphorus_mg": 380,
+      "calcium_mg": 400,
+      "purine_mg": 30,
+      "vitk_ug": 3,
+      "fluid_ml": 90,
+      "texture": "mixed",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 90,
+      "tags": [
+        "dairy"
+      ]
+    },
+    {
+      "id": "prime_rib",
+      "ko": "프라임립",
+      "aliases": [
+        "prime_rib"
+      ],
+      "en": "a thick juicy slice of roasted beef rib with a browned crust",
+      "serving_g": 250,
+      "kcal": 620,
+      "carb_g": 0,
+      "protein_g": 46,
+      "fat_g": 46,
+      "satfat_g": 19,
+      "transfat_g": 0.9,
+      "sugar_g": 0,
+      "sodium_mg": 480,
+      "cholesterol_mg": 140,
+      "potassium_mg": 520,
+      "phosphorus_mg": 320,
+      "calcium_mg": 20,
+      "purine_mg": 200,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "normal",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 4.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "pulled_pork_sandwich",
+      "ko": "풀드포크샌드위치",
+      "aliases": [
+        "pulled_pork_sandwich"
+      ],
+      "en": "shredded barbecue pork piled high on a soft bun",
+      "serving_g": 220,
+      "kcal": 480,
+      "carb_g": 42,
+      "protein_g": 26,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 20,
+      "sodium_mg": 880,
+      "cholesterol_mg": 90,
+      "potassium_mg": 420,
+      "phosphorus_mg": 280,
+      "calcium_mg": 50,
+      "purine_mg": 110,
+      "vitk_ug": 5,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.2,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 10,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "ramen",
+      "ko": "라멘",
+      "aliases": [
+        "ramen"
+      ],
+      "en": "a bowl of curly noodles in rich brown broth topped with a soft egg and pork slices",
+      "serving_g": 500,
+      "kcal": 550,
+      "carb_g": 62,
+      "protein_g": 26,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0.2,
+      "sugar_g": 6,
+      "sodium_mg": 1600,
+      "cholesterol_mg": 180,
+      "potassium_mg": 480,
+      "phosphorus_mg": 300,
+      "calcium_mg": 80,
+      "purine_mg": 90,
+      "vitk_ug": 5,
+      "fluid_ml": 350,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 20,
+      "caffeine_mg": 0,
+      "vita_ug": 120,
+      "tags": [
+        "egg",
+        "gluten"
+      ]
+    },
+    {
+      "id": "ravioli",
+      "ko": "라비올리",
+      "aliases": [
+        "ravioli"
+      ],
+      "en": "small stuffed pasta pillows in a red or cream sauce",
+      "serving_g": 300,
+      "kcal": 420,
+      "carb_g": 48,
+      "protein_g": 17,
+      "fat_g": 16,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 7,
+      "sodium_mg": 780,
+      "cholesterol_mg": 90,
+      "potassium_mg": 380,
+      "phosphorus_mg": 240,
+      "calcium_mg": 180,
+      "purine_mg": 60,
+      "vitk_ug": 3,
+      "fluid_ml": 20,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "red_velvet_cake",
+      "ko": "레드벨벳케이크",
+      "aliases": [
+        "red_velvet_cake"
+      ],
+      "en": "a striking deep red cake slice with thick white cream cheese frosting",
+      "serving_g": 130,
+      "kcal": 420,
+      "carb_g": 54,
+      "protein_g": 5,
+      "fat_g": 20,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 38,
+      "sodium_mg": 300,
+      "cholesterol_mg": 50,
+      "potassium_mg": 140,
+      "phosphorus_mg": 90,
+      "calcium_mg": 50,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "samosa",
+      "ko": "사모사",
+      "aliases": [
+        "samosa"
+      ],
+      "en": "a triangular golden fried pastry with a spiced potato filling",
+      "serving_g": 80,
+      "kcal": 260,
+      "carb_g": 30,
+      "protein_g": 5,
+      "fat_g": 14,
+      "satfat_g": 3,
+      "transfat_g": 0.2,
+      "sugar_g": 2,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 280,
+      "phosphorus_mg": 70,
+      "calcium_mg": 20,
+      "purine_mg": 15,
+      "vitk_ug": 10,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "spicy",
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "sashimi",
+      "ko": "사시미",
+      "aliases": [
+        "sashimi"
+      ],
+      "en": "neatly arranged slices of raw pink and red fish on a plate",
+      "serving_g": 120,
+      "kcal": 180,
+      "carb_g": 0,
+      "protein_g": 26,
+      "fat_g": 7,
+      "satfat_g": 1.5,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 80,
+      "cholesterol_mg": 55,
+      "potassium_mg": 380,
+      "phosphorus_mg": 240,
+      "calcium_mg": 15,
+      "purine_mg": 150,
+      "vitk_ug": 0,
+      "fluid_ml": 80,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "scallops",
+      "ko": "가리비구이",
+      "aliases": [
+        "scallops"
+      ],
+      "en": "pan-seared golden-crusted scallops with a soft white center",
+      "serving_g": 120,
+      "kcal": 190,
+      "carb_g": 4,
+      "protein_g": 20,
+      "fat_g": 9,
+      "satfat_g": 2,
+      "transfat_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 320,
+      "cholesterol_mg": 55,
+      "potassium_mg": 320,
+      "phosphorus_mg": 220,
+      "calcium_mg": 40,
+      "purine_mg": 120,
+      "vitk_ug": 3,
+      "fluid_ml": 120,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 15,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "seaweed_salad",
+      "ko": "해초무침",
+      "aliases": [
+        "seaweed_salad"
+      ],
+      "en": "a small dish of glossy dark green seasoned seaweed strands",
+      "serving_g": 70,
+      "kcal": 60,
+      "carb_g": 7,
+      "protein_g": 1,
+      "fat_g": 3,
+      "satfat_g": 0.4,
+      "transfat_g": 0,
+      "sugar_g": 3,
+      "sodium_mg": 380,
+      "cholesterol_mg": 0,
+      "potassium_mg": 150,
+      "phosphorus_mg": 25,
+      "calcium_mg": 60,
+      "purine_mg": 10,
+      "vitk_ug": 0,
+      "fluid_ml": 650,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "shrimp_and_grits",
+      "ko": "쉬림프앤그리츠",
+      "aliases": [
+        "shrimp_and_grits"
+      ],
+      "en": "sauteed shrimp over creamy white corn grits with a savory sauce",
+      "serving_g": 300,
+      "kcal": 420,
+      "carb_g": 32,
+      "protein_g": 22,
+      "fat_g": 20,
+      "satfat_g": 9,
+      "transfat_g": 0.4,
+      "sugar_g": 3,
+      "sodium_mg": 780,
+      "cholesterol_mg": 180,
+      "potassium_mg": 320,
+      "phosphorus_mg": 220,
+      "calcium_mg": 120,
+      "purine_mg": 120,
+      "vitk_ug": 3,
+      "fluid_ml": 20,
+      "texture": "mixed",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 60,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "spaghetti_bolognese",
+      "ko": "스파게티볼로네제",
+      "aliases": [
+        "spaghetti_bolognese"
+      ],
+      "en": "a plate of spaghetti twirled with chunky red meat sauce",
+      "serving_g": 350,
+      "kcal": 480,
+      "carb_g": 58,
+      "protein_g": 24,
+      "fat_g": 14,
+      "satfat_g": 5,
+      "transfat_g": 0.3,
+      "sugar_g": 9,
+      "sodium_mg": 650,
+      "cholesterol_mg": 45,
+      "potassium_mg": 580,
+      "phosphorus_mg": 280,
+      "calcium_mg": 90,
+      "purine_mg": 110,
+      "vitk_ug": 5,
+      "fluid_ml": 20,
+      "texture": "mixed",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 3.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "gluten"
+      ]
+    },
+    {
+      "id": "spaghetti_carbonara",
+      "ko": "스파게티카르보나라",
+      "aliases": [
+        "spaghetti_carbonara"
+      ],
+      "en": "spaghetti coated in a pale creamy egg and cheese sauce with bacon bits",
+      "serving_g": 350,
+      "kcal": 580,
+      "carb_g": 58,
+      "protein_g": 22,
+      "fat_g": 28,
+      "satfat_g": 13,
+      "transfat_g": 0.4,
+      "sugar_g": 3,
+      "sodium_mg": 780,
+      "cholesterol_mg": 220,
+      "potassium_mg": 320,
+      "phosphorus_mg": 280,
+      "calcium_mg": 250,
+      "purine_mg": 60,
+      "vitk_ug": 3,
+      "fluid_ml": 60,
+      "texture": "mixed",
+      "irritant": [
+        "salty",
+        "greasy"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.5,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 150,
+      "tags": [
+        "dairy",
+        "egg",
+        "gluten",
+        "tyramine"
+      ]
+    },
+    {
+      "id": "spring_rolls",
+      "ko": "스프링롤",
+      "aliases": [
+        "spring_rolls"
+      ],
+      "en": "crisp golden fried rolls filled with vegetables cut in half on a plate",
+      "serving_g": 120,
+      "kcal": 220,
+      "carb_g": 24,
+      "protein_g": 5,
+      "fat_g": 11,
+      "satfat_g": 2,
+      "transfat_g": 0.1,
+      "sugar_g": 2,
+      "sodium_mg": 420,
+      "cholesterol_mg": 10,
+      "potassium_mg": 150,
+      "phosphorus_mg": 70,
+      "calcium_mg": 20,
+      "purine_mg": 20,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "hard",
+      "irritant": [
+        "greasy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.0,
+      "iodine_ug": 2,
+      "caffeine_mg": 0,
+      "vita_ug": 0,
+      "tags": []
+    },
+    {
+      "id": "strawberry_shortcake",
+      "ko": "딸기쇼트케이크",
+      "aliases": [
+        "strawberry_shortcake"
+      ],
+      "en": "a light sponge cake layered with whipped cream and fresh strawberries",
+      "serving_g": 130,
+      "kcal": 320,
+      "carb_g": 42,
+      "protein_g": 4,
+      "fat_g": 15,
+      "satfat_g": 9,
+      "transfat_g": 0.3,
+      "sugar_g": 26,
+      "sodium_mg": 150,
+      "cholesterol_mg": 55,
+      "potassium_mg": 220,
+      "phosphorus_mg": 90,
+      "calcium_mg": 60,
+      "purine_mg": 10,
+      "vitk_ug": 1,
+      "fluid_ml": 10,
+      "texture": "soft",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 90,
+      "tags": [
+        "dairy",
+        "gluten"
+      ]
+    },
+    {
+      "id": "tacos",
+      "ko": "타코",
+      "aliases": [
+        "tacos"
+      ],
+      "en": "small folded corn tortillas filled with seasoned meat lettuce and cheese",
+      "serving_g": 180,
+      "kcal": 320,
+      "carb_g": 24,
+      "protein_g": 17,
+      "fat_g": 17,
+      "satfat_g": 7,
+      "transfat_g": 0.3,
+      "sugar_g": 3,
+      "sodium_mg": 580,
+      "cholesterol_mg": 55,
+      "potassium_mg": 320,
+      "phosphorus_mg": 190,
+      "calcium_mg": 150,
+      "purine_mg": 60,
+      "vitk_ug": 5,
+      "fluid_ml": 10,
+      "texture": "normal",
+      "irritant": [
+        "spicy",
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.0,
+      "iodine_ug": 3,
+      "caffeine_mg": 0,
+      "vita_ug": 50,
+      "tags": [
+        "dairy"
+      ]
+    },
+    {
+      "id": "takoyaki",
+      "ko": "타코야키",
+      "aliases": [
+        "takoyaki"
+      ],
+      "en": "round golden balls of batter with octopus pieces drizzled in brown sauce and mayo",
+      "serving_g": 120,
+      "kcal": 260,
+      "carb_g": 28,
+      "protein_g": 9,
+      "fat_g": 12,
+      "satfat_g": 2.5,
+      "transfat_g": 0.1,
+      "sugar_g": 6,
+      "sodium_mg": 580,
+      "cholesterol_mg": 55,
+      "potassium_mg": 220,
+      "phosphorus_mg": 150,
+      "calcium_mg": 40,
+      "purine_mg": 80,
+      "vitk_ug": 3,
+      "fluid_ml": 0,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.2,
+      "iodine_ug": 50,
+      "caffeine_mg": 0,
+      "vita_ug": 20,
+      "tags": [
+        "shellfish"
+      ]
+    },
+    {
+      "id": "tiramisu",
+      "ko": "티라미수",
+      "aliases": [
+        "tiramisu"
+      ],
+      "en": "a layered coffee-soaked dessert dusted with cocoa powder in a glass",
+      "serving_g": 120,
+      "kcal": 340,
+      "carb_g": 30,
+      "protein_g": 6,
+      "fat_g": 22,
+      "satfat_g": 13,
+      "transfat_g": 0.4,
+      "sugar_g": 20,
+      "sodium_mg": 80,
+      "cholesterol_mg": 110,
+      "potassium_mg": 150,
+      "phosphorus_mg": 110,
+      "calcium_mg": 90,
+      "purine_mg": 5,
+      "vitk_ug": 1,
+      "fluid_ml": 90,
+      "texture": "soft",
+      "irritant": [
+        "caffeine"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 0.8,
+      "iodine_ug": 3,
+      "caffeine_mg": 20,
+      "vita_ug": 150,
+      "tags": []
+    },
+    {
+      "id": "tuna_tartare",
+      "ko": "참치타르타르",
+      "aliases": [
+        "tuna_tartare"
+      ],
+      "en": "finely diced raw red tuna cubes seasoned and molded into a small tower",
+      "serving_g": 130,
+      "kcal": 190,
+      "carb_g": 3,
+      "protein_g": 26,
+      "fat_g": 8,
+      "satfat_g": 1.5,
+      "transfat_g": 0,
+      "sugar_g": 2,
+      "sodium_mg": 380,
+      "cholesterol_mg": 45,
+      "potassium_mg": 380,
+      "phosphorus_mg": 240,
+      "calcium_mg": 15,
+      "purine_mg": 70,
+      "vitk_ug": 0,
+      "fluid_ml": 15,
+      "texture": "soft",
+      "irritant": [
+        "salty"
+      ],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 1.5,
+      "iodine_ug": 30,
+      "caffeine_mg": 0,
+      "vita_ug": 30,
+      "tags": [
+        "raw"
+      ]
+    },
+    {
+      "id": "waffles",
+      "ko": "와플",
+      "aliases": [
+        "waffles"
+      ],
+      "en": "a golden crisp-edged waffle with deep pockets filled with syrup",
+      "serving_g": 180,
+      "kcal": 420,
+      "carb_g": 54,
+      "protein_g": 9,
+      "fat_g": 18,
+      "satfat_g": 8,
+      "transfat_g": 0.4,
+      "sugar_g": 22,
+      "sodium_mg": 540,
+      "cholesterol_mg": 90,
+      "potassium_mg": 180,
+      "phosphorus_mg": 150,
+      "calcium_mg": 180,
+      "purine_mg": 15,
+      "vitk_ug": 2,
+      "fluid_ml": 60,
+      "texture": "normal",
+      "irritant": [],
+      "alcohol": false,
+      "src": "est",
+      "iron_mg": 2.2,
+      "iodine_ug": 5,
+      "caffeine_mg": 0,
+      "vita_ug": 60,
+      "tags": [
+        "gluten"
       ]
     }
   ]

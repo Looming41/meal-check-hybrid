@@ -19,6 +19,11 @@ if (!existsSync(DIST)) {
   process.exit(1);
 }
 
+/* PROXY_URL은 배포마다 다르다 — 로컬 개발 빌드는 보통 비어 있고,
+   실배포판은 실제 Cloudflare Worker 주소가 박혀 있다. 둘 다 정상이므로
+   "비어 있어야 한다"고 고정하지 않고, 실제 값을 보고 기대치를 맞춘다. */
+const PROXY_CONFIGURED = /const PROXY_URL = '(?!')[^']+'/.test(readFileSync(DIST, 'utf8'));
+
 let pass = 0, fail = 0;
 const check = (name, a, b = true) => {
   const ok = a === b; ok ? pass++ : fail++;
@@ -66,34 +71,90 @@ section('스크립트 실행 (file:// 환경)');
 }
 
 /* ═══════════════════════════════════════════════════════════
-   1.5 면책 고지 게이트 — 건너뛸 수 없어야 한다
+   1.5 첫 실행 온보딩 — 프로필 → 동의(면책 고지) → 질환 → Gemini 키 → 시작
+   화면을 하나씩 순서대로 넘긴다. 건너뛸 수 없어야 한다.
    ═══════════════════════════════════════════════════════════ */
-section('면책 고지 게이트');
+section('첫 실행 온보딩');
 {
   const gate = $('gate');
-  check('첫 실행 시 고지가 떠 있음', gate.hidden, false);
+  const panel = $('settingsPanel');
+
+  // 1) 프로필이 맨 먼저, 게이트보다 앞서 뜬다
+  check('시작하면 프로필 화면이 뜸(설정 패널)', panel.hidden, false);
+  check('프로필 화면에선 게이트가 아직 안 보임', gate.hidden);
+  check('프로필 화면에선 X 닫기 버튼 숨김(건너뛰기 방지)', $('settingsClose').hidden);
+  check('프로필 섹션만 보임', $('profileBox').hidden, false);
+  check('질환 섹션은 아직 숨김', $('secDisease').hidden);
   check('본문 스크롤 잠김', document.body.classList.contains('gated'));
+
+  setVal($('pfWeight'), '62');
+  setVal($('pfWeight'), '62', 'change');
+  click($('wizardNextBtn'));
+
+  // 2) 다음은 면책 고지 — 건너뛸 수 없다
+  check('프로필 다음 누르면 게이트가 뜸', gate.hidden, false);
+  check('게이트가 뜰 때는 설정 패널이 닫힘(겹쳐서 클릭 가로채지 않게)', panel.hidden);
   check('동의 전에는 버튼 비활성', $('gateBtn').disabled);
 
-  const t = gate.textContent;
-  check('의료기기 아님 명시', t.includes('의료기기가 아닙니다'));
-  check('추정치임을 명시', t.includes('검증되지 않은 추정치'));
-  check('정확도 낮은 항목 명시', t.includes('통풍·와파린·갑상선'));
-  check('응급 상황 안내', t.includes('119'));
+  const gateText = gate.textContent;
+  check('의료기기 아님 명시', gateText.includes('의료기기가 아닙니다'));
+  check('추정치임을 명시', gateText.includes('검증되지 않은 추정치'));
+  check('정확도 낮은 항목 명시', gateText.includes('통풍·와파린·갑상선'));
+  check('응급 상황 안내', gateText.includes('119'));
   check('개인정보 처리방침 링크', !!gate.querySelector('a[href*="privacy"]'));
 
-  // 체크 없이 눌러도 통과 안 됨
   click($('gateBtn'));
   check('동의 없이 누르면 그대로', gate.hidden, false);
 
-  // 동의 후 통과
   const box = $('gateCheck');
   box.checked = true;
   box.dispatchEvent(new window.Event('change', { bubbles: true }));
   check('동의하면 버튼 활성', $('gateBtn').disabled, false);
   click($('gateBtn'));
-  check('통과 후 고지 숨김', gate.hidden);
-  check('본문 스크롤 복원', document.body.classList.contains('gated'), false);
+  check('동의 후 게이트 숨김', gate.hidden);
+
+  // 3) 다음은 질환·상태 선택
+  check('게이트 통과 후 질환 화면이 뜸', panel.hidden, false);
+  check('질환 섹션만 보임', $('secDisease').hidden, false);
+  check('프로필 섹션은 다시 숨김', $('profileBox').hidden);
+
+  const chip = document.querySelector('#chips .chip');
+  click(chip);
+  click($('wizardNextBtn'));
+
+  // 4) 다음은 Gemini 키 등록 — 유효한 키를 확인하기 전엔 못 넘어간다
+  check('질환 다음 누르면 Gemini 화면이 뜸', $('secGemini').hidden, false);
+  check('마지막 버튼은 "시작하기"', $('wizardNextBtn').textContent, '시작하기');
+  check('발급 가이드 이미지 3장 포함', document.querySelectorAll('#secGemini img.guide-shot').length, 3);
+  check('가이드 이미지에 영어판 경로가 준비돼 있음',
+    [...document.querySelectorAll('#secGemini img.guide-shot')].every(img => !!img.dataset.srcEn));
+
+  click($('wizardNextBtn'));
+  check('키 없이 누르면 그대로 Gemini 화면', $('secGemini').hidden, false);
+  check('키가 필요하다는 안내가 뜸', $('geminiKeyStatus').hidden, false);
+
+  // 구글에 실제로 검증 요청을 보내는 fetch를 흉내 내 "유효한 키"인 경우를 재현한다.
+  const realFetch = window.fetch;
+  window.fetch = async () => ({ ok: true });
+  setVal($('geminiKeyInput'), 'test-key-for-onboarding');
+  click($('geminiKeySave'));
+  await new Promise(r => setTimeout(r, 30));
+  check('검증 통과하면 저장됨 안내', $('geminiKeyStatus').textContent.includes('확인된 키'));
+  window.fetch = realFetch;
+
+  click($('wizardNextBtn'));
+
+  // 5) 온보딩 종료 — 앱 진입
+  check('완료 후 설정 패널 숨김', panel.hidden);
+  check('완료 후 스크롤 복원', document.body.classList.contains('gated'), false);
+  check('완료 후 X 닫기 버튼 복원', $('settingsClose').hidden, false);
+  check('체중 입력값이 그대로 유지됨', $('pfWeight').value, '62');
+  check('질환 선택이 그대로 유지됨', chip.getAttribute('aria-pressed'), 'true');
+
+  // 뒤따르는 테스트들이 깨끗한 상태로 시작하게 정리
+  click($('pfClear'));
+  click(chip);   // 온보딩 중 선택했던 질환도 해제
+  click($('geminiKeyClear'));
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -101,8 +162,8 @@ section('면책 고지 게이트');
    ═══════════════════════════════════════════════════════════ */
 section('초기 렌더');
 {
-  check('질환 그룹 6개', document.querySelectorAll('#chips .group').length, 6);
-  check('질환 칩 15개', document.querySelectorAll('#chips .chip').length, 15);
+  check('질환 그룹 9개', document.querySelectorAll('#chips .group').length, 9);
+  check('질환 칩 30개', document.querySelectorAll('#chips .chip').length, 30);
   check('어댑터 5종', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 5);
   check('결과 영역 숨김', $('result').hidden);
   check('오류 배너 안 뜸', $('scanErr').style.display !== 'block');
@@ -124,26 +185,35 @@ section('file://에서도 사진 올리기는 열려 있다');
   const cloud = document.querySelector('#adapterOptions input[value=cloud]');
   check('기기 인식이 미리 차단되지 않음', ondevice.disabled, false);
   check('클라우드 AI도 차단되지 않음 (토큰 넣으면 되므로)', cloud.disabled, false);
-  /* 기본값은 "설정 없이 실제로 성공하는 것"이어야 한다.
-     Pollinations는 크레딧제로 바뀌어 토큰 없이는 402가 나므로 기본값이 될 수 없다.
-     기기 인식(CLIP)은 정확도는 낮아도 아무 설정 없이 확실히 동작해 예전엔 기본값이었다.
-     실제로 402가 나는 것을 기본값으로 뒀던 버그가 있었다.
-     지금은 LOCAL_MODEL_URL에 학습된 자체 모델이 채워져 있어(2026-08) 자체 모델도
-     설정 없이 되는 경로다. ADAPTERS 우선순위상 자체 모델이 더 정확하고 비용이 0이라
-     이게 이겨야 맞다(identify.js의 makeIdentifier 주석 참조). */
+  /* 기본값 우선순위(2026-08-19 변경): Gemini를 항상 먼저 쓴다. 온보딩에서 키 등록을
+     사실상 필수로 만들었으므로 프록시가 배포된 실배포판에서는 GEMINI_READY가 참이고,
+     그 경우 기본값은 자체 모델이 아니라 Gemini여야 한다. 로컬 개발 빌드처럼 프록시가
+     없으면 GEMINI_READY가 거짓이라, 그때는 예전처럼 자체 모델(설정 없이 되는 것 중
+     가장 정확함)이 기본값이다. app.js의 pickDefaultAdapter() 참조. */
   const local = document.querySelector('#adapterOptions input[value=local]');
-  check('자체 모델이 기본 선택 (설정 없이 성공하는 경로 중 가장 정확함)', local.checked);
+  if (PROXY_CONFIGURED) {
+    check('프록시 배포됨 → 기본값이 Gemini (항상 먼저 인식)',
+      document.querySelector('#adapterOptions input[value=gemini]').checked);
+  } else {
+    check('프록시 없으면 자체 모델이 기본 선택 (설정 없이 성공하는 경로 중 가장 정확함)', local.checked);
+  }
   check('사진 영역이 보임', $('photoBlock').hidden, false);
 
-  // Gemini는 못 쓰는 이유뿐 아니라 켜는 방법도 함께 보여야 한다
+  // 프록시가 비어 있으면 Gemini는 못 쓰는 이유와 켜는 방법을 보여줘야 하고,
+  // 프록시가 실제로 배포돼 있으면 Gemini가 바로 켜져 있어야 한다.
   const gRow = document.querySelector('#adapterOptions input[value=gemini]').closest('.radio-row');
-  check('Gemini 켜는 방법 안내', gRow.textContent.includes('aistudio.google.com'));
-  check('무료임을 명시 (돈 걱정 제거)', gRow.textContent.includes('신용카드가 필요 없'));
+  if (PROXY_CONFIGURED) {
+    check('프록시 배포됨 → Gemini 어댑터 활성',
+      document.querySelector('#adapterOptions input[value=gemini]').disabled, false);
+  } else {
+    check('Gemini 켜는 방법 안내', gRow.textContent.includes('aistudio.google.com'));
+    check('무료임을 명시 (돈 걱정 제거)', gRow.textContent.includes('신용카드가 필요 없'));
+    check('프록시 없는 Gemini만 비활성',
+      document.querySelector('#adapterOptions input[value=gemini]').disabled);
+  }
   check('사진 선택 input 존재', !!$('fileInput'));
   check('카메라 우선 속성 유지', $('fileInput').getAttribute('capture'), 'environment');
   check('2단계 제목이 사진 모드', $('step2Title').textContent, '음식 사진 찍기');
-  check('프록시 없는 Gemini만 비활성',
-    document.querySelector('#adapterOptions input[value=gemini]').disabled);
 
   // 직접 고르기로 바꿔도 사진은 여전히 올릴 수 있어야 한다 (참고용)
   const manual = document.querySelector('#adapterOptions input[value=manual]');
@@ -225,12 +295,14 @@ section('산출물 점검');
 {
   const raw = readFileSync(DIST, 'utf8');
   const kb = Buffer.byteLength(raw) / 1024;
-  check('파일 크기 300KB 미만', kb < 300);
+  check('파일 크기 500KB 미만', kb < 500);   // 설정 패널·i18n·Gemini 키 가이드 추가로 400KB 기준을 넘었음(2026-08-19)
   check('자동 생성 경고 포함', raw.includes('직접 고치지 마세요'));
   check('API 키가 섞여 들어가지 않음',
     !/AIza[0-9A-Za-z_-]{30,}|sk-[0-9A-Za-z]{20,}/.test(raw));
-  check('PROXY_URL이 비어 있음 (기본 오프라인 동작)',
-    /const PROXY_URL = ''/.test(raw));
+  // 비어 있으면(오프라인 전용 빌드) 정상, 채워져 있으면 반드시 https:// 실주소여야 한다
+  // (http:// 평문이나 'CHANGE_ME' 같은 자리표시자가 그대로 배포되는 사고를 잡는다)
+  check('PROXY_URL이 비어 있거나 유효한 https 주소',
+    /const PROXY_URL = '(|https:\/\/[^']+)'/.test(raw));
   console.log(`     크기 ${kb.toFixed(0)}KB · 음식 ${document.querySelectorAll('#chips .chip').length ? JSON.parse(raw.match(/const EMBEDDED_DB = ([\s\S]*?);\n/)[1]).foods.length : '?'}종 인라인`);
 }
 

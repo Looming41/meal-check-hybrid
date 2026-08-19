@@ -61,6 +61,11 @@ window.HTMLElement.prototype.scrollIntoView = () => {};
 await import('../js/app.js');
 await new Promise(r => setTimeout(r, 60));   // store.ready() 완료 대기
 
+/* PROXY_URL은 배포마다 다르다 — 로컬 개발은 보통 비어 있고 실배포판은
+   실제 Cloudflare Worker 주소가 박혀 있다. 실제 값을 보고 기대치를 맞춘다. */
+const PROXY_CONFIGURED = /const PROXY_URL = '(?!')[^']+'/.test(
+  readFileSync(new URL('js/app.js', root), 'utf8'));
+
 /* ── 테스트 도구 ────────────────────────────────────────── */
 let pass = 0, fail = 0;
 function check(name, a, b = true) {
@@ -83,16 +88,16 @@ section('초기 렌더');
 {
   const groups = document.querySelectorAll('#chips .group');
   const chips = document.querySelectorAll('#chips .chip');
-  check('질환 그룹 6개 렌더', groups.length, 6);
-  check('질환 칩 15개 렌더', chips.length, 15);
+  check('질환 그룹 9개 렌더', groups.length, 9);
+  check('질환 칩 30개 렌더', chips.length, 30);
   check('모든 칩에 주의 항목 툴팁', [...chips].every(c => c.title.startsWith('주의 항목')));
   check('임신 칩이 "약물·생리 상태" 그룹에 있음',
     [...groups].find(g => g.querySelector('.group-label').textContent === '약물·생리 상태')
       ?.textContent.includes('임신'));
 
   check('어댑터 5종 렌더', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 5);
-  check('프록시 미설정 시 Gemini 어댑터 비활성',
-    document.querySelector('#adapterOptions input[value=gemini]').disabled);
+  check(PROXY_CONFIGURED ? '프록시 배포됨 → Gemini 어댑터 활성' : '프록시 미설정 시 Gemini 어댑터 비활성',
+    document.querySelector('#adapterOptions input[value=gemini]').disabled, !PROXY_CONFIGURED);
 
   check('결과 영역은 처음에 숨김', $('result').hidden);
   check('빈 목록 안내 표시', $('emptyNote').hidden, false);

@@ -24,6 +24,22 @@ function candidate(food, confidence, portion = 1) {
   return { food, portion, confidence: Math.max(0, Math.min(1, confidence)) };
 }
 
+/** 모바일 네트워크는 한 번씩 뚝뚝 끊긴다. fetch()가 응답조차 못 받고 그 자리에서
+    거부되는 경우(= 진짜 서버 오류가 아니라 요청 자체가 안 나간 경우)만 다시
+    시도한다. 429·403 같은 실제 응답은 서버가 준 신호이므로 재시도하지 않는다 —
+    여기서 건드리는 건 fetch()가 아예 throw하는 경우뿐이다.
+    사진 업로드(본문 수백KB)는 검증 요청(본문 없음)보다 불안정한 네트워크에서
+    끊기기 쉬워, 총 2번 더(최초 시도 포함 3번) 시도하고 대기 시간도 점점 늘린다. */
+async function fetchWithRetry(url, init, retries = 2, attempt = 0) {
+  try {
+    return await fetch(url, init);
+  } catch (e) {
+    if (retries <= 0) throw e;
+    await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+    return fetchWithRetry(url, init, retries - 1, attempt + 1);
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════
    1. 온디바이스 — Transformers.js + CLIP 제로샷 분류
    ═══════════════════════════════════════════════════════════
@@ -140,7 +156,10 @@ export class GeminiIdentifier {
   async available() { return !!(this.proxyUrl || this.devApiKey); }
   async prepare() {}
 
-  /** 판정은 요구하지 않는다. 오직 음식 이름과 대략적인 양만. */
+  /** 판정은 요구하지 않는다. 이름·양과, 이 앱 DB에 없을 때 쓸 예비 영양 추정치만 받는다.
+      est는 절대 판정에 그대로 쓰이지 않는다 — matchItems()가 만든 "가상의 음식" 객체에
+      들어가 rules.js의 결정적 규칙을 그대로 통과한다. Gemini는 여전히 숫자만 추정하고,
+      좋음/주의/피함 판정은 한 번도 Gemini에게 맡기지 않는다. */
   static SCHEMA = {
     type: 'OBJECT',
     properties: {
@@ -151,7 +170,46 @@ export class GeminiIdentifier {
           properties: {
             name:       { type: 'STRING', description: '음식의 한국어 이름' },
             portion:    { type: 'NUMBER', description: '1인분을 1.0으로 본 상대적인 양' },
-            confidence: { type: 'NUMBER', description: '0에서 1 사이의 확신도' }
+            confidence: { type: 'NUMBER', description: '0에서 1 사이의 확신도' },
+            est: {
+              type: 'OBJECT',
+              description: '1인분 기준 영양 추정치. 이 앱의 내장 데이터베이스에 이 음식이 ' +
+                           '없을 때만 쓰이는 예비값이다. 모르는 항목은 그냥 비워 두어도 된다 — ' +
+                           '억지로 다 채우려다 항목 전체를 포기하는 것보다, 아는 만큼만 채우는 ' +
+                           '편이 훨씬 낫다.',
+              properties: {
+                serving_g:      { type: 'NUMBER', description: '추정 1인분 무게(g)' },
+                kcal:           { type: 'NUMBER' },
+                carb_g:         { type: 'NUMBER' },
+                protein_g:      { type: 'NUMBER' },
+                fat_g:          { type: 'NUMBER' },
+                satfat_g:       { type: 'NUMBER' },
+                sugar_g:        { type: 'NUMBER' },
+                sodium_mg:      { type: 'NUMBER' },
+                cholesterol_mg: { type: 'NUMBER' },
+                potassium_mg:   { type: 'NUMBER' },
+                phosphorus_mg:  { type: 'NUMBER' },
+                calcium_mg:     { type: 'NUMBER' },
+                purine_mg:      { type: 'NUMBER' },
+                vitk_ug:        { type: 'NUMBER' },
+                iron_mg:        { type: 'NUMBER' },
+                iodine_ug:      { type: 'NUMBER' },
+                caffeine_mg:    { type: 'NUMBER' },
+                vita_ug:        { type: 'NUMBER', description: '레티놀(동물성 비타민A)만. 베타카로틴 등은 제외.' },
+                texture:        { type: 'STRING', enum: ['soft', 'normal', 'mixed', 'hard', 'liquid', 'dry', 'sticky'] },
+                spicy:          { type: 'BOOLEAN' },
+                acidic:         { type: 'BOOLEAN' },
+                greasy:         { type: 'BOOLEAN' },
+                salty:          { type: 'BOOLEAN' },
+                alcohol:        { type: 'BOOLEAN' }
+              }
+              /* 일부러 required를 두지 않는다. Gemini의 구조화 출력은 required 필드를
+                 모두 확신 있게 채워야 하는데, 그게 부담스러우면 항목 자체를 통째로
+                 items에서 빼 버리는 경향이 있다(관찰된 실패 모드: 애매한 사진에서
+                 items가 통째로 빈 배열로 옴). 차라리 헐겁게 두고 아는 만큼만
+                 받는 편이, "사진에서 아는 음식을 찾지 못했습니다"처럼 아무것도
+                 못 건지는 것보다 훨씬 낫다. */
+            }
           },
           required: ['name', 'portion', 'confidence']
         }
@@ -165,10 +223,18 @@ export class GeminiIdentifier {
 
 규칙:
 1. 보이는 음식마다 한국어 이름을 쓰세요. 한국 가정식 이름을 우선 쓰세요(예: "된장찌개", "시금치나물").
+   흔치 않은 음식(외국 음식, 브랜드 제품 등)이라도 최선을 다해 이름을 추정하세요.
 2. portion은 흔한 1인분을 1.0으로 보고 눈에 보이는 양의 비율을 적으세요. 반 그릇이면 0.5입니다.
 3. confidence는 정말 확신할 때만 0.8 이상을 쓰세요. 애매하면 낮게 쓰세요. 틀린 이름을 자신 있게 쓰는 것이 가장 나쁩니다.
+   다만 확신이 낮다고 해서 항목 자체를 빼지는 마세요 — confidence를 낮게 적더라도 반드시 포함하세요.
 4. 밥·국·반찬을 각각 따로 항목으로 나누세요. "한식 정식" 같은 뭉뚱그린 이름은 쓰지 마세요.
-5. 음식이 아닌 것(그릇, 수저, 손)은 넣지 마세요.`;
+5. 음식이 아닌 것(그릇, 수저, 손)은 넣지 마세요.
+6. est(영양 추정치)는 아는 만큼만 채우면 됩니다. 이 음식이 앱 내장 데이터베이스에 있을지
+   없을지는 당신이 알 수 없으니, 없을 경우를 대비해 채워 두면 좋지만, 확신 없는 항목은
+   비워 둬도 괜찮습니다. est를 다 못 채운다고 해서 name·portion·confidence까지 포기하지
+   마세요 — 이름만이라도 반드시 주는 것이 아무것도 안 주는 것보다 항상 낫습니다.
+7. 정말로 사진에 음식이 하나도 안 보일 때만 items를 빈 배열로 두세요. 음식이 보이는데
+   확신이 안 선다는 이유로 통째로 비우지 마세요.`;
 
   async identify(imageDataUrl, store) {
     const [, mime = 'image/jpeg', b64] = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
@@ -197,7 +263,7 @@ export class GeminiIdentifier {
       headers = { 'Content-Type': 'application/json', 'x-goog-api-key': this.devApiKey };
     }
 
-    const res = await fetch(url, { method: 'POST', headers, body });
+    const res = await fetchWithRetry(url, { method: 'POST', headers, body });
 
     if (res.status === 429) {
       /* 프록시의 쿼터 초과와 구글의 rate limit을 구분한다.
@@ -221,6 +287,134 @@ export class GeminiIdentifier {
 
     return matchItems(parsed.items || [], store);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2.5. Gemini가 직접 판정 — 사진 + 질환 목록을 한 번에 넘겨
+   식별부터 좋음/주의/피함 판정, 이유, 팁까지 한 번의 호출로 받는다.
+
+   기존 GeminiIdentifier.identify()는 "이름·양·영양 추정치"만 받아서
+   그 수치를 rules.js에 넣어 판정했다. 그런데 실사용에서 애매한 사진에
+   대해 이 파이프라인이 너무 자주 "못 찾음"으로 끝났고, 사용자는
+   자체 규칙 엔진의 정확성보다 "일단 뭔가 답이 나오는 것"을 원했다.
+   그래서 이 함수는 판정까지 Gemini에게 맡긴다 — 이 경로를 쓰는 동안은
+   "AI는 식별만 한다"는 원칙이 적용되지 않는다는 뜻이다. 대신 화면에는
+   이 판정이 AI가 직접 낸 것이며 rules.js처럼 항목별 수치 근거를 보여줄
+   수 없다는 것을 분명히 표시해야 한다(app.js의 render() 참고). */
+export const GEMINI_JUDGE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    foods: {
+      type: 'ARRAY',
+      description: '사진에서 식별한 음식들',
+      items: { type: 'OBJECT', properties: {
+        name: { type: 'STRING', description: '음식의 한국어 이름' },
+        portion: { type: 'STRING', description: '눈대중 양(예: "1인분", "반 그릇")' }
+      }, required: ['name'] }
+    },
+    byDisease: {
+      type: 'ARRAY',
+      description: '요청받은 질환·상태마다 하나씩',
+      items: { type: 'OBJECT', properties: {
+        id:      { type: 'STRING', description: '요청에 주어진 질환 id를 그대로' },
+        verdict: { type: 'STRING', enum: ['good', 'caution', 'avoid'] },
+        reason:  { type: 'STRING', description: '왜 이 판정인지 한국어 1~2문장, 구체적 수치 언급 권장' }
+      }, required: ['id', 'verdict', 'reason'] }
+    },
+    overall:        { type: 'STRING', enum: ['good', 'caution', 'avoid'] },
+    overallComment: { type: 'STRING', description: '전체 요약 한국어 1~2문장' },
+    tips: {
+      type: 'ARRAY',
+      description: '실천 가능한 조언 2~4개',
+      items: { type: 'STRING' }
+    }
+  },
+  required: ['foods', 'byDisease', 'overall', 'overallComment', 'tips']
+};
+
+function buildJudgePrompt(diseases, profile) {
+  const list = diseases.map(d => `- id:"${d.id}" 이름:"${d.name}" (주의: ${d.focus})`).join('\n');
+  const prof = [];
+  if (profile?.weightGiven) prof.push(`체중 ${profile.weightKg}kg`);
+  if (profile?.ageYears != null) prof.push(`나이 ${profile.ageYears}세`);
+  if (profile?.sex) prof.push(profile.sex === 'f' ? '여성' : '남성');
+  const profLine = prof.length ? `\n환자 정보: ${prof.join(', ')}` : '';
+
+  return `당신은 임상영양 지식을 갖춘 판정 도우미입니다. 첨부된 음식 사진을 보고, ` +
+`아래 질환·상태를 가진 사람에게 이 식사가 적합한지 판정하세요.${profLine}
+
+판정 대상 질환·상태 목록:
+${list}
+
+규칙:
+1. 사진 속 음식을 각각 한국어로 식별하세요(foods). 확신이 없어도 최선을 다해 이름을 주세요.
+   정말 음식이 하나도 안 보일 때만 foods를 빈 배열로 두세요.
+2. byDisease는 위 목록의 id 하나당 정확히 하나씩 주세요 — 요청 개수와 정확히 같아야 합니다.
+3. verdict는 good(좋음)·caution(주의)·avoid(피함) 중 하나. 일반적인 임상 식이 지침을 기준으로,
+   보수적으로(불확실하면 caution 쪽으로) 판정하세요.
+4. reason은 왜 그 판정인지 한국어로 구체적으로 쓰세요. 가능하면 나트륨·당류처럼 어떤 성분이
+   문제인지 언급하세요. "~할 수 있습니다"보다는 단정적으로 쓰되, 과장하지 마세요.
+5. overall은 byDisease 중 가장 나쁜 판정을 따르세요.
+6. tips는 이 식사를 지금보다 낫게 만들 수 있는 구체적 행동(양 줄이기, 국물 남기기 등) 2~4개.
+7. 이것은 의료 진단이 아닌 일반적 식이 참고 정보입니다 — 그렇다고 매번 문장 안에 면책 문구를
+   넣지 마세요. 그 안내는 화면에 별도로 이미 표시됩니다.`;
+}
+
+/**
+ * 사진과 선택한 질환·상태를 Gemini에 한 번에 보내 식별부터 판정까지 받는다.
+ * @param {string} imageDataUrl
+ * @param {{id:string,name:string,focus:string}[]} diseases  DISEASE_BY_ID에서 뽑은 항목들
+ * @param {object} profile  resolveProfile() 결과 (선택)
+ * @param {{proxyUrl?:string, devApiKey?:string, model?:string, userToken?:string}} opts
+ */
+export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts = {}) {
+  const { proxyUrl = '', devApiKey = '', model = 'gemini-flash-latest', userToken = '' } = opts;
+  const [, mime = 'image/jpeg', b64] = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
+  if (!b64) throw new Error('이미지 형식을 읽지 못했습니다.');
+
+  const body = JSON.stringify({
+    contents: [{ parts: [
+      { text: buildJudgePrompt(diseases, profile) },
+      { inline_data: { mime_type: mime, data: b64 } }
+    ] }],
+    generationConfig: {
+      responseMimeType: 'application/json',
+      responseSchema: GEMINI_JUDGE_SCHEMA,
+      temperature: 0.2
+    }
+  });
+
+  let url, headers;
+  if (proxyUrl) {
+    url = `${proxyUrl}/gemini`;
+    headers = { 'Content-Type': 'application/json' };
+    if (userToken) headers.Authorization = `Bearer ${userToken}`;
+  } else {
+    url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    headers = { 'Content-Type': 'application/json', 'x-goog-api-key': devApiKey };
+  }
+
+  const res = await fetchWithRetry(url, { method: 'POST', headers, body });
+
+  if (res.status === 429) {
+    let info = null;
+    try { info = await res.clone().json(); } catch { /* 무시 */ }
+    if (info?.error === 'QUOTA_EXCEEDED') {
+      const e = new Error('QUOTA_EXCEEDED');
+      e.quota = info;
+      throw e;
+    }
+    throw new Error('RATE_LIMIT');
+  }
+  if (res.status === 400 || res.status === 403) throw new Error('BAD_KEY');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  const data = await res.json();
+  const text = (data?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+  if (!text) throw new Error('EMPTY');
+  const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+  if (!Array.isArray(parsed.foods) || !Array.isArray(parsed.byDisease)) throw new Error('PARSE');
+  return parsed;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -333,17 +527,49 @@ function parseItems(text) {
   return items;
 }
 
+const EST_NUMERIC_AXES = [
+  'kcal', 'carb_g', 'protein_g', 'fat_g', 'satfat_g', 'sugar_g', 'sodium_mg', 'cholesterol_mg',
+  'potassium_mg', 'phosphorus_mg', 'calcium_mg', 'purine_mg', 'vitk_ug', 'iron_mg', 'iodine_ug',
+  'caffeine_mg', 'vita_ug'
+];
+const EST_TEXTURES = ['soft', 'normal', 'mixed', 'hard', 'liquid', 'dry', 'sticky'];
+
+/* Gemini가 이름과 함께 준 est(영양 추정치)로 "가상의 음식" 객체를 만든다.
+   판정 자체는 여전히 rules.js가 이 객체의 수치를 그대로 읽어 계산하므로,
+   Gemini는 여기서도 숫자만 추정할 뿐 좋음/주의/피함을 정하지 않는다. */
+function estimatedFood(name, est) {
+  const num = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
+  const food = { id: `gemini_est:${name}`, ko: name, en: name, transfat_g: 0, fluid_ml: 0,
+                 tags: [], src: 'gemini_est' };
+  for (const axis of EST_NUMERIC_AXES) food[axis] = num(est[axis]);
+  food.serving_g = num(est.serving_g) || 200;
+  food.texture = EST_TEXTURES.includes(est.texture) ? est.texture : 'normal';
+  food.alcohol = !!est.alcohol;
+  food.irritant = ['spicy', 'acidic', 'greasy', 'salty'].filter(k => !!est[k]);
+  return food;
+}
+
 /* AI가 준 한국어 이름을 내장 테이블에 매칭한다.
-   매칭 실패한 것은 조용히 버리지 않고 unmatched로 넘겨 사용자가 직접 고르게 한다.
-   버리면 나트륨이 과소 집계돼 판정이 실제보다 관대해진다. */
+   매칭에 성공하면 우리 데이터베이스의 값(더 정확함)을 그대로 쓰고, 실패하면
+   Gemini가 함께 준 est(영양 추정치)로 가상의 음식을 만들어 담는다 — 조용히
+   버리지 않는다. 버리면 나트륨이 과소 집계돼 판정이 실제보다 관대해진다.
+   est조차 없는 경우(Pollinations 등 est를 안 주는 어댑터)에는 예전처럼
+   unmatched로 넘겨 사용자가 직접 고르게 한다. */
 function matchItems(items, store) {
   const matched = [], unmatched = [];
   for (const it of items) {
     const name = String(it?.name ?? '').trim();
     if (!name) continue;
+    const portion = Number(it.portion) || 1;
+    const confidence = Number(it.confidence) || 0.5;
     const hit = store.search(name, 1)[0];
-    if (hit) matched.push(candidate(hit, Number(it.confidence) || 0.5, Number(it.portion) || 1));
-    else unmatched.push({ name, portion: Number(it.portion) || 1 });
+    if (hit) {
+      matched.push(candidate(hit, confidence, portion));
+    } else if (it.est && typeof it.est === 'object') {
+      matched.push(candidate(estimatedFood(name, it.est), confidence, portion));
+    } else {
+      unmatched.push({ name, portion });
+    }
   }
   matched.unmatched = unmatched;
   return matched;
@@ -486,10 +712,12 @@ export class ManualIdentifier {
 }
 
 /* 정확도가 높은 순서로 둔다. 설정 화면에 이 순서로 표시된다.
-   자체 모델을 맨 앞에 두는 이유: 학습만 되면 한국 음식에서 가장 정확하고,
-   비용도 0이라 다른 선택지를 고를 이유가 없어진다. */
+   Gemini를 맨 앞에 두는 이유: 온보딩에서 이미 키 등록을 사실상 필수로
+   만들었고, 어떤 음식이든(우리 DB에 없는 것까지) 이름과 영양치를 함께
+   추정해 주는 유일한 경로다. 자체 모델은 Gemini가 준비되지 않았을 때 쓰는
+   차선책(한국 음식 한정, 비용 0)이다. */
 export const ADAPTERS = [
-  LocalModelIdentifier, GeminiIdentifier, PollinationsIdentifier,
+  GeminiIdentifier, LocalModelIdentifier, PollinationsIdentifier,
   OnDeviceIdentifier, ManualIdentifier
 ];
 
@@ -535,7 +763,7 @@ export function shrinkImage(file, maxSide = 1024) {
         const c = document.createElement('canvas');
         c.width = w; c.height = h;
         c.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(c.toDataURL('image/jpeg', 0.85));
+        resolve(c.toDataURL('image/jpeg', 0.7));
       };
       img.src = reader.result;
     };

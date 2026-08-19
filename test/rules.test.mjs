@@ -161,7 +161,7 @@ section('다중 질환 (실사용 시나리오)');
   const all = Object.keys(DISEASE_BY_ID);
   const r2 = evaluate(meal('rice_white', 'kimchi_jjigae', 'tteok', 'soju'), all);
   check('전체 선택 시 전체 결과 반환', r2.byDisease.length, all.length);
-  check('질환·상태 15종 등록됨', all.length, 15);
+  check('질환·상태 30종 등록됨', all.length, 30);
   check('전체 선택 시 tips 최대 4개', r2.tips.length <= 4, true);
   check('모든 결과에 reason 문자열 존재', r2.byDisease.every(x => typeof x.reason === 'string' && x.reason.length > 0), true);
   check('모든 트리거에 근거(rationale) 존재',
@@ -369,7 +369,8 @@ section('신규 축 데이터');
     DB.foods.every(f => newAxes.every(a => typeof f[a] === 'number')), true);
   check('모든 음식에 tags 배열 존재', DB.foods.every(f => Array.isArray(f.tags)), true);
 
-  const validTags = ['raw', 'high_mercury', 'cruciferous', 'organ', 'processed'];
+  const validTags = ['raw', 'high_mercury', 'cruciferous', 'organ', 'processed',
+    'dairy', 'gluten', 'peanut', 'treenut', 'shellfish', 'egg', 'soy', 'tyramine'];
   check('tags 값이 모두 유효', DB.foods.every(f => f.tags.every(t => validTags.includes(t))), true);
   check('신규 축에 음수 없음',
     DB.foods.every(f => newAxes.every(a => f[a] >= 0)), true);

@@ -31,7 +31,7 @@ check('별칭 "밥"으로 흰쌀밥 매칭', store.search('밥')[0]?.id, 'rice_w
 check('별칭 "김치"로 배추김치 매칭', store.search('김치')[0]?.id, 'kimchi');
 check('별칭 "술"로 소주 매칭', store.search('술')[0]?.id, 'soju');
 check('별칭 "돼지국밥"으로 순대국 매칭', store.search('돼지국밥')[0]?.id, 'sundaeguk');
-check('없는 음식은 빈 배열', store.search('푸아그라').length, 0);
+check('없는 음식은 빈 배열', store.search('은하수스튜').length, 0);
 check('빈 검색어는 빈 배열', store.search('').length, 0);
 check('신규 음식도 검색됨 (에너지드링크)', store.search('에너지드링크')[0]?.id, 'energy_drink');
 check('브랜드명 별칭으로도 검색 (핫식스)', store.search('핫식스')[0]?.id, 'energy_drink');
@@ -322,7 +322,64 @@ console.log('\n── Gemini 어댑터: 프록시 없이 임시 키로도 동작
   check('키가 헤더로 전달', calledHeaders['x-goog-api-key'], 'AIzaTEST');
   check('결과가 테이블에 매칭', out[0]?.food?.id, 'bibimbap');
 
+  /* 우리 DB에 없는 음식은 버리지 않고, Gemini가 함께 준 est(영양 추정치)로
+     "가상의 음식"을 만들어 담는다. 판정 자체는 여전히 rules.js가 그 수치를
+     그대로 읽어 계산해야 한다 — Gemini가 판정을 대신하면 안 된다. */
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => ({
+    candidates: [{ content: { parts: [{ text: JSON.stringify({ items: [{
+      name: '은하수스튜', portion: 1, confidence: 0.7,
+      est: { serving_g: 300, kcal: 500, carb_g: 40, protein_g: 20, fat_g: 20, satfat_g: 15,
+             sugar_g: 5, sodium_mg: 1500, cholesterol_mg: 50, potassium_mg: 300, phosphorus_mg: 200,
+             calcium_mg: 100, purine_mg: 50, vitk_ug: 10, iron_mg: 2, iodine_ug: 20,
+             caffeine_mg: 0, vita_ug: 0, texture: 'soft', spicy: false, acidic: false,
+             greasy: true, salty: true, alcohol: false }
+    }] }) }] } }]
+  }) });
+  const est = await new GeminiIdentifier({ devApiKey: 'AIzaTEST' })
+    .identify('data:image/jpeg;base64,x', store);
+  check('DB에 없어도 버리지 않고 담김', est.length, 1);
+  check('unmatched로 새지 않음', est.unmatched.length, 0);
+  check('가상 음식임을 소스로 구분', est[0].food.src, 'gemini_est');
+  check('Gemini의 est 나트륨 값을 그대로 씀', est[0].food.sodium_mg, 1500);
+  check('포화지방도 그대로 씀', est[0].food.satfat_g, 15);
+  check('irritant 플래그가 배열로 변환됨',
+    est[0].food.irritant.includes('greasy') && est[0].food.irritant.includes('salty'), true);
+  const estMeal = sumMeal([{ food: est[0].food, portion: 1 }]);
+  const estResult = evaluate(estMeal, ['htn']);
+  check('가상 음식도 rules.js가 결정적으로 판정 (AI가 판정을 대신하지 않음)',
+    estResult.byDisease[0].verdict, 'avoid');
+
+  // est조차 없으면(스키마를 못 지킨 응답) 예전처럼 unmatched로 넘긴다
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => ({
+    candidates: [{ content: { parts: [{ text:
+      '{"items":[{"name":"은하수스튜","portion":1,"confidence":0.7}]}' }] } }]
+  }) });
+  const noEst = await new GeminiIdentifier({ devApiKey: 'AIzaTEST' })
+    .identify('data:image/jpeg;base64,x', store);
+  check('est 없는 응답은 unmatched로', noEst.unmatched.length, 1);
+
+  /* est를 일부러 required로 강제하면, 애매한 사진에서 Gemini가 확신 없는 필드를
+     채우느니 아예 items를 통째로 비워 버리는 실패 모드가 관찰됐다(실사용 버그).
+     그래서 필드를 다 못 채운 est도 정상적으로 받아 담아야 한다. */
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => ({
+    candidates: [{ content: { parts: [{ text: JSON.stringify({ items: [{
+      name: '은하수스튜', portion: 1, confidence: 0.4,
+      est: { sodium_mg: 900 }   // 다른 축은 다 비워둠
+    }] }) }] } }]
+  }) });
+  const partial = await new GeminiIdentifier({ devApiKey: 'AIzaTEST' })
+    .identify('data:image/jpeg;base64,x', store);
+  check('일부 필드만 있는 est도 버리지 않고 담김', partial.length, 1);
+  check('빈 필드는 0으로 안전하게 채워짐', partial[0].food.kcal, 0);
+  check('있는 필드는 그대로 반영', partial[0].food.sodium_mg, 900);
+
   // 프록시가 있으면 프록시 우선 (키가 브라우저에 안 남는 배포 경로)
+  globalThis.fetch = async (url, opt) => {
+    calledUrl = url; calledHeaders = opt.headers;
+    return { ok: true, status: 200, json: async () => ({
+      candidates: [{ content: { parts: [{ text: '{"items":[{"name":"비빔밥","portion":1,"confidence":0.9}]}' }] } }]
+    }) };
+  };
   await new GeminiIdentifier({ proxyUrl: 'https://x.workers.dev', devApiKey: 'AIzaTEST' })
     .identify('data:image/jpeg;base64,x', store);
   check('프록시가 있으면 프록시 우선', calledUrl.includes('x.workers.dev'), true);
@@ -335,12 +392,95 @@ console.log('\n── Gemini 어댑터: 프록시 없이 임시 키로도 동작
   check('잘못된 키는 BAD_KEY로 구분', err, 'BAD_KEY');
 }
 
+console.log('\n── Gemini 직접 판정 (judgeMealWithGemini) — 식별부터 좋음/주의/피함까지 한 번에');
+{
+  const { judgeMealWithGemini, GEMINI_JUDGE_SCHEMA } = await import('../js/identify.js');
+  const diseases = [
+    { id: 'htn', name: '고혈압', focus: '나트륨' },
+    { id: 'dm', name: '당뇨병', focus: '당류·탄수화물' }
+  ];
+  const profile = { weightGiven: true, weightKg: 70, ageYears: 45, sex: 'm' };
+
+  let sentBody = null;
+  globalThis.fetch = async (url, opt) => {
+    sentBody = JSON.parse(opt.body);
+    return { ok: true, status: 200, json: async () => ({
+      candidates: [{ content: { parts: [{ text: JSON.stringify({
+        foods: [{ name: '은하수스튜', portion: '1인분' }],
+        byDisease: [
+          { id: 'htn', verdict: 'avoid', reason: '나트륨이 매우 높습니다.' },
+          { id: 'dm',  verdict: 'caution', reason: '탄수화물이 다소 많습니다.' }
+        ],
+        overall: 'avoid',
+        overallComment: '나트륨이 높아 권하지 않습니다.',
+        tips: ['국물을 남기세요.', '양을 줄이세요.']
+      }) }] } }]
+    }) };
+  };
+
+  const result = await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile,
+    { devApiKey: 'AIzaTEST' });
+
+  check('요청 스키마에 두 질환 id가 포함됨', sentBody.contents[0].parts[0].text.includes('htn') &&
+    sentBody.contents[0].parts[0].text.includes('dm'), true);
+  check('요청 스키마가 응답에 실림', JSON.stringify(sentBody.generationConfig.responseSchema),
+    JSON.stringify(GEMINI_JUDGE_SCHEMA));
+  check('식별된 음식 반환', result.foods[0].name, '은하수스튜');
+  check('질환별 판정 개수가 요청과 일치', result.byDisease.length, 2);
+  check('고혈압 판정 반영', result.byDisease.find(d => d.id === 'htn').verdict, 'avoid');
+  check('당뇨병 판정 반영', result.byDisease.find(d => d.id === 'dm').verdict, 'caution');
+  check('전체 판정 반영', result.overall, 'avoid');
+  check('팁 반환', result.tips.length, 2);
+
+  // 응답이 스키마를 아예 어기면(배열이 아니면) PARSE로 구분해 앱이 규칙 엔진으로 되돌아갈 수 있게 한다
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => ({
+    candidates: [{ content: { parts: [{ text: '{"foods":"이상함"}' }] } }]
+  }) });
+  let judgeErr = null;
+  try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
+  catch (e) { judgeErr = e.message; }
+  check('형식이 깨지면 PARSE로 구분', judgeErr, 'PARSE');
+
+  globalThis.fetch = async () => ({ ok: false, status: 429, clone: () => ({ json: async () => ({}) }) });
+  judgeErr = null;
+  try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
+  catch (e) { judgeErr = e.message; }
+  check('429는 RATE_LIMIT으로 구분', judgeErr, 'RATE_LIMIT');
+
+  /* 모바일 네트워크는 한 번씩 뚝뚝 끊긴다. fetch()가 응답 없이 그 자리에서
+     거부되면(진짜 서버 오류가 아니라 요청 자체가 실패한 경우) 한 번 더 시도해야
+     한다 — 실사용(iOS Safari, "Load failed")에서 이 재시도가 없어 매번 실패했다. */
+  let attempts = 0;
+  globalThis.fetch = async () => {
+    attempts++;
+    if (attempts === 1) throw new TypeError('Load failed');
+    return { ok: true, status: 200, json: async () => ({
+      candidates: [{ content: { parts: [{ text: JSON.stringify({
+        foods: [{ name: '비빔밥' }],
+        byDisease: [{ id: 'htn', verdict: 'good', reason: '괜찮습니다.' }],
+        overall: 'good', overallComment: '좋습니다.', tips: []
+      }) }] } }]
+    }) };
+  };
+  const retried = await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' });
+  check('첫 시도가 네트워크 오류로 실패해도 한 번 더 시도해 성공', attempts, 2);
+  check('재시도 후 정상 결과 반환', retried.overall, 'good');
+
+  // 두 번 다 실패하면(=재시도 소진) 결국 원래 오류를 그대로 던진다
+  globalThis.fetch = async () => { throw new TypeError('Load failed'); };
+  judgeErr = null;
+  try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
+  catch (e) { judgeErr = e.message; }
+  check('재시도까지 다 실패하면 원래 오류 그대로', judgeErr, 'Load failed');
+}
+
 console.log('\n── 자체 학습 모델 어댑터');
 {
   const { LocalModelIdentifier, ADAPTERS, makeIdentifier } = await import('../js/identify.js');
 
   check('어댑터 목록에 등록', ADAPTERS.some(A => A.id === 'local'), true);
-  check('목록 맨 앞 (가장 정확·무료)', ADAPTERS[0].id, 'local');
+  check('목록 맨 앞은 Gemini (항상 먼저 인식)', ADAPTERS[0].id, 'gemini');
+  check('Gemini가 준비 안 됐을 때의 차선책', ADAPTERS[1].id, 'local');
   check('makeIdentifier로 생성', makeIdentifier('local') instanceof LocalModelIdentifier, true);
   check('모델 주소 없으면 사용 불가', await new LocalModelIdentifier().available(), false);
   check('모델 주소가 있으면 사용 가능',

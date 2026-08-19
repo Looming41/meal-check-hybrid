@@ -217,13 +217,52 @@
   .gate-foot{text-align:center;margin-top:12px;font-size:13px}
   .gate-foot a{color:var(--blue)}
   body.gated{overflow:hidden}
+
+  /* ── 헤더 · 햄버거 메뉴 ── */
+  .app-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .hamburger-btn{flex-shrink:0;width:42px;height:42px;border-radius:10px;border:1.5px solid var(--line);
+    background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;cursor:pointer;margin-top:2px}
+  .hamburger-btn span{display:block;width:20px;height:2px;background:var(--ink)}
+  .hamburger-btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+  .disease-nudge{display:block;width:100%;text-align:left;background:#FFF6E6;border:1.5px solid var(--amber);
+    color:var(--ink);border-radius:var(--radius);padding:13px 16px;font-size:15px;font-family:inherit;
+    cursor:pointer;margin-bottom:16px}
+  .disease-nudge[hidden]{display:none}
+
+  /* ── 설정 패널 ── */
+  .settings-panel{position:fixed;inset:0;background:rgba(38,48,43,.55);z-index:110;
+    display:flex;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
+  .settings-panel[hidden]{display:none}
+  .settings-card{background:var(--card);border-radius:var(--radius);padding:22px 20px;
+    max-width:520px;width:100%;margin:auto}
+  .settings-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .settings-head h2{font-size:22px}
+  .icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);
+    font-size:16px;cursor:pointer;flex-shrink:0}
+  .settings-section{padding:16px 0;border-top:1px solid var(--line)}
+  .settings-section:first-of-type{border-top:none;padding-top:0}
+  .settings-section h3{font-size:16px;margin-bottom:8px}
+  .settings-section .hint{font-size:13px;color:var(--ink-soft);margin-bottom:10px}
+
+  .lang-toggle{display:flex;gap:8px}
+  .lang-btn{flex:1;border:1.5px solid var(--line);background:#FAFBF8;border-radius:10px;padding:10px;
+    font-size:15px;font-family:inherit;color:var(--ink);cursor:pointer}
+  .lang-btn.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+
+  .guide-steps{margin:10px 0 0 20px}
+  .guide-steps li{margin-bottom:16px;font-size:14px;line-height:1.5}
+  .guide-shot{display:block;width:100%;max-width:100%;border-radius:10px;border:1px solid var(--line);
+    margin-top:8px}
+  .guide-note{margin-top:10px;font-size:13px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
 
 <!-- 첫 실행 면책 고지. 확인 전에는 앱을 쓸 수 없다.
      건강 판정을 내리는 앱이므로 한계를 사용자가 반드시 보고 넘어가게 만든다. -->
-<div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+<div id="gate" class="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="gate-card">
     <h2 id="gateTitle">먼저 읽어 주세요</h2>
 
@@ -261,13 +300,26 @@
   </div>
 </div>
 
-<header>
-  <div class="eyebrow">밥상 판정</div>
-  <h1>이 밥상, 나에게 괜찮을까?</h1>
-  <p>앓고 있는 질환이나 상태를 고르고 음식을 알려 주면, 각각의 식이 기준에 따라 판정해 드립니다.</p>
+<header class="app-header">
+  <div class="header-text">
+    <div class="eyebrow" data-i18n="eyebrow">밥상 판정</div>
+    <h1 data-i18n="title">이 밥상, 나에게 괜찮을까?</h1>
+    <p data-i18n="tagline">앓고 있는 질환이나 상태를 고르고 음식을 알려 주면, 각각의 식이 기준에 따라 판정해 드립니다.</p>
+  </div>
+  <button type="button" id="settingsBtn" class="hamburger-btn" aria-haspopup="dialog" aria-controls="settingsPanel" aria-label="설정">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
-<details class="settings">
+<!-- 질환·상태를 아직 안 고른 사람에게 설정으로 가는 길을 눈에 띄게 알려준다.
+     판정 버튼은 비활성 상태에선 클릭이 안 먹으므로, 여기 별도 안내가 필요하다. -->
+<button type="button" id="diseaseNudge" class="disease-nudge" hidden data-i18n="diseaseNudge">
+  ⚙️ 먼저 설정에서 질환·상태를 골라 주세요 →
+</button>
+
+<!-- 네이티브 앱에서는 인식 방법 선택을 사용자에게 노출하지 않는다(자체 모델 고정 사용).
+     DOM에는 남겨 두어야 renderAdapterOptions() 등 기존 로직이 그대로 동작한다. -->
+<details class="settings" hidden>
   <summary>⚙️ 음식 인식 방법 바꾸기</summary>
   <div id="adapterOptions" style="margin-top:10px"></div>
   <p style="font-size:13px;color:var(--ink-soft);margin-top:10px">
@@ -275,44 +327,104 @@
   </p>
 </details>
 
-<details class="settings" id="profileBox">
-  <summary>👤 체중·나이 넣기 <span class="opt-tag">선택</span></summary>
-  <p style="font-size:13px;color:var(--ink-soft);margin:10px 0 12px">
-    넣지 않아도 판정됩니다. 넣으면 체중·나이에 맞춰 기준이 조정됩니다.
-    입력값은 이 기기 안에만 저장되고 어디로도 전송되지 않습니다.
-  </p>
-  <div class="profile-grid">
-    <label>체중
-      <input type="number" id="pfWeight" min="10" max="200" step="1" placeholder="예: 62" inputmode="numeric">
-      <small>kg · 콩팥병 단백질, 심부전 수분 기준에 쓰입니다</small>
-    </label>
-    <label>나이
-      <input type="number" id="pfAge" min="1" max="120" step="1" placeholder="예: 34" inputmode="numeric">
-      <small>세 · 소아·청소년은 기준이 더 낮게 조정됩니다</small>
-    </label>
-    <label>성별
-      <select id="pfSex">
-        <option value="">고르지 않음</option>
-        <option value="f">여성</option>
-        <option value="m">남성</option>
-      </select>
-      <small>철·칼슘 안내에 참고됩니다</small>
-    </label>
+<!-- 설정 패널 — 언어·질환/상태·체중나이성별·Gemini 키를 전부 여기서 한 번에 관리한다.
+     질환 선택은 예전엔 매번 골랐는데, 사용자 요청으로 여기서 한 번만 고르고
+     선택값이 저장되어 계속 쓰이도록 바꿨다(mc.diseases). -->
+<div id="settingsPanel" class="settings-panel" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="settings-card">
+    <div class="settings-head">
+      <h2 id="settingsTitle" data-i18n="settingsTitle">설정</h2>
+      <button type="button" id="settingsClose" class="icon-btn" aria-label="설정 닫기">✕</button>
+    </div>
+
+    <section class="settings-section" id="secLang">
+      <h3 data-i18n="langLabel">언어 · Language</h3>
+      <div class="lang-toggle" role="group" aria-label="언어 선택">
+        <button type="button" class="lang-btn" data-lang="ko">한국어</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
+      </div>
+    </section>
+
+    <section class="settings-section" id="secDisease">
+      <h3 data-i18n="diseaseLabel">앓고 있는 질환·상태</h3>
+      <p class="hint" data-i18n="diseaseHint">해당하는 것을 모두 눌러 주세요. 여러 개를 골라도 됩니다. 한 번 고르면 계속 저장됩니다.</p>
+      <div id="chips" role="group" aria-label="질환 및 상태 선택"></div>
+    </section>
+
+    <section class="settings-section" id="profileBox">
+      <h3><span data-i18n="profileLabel">체중 · 나이 · 성별</span> <span class="opt-tag" data-i18n="optTag">선택</span></h3>
+      <p class="hint" data-i18n="profileHint">
+        넣지 않아도 판정됩니다. 넣으면 체중·나이에 맞춰 기준이 조정됩니다.
+        입력값은 이 기기 안에만 저장되고 어디로도 전송되지 않습니다.
+      </p>
+      <div class="profile-grid">
+        <label><span data-i18n="weightLabel">체중</span>
+          <input type="number" id="pfWeight" min="10" max="200" step="1" placeholder="예: 62" inputmode="numeric">
+          <small data-i18n="weightHint">kg · 콩팥병 단백질, 심부전 수분 기준에 쓰입니다</small>
+        </label>
+        <label><span data-i18n="ageLabel">나이</span>
+          <input type="number" id="pfAge" min="1" max="120" step="1" placeholder="예: 34" inputmode="numeric">
+          <small data-i18n="ageHint">세 · 소아·청소년은 기준이 더 낮게 조정됩니다</small>
+        </label>
+        <label><span data-i18n="sexLabel">성별</span>
+          <select id="pfSex">
+            <option value="" data-i18n="sexNone">고르지 않음</option>
+            <option value="f" data-i18n="sexF">여성</option>
+            <option value="m" data-i18n="sexM">남성</option>
+          </select>
+          <small data-i18n="sexHint">철·칼슘 안내에 참고됩니다</small>
+        </label>
+      </div>
+      <button class="ghost-btn" id="pfClear" style="margin-top:12px" data-i18n="profileClear">입력값 지우기</button>
+    </section>
+
+    <section class="settings-section" id="secGemini">
+      <h3 data-i18n="geminiLabel">Gemini API 키</h3>
+      <p class="hint" data-i18n="geminiHint">
+        가장 정확한 인식을 위해 필요합니다. 키를 넣으면 여러분 본인의
+        무료 한도를 쓰게 되어, 저희 서버 비용도 안 들고 여러분이 결제할 일도 없습니다.
+      </p>
+
+      <ol class="guide-steps">
+        <li>
+          <span data-i18n="geminiStep1">아래 링크로 이동해 구글 계정으로 로그인한 뒤, "API 키 만들기"를 누릅니다.</span>
+          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>
+          <img data-src-ko="./gemini-guide-step1-create-btn.jpg" data-src-en="./gemini-guide-step1-create-btn-en.jpg"
+               src="./gemini-guide-step1-create-btn.jpg" alt="Google AI Studio API 키 화면, 오른쪽 위 'API 키 만들기' 버튼" class="guide-shot">
+        </li>
+        <li>
+          <span data-i18n="geminiStep2">이름은 아무거나 두고 프로젝트도 기본값 그대로 "키 만들기"를 누릅니다.</span>
+          <img data-src-ko="./gemini-guide-step2-modal.jpg" data-src-en="./gemini-guide-step2-modal-en.jpg"
+               src="./gemini-guide-step2-modal.jpg" alt="새 키 만들기 창, 키 이름과 프로젝트 선택 후 '키 만들기' 버튼" class="guide-shot">
+        </li>
+        <li>
+          <span data-i18n="geminiStep3">만들어진 키 옆의 네모 상자(복사) 아이콘을 눌러 키를 복사합니다.</span>
+          <img data-src-ko="./gemini-guide-step3-copy.jpg" data-src-en="./gemini-guide-step3-copy-en.jpg"
+               src="./gemini-guide-step3-copy.jpg" alt="API 키 목록, 키 옆 복사 아이콘에 'API 키 복사' 툴팁이 뜬 모습" class="guide-shot">
+        </li>
+        <li><span data-i18n="geminiStep4">이 화면으로 돌아와 아래 입력칸에 붙여넣고 "저장"을 누릅니다.</span></li>
+      </ol>
+
+      <input type="text" id="geminiKeyInput" autocomplete="off" spellcheck="false"
+             style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;
+                    font-size:15px;font-family:inherit;background:#FAFBF8;color:var(--ink);margin-top:14px">
+      <button class="ghost-btn" id="geminiKeySave" style="margin-top:10px" data-i18n="geminiSave">저장</button>
+      <button class="ghost-btn" id="geminiKeyClear" style="margin-top:8px" data-i18n="geminiClear">키 지우기</button>
+      <p id="geminiKeyStatus" style="font-size:13px;color:var(--green);margin-top:8px" hidden></p>
+
+      <p class="guide-note" data-i18n="geminiGuideNote">
+        이 키는 이 기기에만 저장되며, 저희 서버로 전송되지 않습니다. 구글의 무료 한도 안에서 쓰이며,
+        한도를 넘으면 자체 모델의 결과만 쓰이니 앱이 멈추지 않습니다. 설정에서 언제든 바꾸거나 지울 수 있습니다.
+      </p>
+    </section>
+
+    <!-- 첫 실행 온보딩에서만 쓰는 "다음/완료" 버튼. 평소 설정 화면에선 숨김. -->
+    <button type="button" class="go-btn" id="wizardNextBtn" hidden style="margin-top:6px"></button>
   </div>
-  <button class="ghost-btn" id="pfClear" style="margin-top:12px">입력값 지우기</button>
-</details>
+</div>
 
-<!-- 1단계 : 질환·상태 -->
+<!-- 음식 사진 -->
 <section class="step">
-  <span class="step-tag">1단계</span>
-  <h2>앓고 있는 질환·상태 고르기</h2>
-  <p class="hint">해당하는 것을 모두 눌러 주세요. 여러 개를 골라도 됩니다. 임신처럼 질환이 아닌 상태도 있습니다.</p>
-  <div id="chips" role="group" aria-label="질환 및 상태 선택"></div>
-</section>
-
-<!-- 2단계 : 음식 -->
-<section class="step">
-  <span class="step-tag">2단계</span>
   <h2 id="step2Title">음식 사진 찍기</h2>
   <p class="hint" id="step2Hint">밥상 전체가 위에서 잘 보이게, 밝은 곳에서 찍을수록 정확합니다.</p>
 
@@ -336,10 +448,9 @@
   <div class="err" id="scanErr" role="alert"></div>
 </section>
 
-<!-- 3단계 : 확인·보정 -->
+<!-- 확인·보정 -->
 <section class="step" id="confirmStep">
-  <span class="step-tag">3단계</span>
-  <h2>음식 목록 확인하기</h2>
+  <h2 data-i18n="confirmTitle">음식 목록 확인하기</h2>
   <p class="hint">AI가 틀릴 수 있습니다. 빠진 것은 더하고, 잘못된 것은 지워 주세요. 양도 고칠 수 있습니다.</p>
 
   <!-- 최근 먹은 것. 사람은 같은 걸 반복해서 먹으므로 이 경로가 가장 자주 쓰인다.

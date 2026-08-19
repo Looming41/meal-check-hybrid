@@ -215,9 +215,31 @@ if (missingIcons.length) {
 /* 개인정보 처리방침 */
 copyFileSync(new URL('./privacy.html', import.meta.url), new URL('./privacy.html', dist));
 
+/* Gemini API 키 발급 가이드용 실제 화면 캡처 (계정·창 정보는 미리 잘라냈다) */
+const guideImgs = [
+  'gemini-guide-step1-create-btn.jpg', 'gemini-guide-step1-create-btn-en.jpg',
+  'gemini-guide-step2-modal.jpg', 'gemini-guide-step2-modal-en.jpg',
+  'gemini-guide-step3-copy.jpg', 'gemini-guide-step3-copy-en.jpg'
+];
+for (const f of guideImgs) {
+  const src = new URL(`./assets/${f}`, import.meta.url);
+  if (existsSync(src)) copyFileSync(src, new URL(f, dist));
+}
+
+/* 자체 학습 모델 (js/app.js의 LOCAL_MODEL_URL이 './models'를 가리킨다) */
+const modelsSrc = new URL('./models/', import.meta.url);
+if (existsSync(modelsSrc)) {
+  const modelsDist = new URL('./models/', dist);
+  mkdirSync(modelsDist, { recursive: true });
+  for (const f of ['food-classifier.onnx', 'food-classes.json']) {
+    const src = new URL(f, modelsSrc);
+    if (existsSync(src)) copyFileSync(src, new URL(f, modelsDist));
+  }
+}
+
 const kb = (Buffer.byteLength(html) / 1024).toFixed(0);
 console.log(`dist/index.html 생성 (${kb}KB)`);
-console.log('dist/  manifest.webmanifest · sw.js · privacy.html · icon.svg · PNG 3종');
+console.log('dist/  manifest.webmanifest · sw.js · privacy.html · icon.svg · PNG 3종 · models/');
 
 /* ── 7. 자체 점검 ─────────────────────────────────────────── */
 const checks = [
