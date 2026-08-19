@@ -29,14 +29,29 @@ function candidate(food, confidence, portion = 1) {
     시도한다. 429·403 같은 실제 응답은 서버가 준 신호이므로 재시도하지 않는다 —
     여기서 건드리는 건 fetch()가 아예 throw하는 경우뿐이다.
     사진 업로드(본문 수백KB)는 검증 요청(본문 없음)보다 불안정한 네트워크에서
-    끊기기 쉬워, 총 2번 더(최초 시도 포함 3번) 시도하고 대기 시간도 점점 늘린다. */
-async function fetchWithRetry(url, init, retries = 2, attempt = 0) {
+    끊기기 쉬워, 총 2번 더(최초 시도 포함 3번) 시도하고 대기 시간도 점점 늘린다.
+
+    타임아웃을 직접 건다(45초). 키 검증(본문 없는 GET)은 항상 성공하는데 사진
+    분석(본문 있는 POST)만 실패하는 패턴이 실사용에서 반복 관찰됐다 — 구조화
+    출력 스키마가 무겁다 보니 응답 생성이 오래 걸려, 브라우저·통신망의 유휴
+    타임아웃에 걸려 조용히 끊기는 것으로 추정된다. 직접 타임아웃을 걸면 최소한
+    "TIMEOUT"이라는 분명한 신호를 얻어 원인을 추적할 수 있고, 사용자도 무한정
+    기다리지 않는다. */
+async function fetchWithRetry(url, init, retries = 2, attempt = 0, timeoutMs = 45000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, init);
+    return await fetch(url, { ...init, signal: controller.signal });
   } catch (e) {
-    if (retries <= 0) throw e;
+    if (e.name === 'AbortError') {
+      if (retries <= 0) throw new Error('TIMEOUT');
+    } else if (retries <= 0) {
+      throw e;
+    }
     await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-    return fetchWithRetry(url, init, retries - 1, attempt + 1);
+    return fetchWithRetry(url, init, retries - 1, attempt + 1, timeoutMs);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -174,9 +189,15 @@ export class GeminiIdentifier {
             est: {
               type: 'OBJECT',
               description: '1인분 기준 영양 추정치. 이 앱의 내장 데이터베이스에 이 음식이 ' +
-                           '없을 때만 쓰이는 예비값이다. 모르는 항목은 그냥 비워 두어도 된다 — ' +
-                           '억지로 다 채우려다 항목 전체를 포기하는 것보다, 아는 만큼만 채우는 ' +
-                           '편이 훨씬 낫다.',
+                           '없을 때만 쓰이는 예비값이다. 모르는 항목은 그냥 비워 두어도 된다.',
+              /* 축을 17개에서 9개로 줄였다(2026-08-20). 구조화 출력 필드가 많을수록
+                 생성 시간이 늘어나는데, 실사용에서 "사진 분석만 매번 Load failed로
+                 끊긴다"(키 확인처럼 짧은 요청은 항상 성공)는 패턴이 반복 관찰됐다.
+                 응답 생성이 오래 걸려 모바일 네트워크의 유휴 타임아웃에 걸리는
+                 것으로 추정된다. 여기 뺀 축(퓨린·비타민K·요오드·철·카페인·레티놀·
+                 인·칼슘)은 통풍·와파린·갑상선·빈혈·임신처럼 이미 흔한 음식 위주라
+                 우리 DB 매칭 실패가 드문 질환들이라, 예비 추정치의 정확도보다
+                 응답 속도가 더 급하다고 판단했다. */
               properties: {
                 serving_g:      { type: 'NUMBER', description: '추정 1인분 무게(g)' },
                 kcal:           { type: 'NUMBER' },
@@ -186,21 +207,10 @@ export class GeminiIdentifier {
                 satfat_g:       { type: 'NUMBER' },
                 sugar_g:        { type: 'NUMBER' },
                 sodium_mg:      { type: 'NUMBER' },
-                cholesterol_mg: { type: 'NUMBER' },
                 potassium_mg:   { type: 'NUMBER' },
-                phosphorus_mg:  { type: 'NUMBER' },
-                calcium_mg:     { type: 'NUMBER' },
-                purine_mg:      { type: 'NUMBER' },
-                vitk_ug:        { type: 'NUMBER' },
-                iron_mg:        { type: 'NUMBER' },
-                iodine_ug:      { type: 'NUMBER' },
-                caffeine_mg:    { type: 'NUMBER' },
-                vita_ug:        { type: 'NUMBER', description: '레티놀(동물성 비타민A)만. 베타카로틴 등은 제외.' },
                 texture:        { type: 'STRING', enum: ['soft', 'normal', 'mixed', 'hard', 'liquid', 'dry', 'sticky'] },
                 spicy:          { type: 'BOOLEAN' },
-                acidic:         { type: 'BOOLEAN' },
                 greasy:         { type: 'BOOLEAN' },
-                salty:          { type: 'BOOLEAN' },
                 alcohol:        { type: 'BOOLEAN' }
               }
               /* 일부러 required를 두지 않는다. Gemini의 구조화 출력은 required 필드를
@@ -248,7 +258,14 @@ export class GeminiIdentifier {
       generationConfig: {
         responseMimeType: 'application/json',
         responseSchema: GeminiIdentifier.SCHEMA,
-        temperature: 0.1
+        temperature: 0.1,
+        maxOutputTokens: 2048,
+        /* thinkingBudget: 0 — "생각"(내부 추론) 단계를 끈다. 음식 식별은 깊은 추론이
+           필요 없는 단순 분류 작업인데, 사고 모드가 구조화 출력(responseSchema)과
+           함께 켜지면 응답이 비정상적으로 오래 걸리거나 아예 끝나지 않고 0바이트로
+           멈추는 사례가 구글 개발자 포럼에 보고돼 있다. 실사용에서 "사진 분석만
+           매번 Load failed"로 끊기는 패턴과 정확히 일치해 꺼 둔다. */
+        thinkingConfig: { thinkingBudget: 0 }
       }
     });
 
@@ -352,10 +369,12 @@ ${list}
 2. byDisease는 위 목록의 id 하나당 정확히 하나씩 주세요 — 요청 개수와 정확히 같아야 합니다.
 3. verdict는 good(좋음)·caution(주의)·avoid(피함) 중 하나. 일반적인 임상 식이 지침을 기준으로,
    보수적으로(불확실하면 caution 쪽으로) 판정하세요.
-4. reason은 왜 그 판정인지 한국어로 구체적으로 쓰세요. 가능하면 나트륨·당류처럼 어떤 성분이
-   문제인지 언급하세요. "~할 수 있습니다"보다는 단정적으로 쓰되, 과장하지 마세요.
+4. reason은 딱 한 문장, 최대한 짧게 쓰세요(가능하면 나트륨·당류처럼 어떤 성분이 문제인지만
+   짚어서). 길게 설명하지 마세요 — 질환이 여러 개면 항목마다 다 써야 해서 문장이 길수록
+   응답이 느려집니다. "~할 수 있습니다"보다는 단정적으로 쓰되, 과장하지 마세요.
 5. overall은 byDisease 중 가장 나쁜 판정을 따르세요.
-6. tips는 이 식사를 지금보다 낫게 만들 수 있는 구체적 행동(양 줄이기, 국물 남기기 등) 2~4개.
+6. tips는 이 식사를 지금보다 낫게 만들 수 있는 구체적 행동(양 줄이기, 국물 남기기 등)을
+   짧은 문장으로 2~3개만. 길게 쓰지 마세요.
 7. 이것은 의료 진단이 아닌 일반적 식이 참고 정보입니다 — 그렇다고 매번 문장 안에 면책 문구를
    넣지 마세요. 그 안내는 화면에 별도로 이미 표시됩니다.`;
 }
@@ -380,7 +399,9 @@ export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts 
     generationConfig: {
       responseMimeType: 'application/json',
       responseSchema: GEMINI_JUDGE_SCHEMA,
-      temperature: 0.2
+      temperature: 0.2,
+      maxOutputTokens: 3072,
+      thinkingConfig: { thinkingBudget: 0 }   // 위 GeminiIdentifier.SCHEMA 쪽 주석 참조
     }
   });
 
