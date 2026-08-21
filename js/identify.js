@@ -160,7 +160,7 @@ export class GeminiIdentifier {
    *   ⚠️ devApiKey가 든 파일을 인터넷에 올리면 누구나 키를 훔쳐 쓴다.
    *      품질만 확인하고 반드시 지운 뒤 proxyUrl로 배포할 것.
    */
-  constructor({ proxyUrl = '', devApiKey = '', model = 'gemini-2.5-flash',
+  constructor({ proxyUrl = '', devApiKey = '', model = 'gemini-3.7-flash',
                 userToken = '' } = {}) {
     this.proxyUrl = proxyUrl;
     this.devApiKey = devApiKey;
@@ -381,7 +381,7 @@ ${list}
  * @param {{proxyUrl?:string, devApiKey?:string, model?:string, userToken?:string}} opts
  */
 export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts = {}) {
-  const { proxyUrl = '', devApiKey = '', model = 'gemini-2.5-flash', userToken = '' } = opts;
+  const { proxyUrl = '', devApiKey = '', model = 'gemini-3.7-flash', userToken = '' } = opts;
   const [, mime = 'image/jpeg', b64] = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
   if (!b64) throw new Error('이미지 형식을 읽지 못했습니다.');
 
@@ -739,9 +739,9 @@ export const ADAPTERS = [
  * 설정에 맞는 어댑터 인스턴스를 만든다.
  *
  * ⚠️ 옵션을 통째로 넘기지 않는다. 어댑터마다 `model`이 뜻하는 바가 다르기 때문이다.
- *    (Gemini는 'gemini-2.5-flash', 온디바이스는 'Xenova/clip-...')
+ *    (Gemini는 'gemini-3.7-flash', 온디바이스는 'Xenova/clip-...')
  *    예전에 공통 opts를 그대로 전달했다가 Gemini 모델명이 CLIP 모델명을 덮어써서,
- *    Transformers.js가 허깅페이스에서 'gemini-2.5-flash'를 찾는 오류가 났다.
+ *    Transformers.js가 허깅페이스에서 'gemini-3.7-flash'를 찾는 오류가 났다.
  *    그래서 어댑터별로 필요한 키만 골라 넘긴다.
  */
 export function makeIdentifier(id, opts = {}) {
