@@ -160,7 +160,7 @@ export class GeminiIdentifier {
    *   ⚠️ devApiKey가 든 파일을 인터넷에 올리면 누구나 키를 훔쳐 쓴다.
    *      품질만 확인하고 반드시 지운 뒤 proxyUrl로 배포할 것.
    */
-  constructor({ proxyUrl = '', devApiKey = '', model = 'gemini-flash-latest',
+  constructor({ proxyUrl = '', devApiKey = '', model = 'gemini-2.5-flash',
                 userToken = '' } = {}) {
     this.proxyUrl = proxyUrl;
     this.devApiKey = devApiKey;
@@ -259,13 +259,7 @@ export class GeminiIdentifier {
         responseMimeType: 'application/json',
         responseSchema: GeminiIdentifier.SCHEMA,
         temperature: 0.1,
-        maxOutputTokens: 2048,
-        /* thinkingBudget: 0 — "생각"(내부 추론) 단계를 끈다. 음식 식별은 깊은 추론이
-           필요 없는 단순 분류 작업인데, 사고 모드가 구조화 출력(responseSchema)과
-           함께 켜지면 응답이 비정상적으로 오래 걸리거나 아예 끝나지 않고 0바이트로
-           멈추는 사례가 구글 개발자 포럼에 보고돼 있다. 실사용에서 "사진 분석만
-           매번 Load failed"로 끊기는 패턴과 정확히 일치해 꺼 둔다. */
-        thinkingConfig: { thinkingBudget: 0 }
+        maxOutputTokens: 2048
       }
     });
 
@@ -387,7 +381,7 @@ ${list}
  * @param {{proxyUrl?:string, devApiKey?:string, model?:string, userToken?:string}} opts
  */
 export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts = {}) {
-  const { proxyUrl = '', devApiKey = '', model = 'gemini-flash-latest', userToken = '' } = opts;
+  const { proxyUrl = '', devApiKey = '', model = 'gemini-2.5-flash', userToken = '' } = opts;
   const [, mime = 'image/jpeg', b64] = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
   if (!b64) throw new Error('이미지 형식을 읽지 못했습니다.');
 
@@ -400,8 +394,7 @@ export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts 
       responseMimeType: 'application/json',
       responseSchema: GEMINI_JUDGE_SCHEMA,
       temperature: 0.2,
-      maxOutputTokens: 3072,
-      thinkingConfig: { thinkingBudget: 0 }   // 위 GeminiIdentifier.SCHEMA 쪽 주석 참조
+      maxOutputTokens: 3072
     }
   });
 
@@ -746,9 +739,9 @@ export const ADAPTERS = [
  * 설정에 맞는 어댑터 인스턴스를 만든다.
  *
  * ⚠️ 옵션을 통째로 넘기지 않는다. 어댑터마다 `model`이 뜻하는 바가 다르기 때문이다.
- *    (Gemini는 'gemini-flash-latest', 온디바이스는 'Xenova/clip-...')
+ *    (Gemini는 'gemini-2.5-flash', 온디바이스는 'Xenova/clip-...')
  *    예전에 공통 opts를 그대로 전달했다가 Gemini 모델명이 CLIP 모델명을 덮어써서,
- *    Transformers.js가 허깅페이스에서 'gemini-flash-latest'를 찾는 오류가 났다.
+ *    Transformers.js가 허깅페이스에서 'gemini-2.5-flash'를 찾는 오류가 났다.
  *    그래서 어댑터별로 필요한 키만 골라 넘긴다.
  */
 export function makeIdentifier(id, opts = {}) {
