@@ -32,14 +32,17 @@ const PROXY_URL = 'https://meal-check-proxy.meal-check-hybrid.workers.dev';
 const DEV_GEMINI_KEY = '';
 
 // 쓸 Gemini 모델. 무료 등급 한도(2026년 기준)가 모델마다 다릅니다.
-//   'gemini-flash-latest'       분당 10회 · 하루  250회 — 정확도 우선
+//   'gemini-3.7-flash'       분당 10회 · 하루  250회 — 정확도 우선
 //   'gemini-flash-lite-latest'  분당 15회 · 하루 1000회 — 한도 우선
 // 한 끼 판정이 요청 1회이므로, 하루 세 끼 기준
 // Flash는 약 80명, Flash-Lite는 약 330명까지 감당합니다.
 // 한도를 넘기면 요금이 아니라 429가 오고, 앱이 안내한 뒤 검색으로 넘깁니다.
-// -latest 별칭을 쓴다 — 구글이 이후 더 새 모델을 내놓아도 코드를 안 고쳐도
-// 자동으로 그쪽으로 연결된다(모델명을 못 찾아 요청이 깨지는 사고를 막는다).
-const GEMINI_MODEL = 'gemini-flash-latest';
+// 구체적 버전을 고정한다(2026-08-21). -latest 별칭으로 바꿔봤다가 실사용에서
+// 곧바로 "Failed to fetch"가 재현됐고, 이 고정 버전으로 되돌리자 다시 정상
+// 동작했다 — 이 계정/키에서는 별칭보다 고정 버전이 더 안정적으로 확인됐다.
+// 다음에 모델을 바꿀 일이 있으면 별칭 대신 실제 존재하는 구체적 버전명을
+// 확인해서 박아 넣을 것(예전엔 안전하다고 여겼던 판단이 틀렸다).
+const GEMINI_MODEL = 'gemini-3.7-flash';
 const GEMINI_DAILY_LIMIT = 250;   // 위 모델의 하루 한도. 모델을 바꾸면 같이 고치세요.
 
 // 사진을 보내기 전 줄일 크기(긴 변, 픽셀). 작을수록 토큰=원가와 업로드 용량이 줄어듭니다.
