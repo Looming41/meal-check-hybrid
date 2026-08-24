@@ -4,59 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>밥상 판정 — 질환 맞춤 식사 확인</title>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Figtree:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F1F3EE; --card:#FFFFFF; --ink:#26302B; --ink-soft:#5A665F;
-    --green:#2F6B4F; --amber:#C08A2B; --red:#B23B2E; --blue:#2C5470;
-    --line:#D9DFD6; --radius:14px;
+    --bg:#F4F8F9; --card:#FFFFFF; --ink:#121C20; --ink-soft:#54686D;
+    --teal:#0891B2; --teal-deep:#0E7490; --green:#059669; --amber:#D97706; --red:#DC2626; --blue:#2563EB;
+    --line:#DCE7EA; --radius:16px;
+    --shadow-sm:0 1px 2px rgba(15,26,30,.06),0 1px 1px rgba(15,26,30,.04);
+    --shadow-md:0 4px 14px rgba(15,26,30,.08),0 1px 3px rgba(15,26,30,.06);
+    --shadow-lg:0 12px 32px rgba(15,26,30,.12),0 2px 6px rgba(15,26,30,.06);
+    --ease:cubic-bezier(.4,0,.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',sans-serif;
+  body{background:var(--bg);color:var(--ink);font-family:'Figtree','Noto Sans KR',sans-serif;
     font-size:17px;line-height:1.6;max-width:560px;margin:0 auto;padding:20px 16px 60px}
   h1,h2,.stamp{font-family:'Gowun Batang',serif}
-  header{margin-bottom:22px}
-  .eyebrow{font-size:13px;letter-spacing:.18em;color:var(--green);font-weight:700}
-  h1{font-size:30px;font-weight:700;margin-top:4px}
+  header{margin-bottom:24px}
+  .eyebrow{font-size:13px;letter-spacing:.18em;color:var(--teal);font-weight:700}
+  h1{font-size:30px;font-weight:700;margin-top:4px;letter-spacing:-.01em}
   header p{color:var(--ink-soft);font-size:15px;margin-top:6px}
 
   .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:20px;margin-bottom:16px}
+    padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm);
+    transition:box-shadow .2s var(--ease)}
   .step h2{font-size:20px;margin-bottom:4px}
   .step .hint{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
   .step-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--card);
-    background:var(--green);border-radius:999px;padding:2px 10px;margin-bottom:8px;letter-spacing:.06em}
+    background:var(--teal);border-radius:999px;padding:2px 10px;margin-bottom:8px;letter-spacing:.06em}
   .step[hidden]{display:none}
 
   .group{margin-bottom:14px}
   .group:last-child{margin-bottom:0}
   .group-label{font-size:13px;font-weight:700;color:var(--ink-soft);letter-spacing:.05em;margin-bottom:7px}
   .chips{display:flex;flex-wrap:wrap;gap:10px}
-  .chip{border:1.5px solid var(--line);background:#FAFBF8;border-radius:999px;
+  .chip{border:1.5px solid var(--line);background:#F5F9FA;border-radius:999px;
     padding:10px 16px;font-size:16px;cursor:pointer;font-family:inherit;color:var(--ink);
-    transition:background .15s,border-color .15s}
-  .chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+    transition:background .15s var(--ease),border-color .15s var(--ease),
+      transform .15s var(--ease),box-shadow .15s var(--ease)}
+  .chip:hover{border-color:var(--teal);background:#E7F6F9}
+  .chip:active{transform:scale(.97)}
+  .chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff;
+    font-weight:600;box-shadow:var(--shadow-sm)}
+  .chip[aria-pressed="true"]:hover{background:var(--teal-deep);border-color:var(--teal-deep)}
   .chip:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
 
   .photo-zone{border:2px dashed var(--line);border-radius:var(--radius);
-    padding:26px;text-align:center;cursor:pointer;background:#FAFBF8}
+    padding:26px;text-align:center;cursor:pointer;background:#F5F9FA;
+    transition:border-color .2s var(--ease),background .2s var(--ease)}
+  .photo-zone:hover{border-color:var(--teal);background:#E7F6F9}
   .photo-zone:focus-visible{outline:3px solid var(--amber)}
+  .zone-icon{color:var(--teal);margin-bottom:6px}
   .photo-zone strong{display:block;font-size:18px;margin-bottom:4px}
   .photo-zone span{font-size:14px;color:var(--ink-soft)}
-  #preview{width:100%;border-radius:var(--radius);margin-top:14px;display:none}
+  #preview{width:100%;border-radius:var(--radius);margin-top:14px;display:none;box-shadow:var(--shadow-sm)}
 
   .go-btn{width:100%;border:none;border-radius:var(--radius);padding:16px;
     font-size:19px;font-weight:700;font-family:inherit;cursor:pointer;
-    background:var(--ink);color:#fff;margin-top:12px}
-  .go-btn:disabled{background:#B9C0BA;cursor:not-allowed}
+    background:var(--teal);color:#fff;margin-top:12px;box-shadow:var(--shadow-md);
+    transition:transform .15s var(--ease),box-shadow .15s var(--ease),background .15s var(--ease)}
+  .go-btn:hover:not(:disabled){background:var(--teal-deep);box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+  .go-btn:active:not(:disabled){transform:translateY(0);box-shadow:var(--shadow-sm)}
+  .go-btn:disabled{background:#C7D1D3;box-shadow:none;cursor:not-allowed}
   .go-btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-  .ghost-btn{width:100%;border:1.5px solid var(--ink);background:transparent;color:var(--ink);
-    border-radius:var(--radius);padding:13px;font-size:17px;font-family:inherit;cursor:pointer;margin-top:10px}
+  .ghost-btn{width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:var(--radius);padding:13px;font-size:17px;font-family:inherit;cursor:pointer;margin-top:10px;
+    transition:border-color .15s var(--ease),background .15s var(--ease)}
+  .ghost-btn:hover{border-color:var(--ink);background:#F5F9FA}
 
   /* ── 검색·목록 ── */
   .search-row{display:flex;gap:8px}
   .search-row input{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;
-    font-size:17px;font-family:inherit;background:#FAFBF8;color:var(--ink)}
+    font-size:17px;font-family:inherit;background:#F5F9FA;color:var(--ink)}
   .search-row input:focus-visible{outline:3px solid var(--amber);outline-offset:1px}
   .suggest{list-style:none;margin-top:8px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
   .suggest:empty{display:none}
@@ -64,12 +82,12 @@
     padding:12px 14px;font-size:16px;font-family:inherit;cursor:pointer;color:var(--ink);
     border-bottom:1px solid var(--line)}
   .suggest li:last-child button{border-bottom:none}
-  .suggest li button:hover,.suggest li button:focus-visible{background:#EEF3EC}
+  .suggest li button:hover,.suggest li button:focus-visible{background:#EAF3F5}
   .src-tag{float:right;font-size:11px;font-weight:700;background:#EEF2F6;color:var(--blue);
     border-radius:999px;padding:2px 8px;margin-top:2px}
 
   .picked{list-style:none;margin-top:12px}
-  .picked li{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#FAFBF8;
+  .picked li{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#F5F9FA;
     border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
   /* 좁은 화면에서 음식 이름이 길면(닭가슴살샐러드 등) 옆의 양 선택칸을
      밀어내지 않도록 최소폭을 0으로 두고 줄바꿈을 허용한다. */
@@ -86,7 +104,7 @@
   .conf.mid{background:#F7EEDC;color:var(--amber)}
   .conf.lo{background:#FBEDEB;color:var(--red)}
 
-  .empty-note{font-size:15px;color:var(--ink-soft);padding:14px;background:#FAFBF8;
+  .empty-note{font-size:15px;color:var(--ink-soft);padding:14px;background:#F5F9FA;
     border:1px dashed var(--line);border-radius:10px;margin-top:12px}
 
   .alt{margin-top:12px;padding:12px 13px;background:#EEF2F6;border:1px solid #CDD9E3;border-radius:10px}
@@ -106,15 +124,15 @@
   .notice code{background:#F0E9DA;padding:1px 6px;border-radius:4px;font-size:13px;
     font-family:ui-monospace,Menlo,monospace}
 
-  .usage{font-size:13px;color:var(--ink-soft);background:#F3F6F1;border-radius:8px;
+  .usage{font-size:13px;color:var(--ink-soft);background:#F1F5F6;border-radius:8px;
     padding:8px 11px;margin-bottom:12px}
   .usage[hidden]{display:none}
   .usage.warn{background:#F7F1E4;color:#8A6318;font-weight:500}
 
-  .recent{margin-bottom:14px;padding:12px 13px;background:#F3F6F1;border-radius:10px}
+  .recent{margin-bottom:14px;padding:12px 13px;background:#F1F5F6;border-radius:10px}
   .recent[hidden]{display:none}
   .recent-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .recent-label{font-size:13px;font-weight:700;color:var(--green)}
+  .recent-label{font-size:13px;font-weight:700;color:var(--teal)}
   .linkish{border:none;background:none;color:var(--ink-soft);font-size:13px;
     font-family:inherit;cursor:pointer;text-decoration:underline;padding:2px 4px}
   .recent .chip{background:var(--card);font-size:15px;padding:8px 14px}
@@ -127,8 +145,8 @@
   .radio-row:last-of-type{border-bottom:none}
   .radio-row b{font-size:16px;font-weight:500}
   .radio-row small{display:block;color:var(--ink-soft);font-size:13px;margin-left:26px;margin-top:2px}
-  .radio-row small.howto{margin-top:6px;padding:8px 10px;background:#F3F6F1;border-radius:8px;
-    color:var(--green);line-height:1.55}
+  .radio-row small.howto{margin-top:6px;padding:8px 10px;background:#F1F5F6;border-radius:8px;
+    color:var(--teal);line-height:1.55}
   .radio-row input{margin-right:8px}
   .opt-tag{font-size:11px;font-weight:700;background:#EEF2F6;color:var(--blue);
     border-radius:999px;padding:2px 8px;margin-left:6px;letter-spacing:.04em}
@@ -136,18 +154,18 @@
   .profile-grid label{font-size:15px;font-weight:500}
   .profile-grid input,.profile-grid select{display:block;width:100%;margin-top:5px;
     border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;
-    font-size:17px;font-family:inherit;background:#FAFBF8;color:var(--ink)}
+    font-size:17px;font-family:inherit;background:#F5F9FA;color:var(--ink)}
   .profile-grid input:focus-visible,.profile-grid select:focus-visible{outline:3px solid var(--amber);outline-offset:1px}
   .profile-grid small{display:block;color:var(--ink-soft);font-size:12px;margin-top:4px;font-weight:400}
 
   /* ── 진행 ── */
   #loading{display:none;text-align:center;padding:26px;color:var(--ink-soft)}
-  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--green);
+  .spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--teal);
     border-radius:50%;margin:0 auto 12px;animation:spin .9s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion:reduce){.spinner{animation-duration:2.5s}}
   .bar{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px auto 0;max-width:260px}
-  .bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+  .bar i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s}
 
   /* ── 결과 ── */
   .verdict-wrap{display:flex;align-items:center;gap:18px;margin-bottom:16px}
@@ -161,14 +179,18 @@
   .stamp{flex-shrink:0;width:96px;height:96px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
     font-size:30px;font-weight:700;transform:rotate(-6deg);
-    border:3px solid currentColor;box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 5px currentColor}
+    border:3px solid currentColor;box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 5px currentColor,
+      0 6px 20px -4px currentColor;
+    animation:stamp-in .4s var(--ease)}
+  @keyframes stamp-in{from{transform:rotate(-6deg) scale(.6);opacity:0}to{transform:rotate(-6deg) scale(1);opacity:1}}
+  @media (prefers-reduced-motion:reduce){.stamp{animation:none}}
   .stamp.good{color:var(--green)} .stamp.caution{color:var(--amber)} .stamp.avoid{color:var(--red)}
   .verdict-wrap p{font-size:16px}
   .foods{font-size:15px;color:var(--ink-soft);margin-bottom:14px}
   .foods b{color:var(--ink)}
 
-  .dcard{border-left:5px solid var(--line);background:#FAFBF8;border-radius:0 10px 10px 0;
-    padding:12px 14px;margin-bottom:10px}
+  .dcard{border-left:5px solid var(--line);background:#F5F9FA;border-radius:0 10px 10px 0;
+    padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
   .dcard.good{border-left-color:var(--green)} .dcard.caution{border-left-color:var(--amber)} .dcard.avoid{border-left-color:var(--red)}
   .dcard .dname{font-weight:700;display:flex;justify-content:space-between;
     gap:10px;font-size:16px}
@@ -190,29 +212,30 @@
     padding:11px 14px;margin-bottom:10px;font-size:13px;color:#7A6538}
   .note b{display:block;margin-bottom:3px}
 
-  .tips{margin-top:14px;padding:14px;background:#F3F6F1;border-radius:10px}
+  .tips{margin-top:14px;padding:14px;background:#F1F5F6;border-radius:10px}
   .tips h3{font-size:16px;margin-bottom:6px}
   .tips li{margin-left:20px;font-size:15px;margin-bottom:4px}
 
   .provenance{font-size:13px;color:var(--ink-soft);margin-top:14px;padding:10px 12px;
-    background:#FAFBF8;border:1px solid var(--line);border-radius:8px}
+    background:#F5F9FA;border:1px solid var(--line);border-radius:8px}
 
   .disclaimer{font-size:13px;color:var(--ink-soft);margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+  .warn-icon{color:var(--amber);vertical-align:-2px;flex-shrink:0}
   .err{display:none;background:#FBEDEB;color:var(--red);border-radius:10px;padding:14px;margin-top:12px;font-size:15px}
 
   /* ── 첫 실행 면책 고지 ── */
-  .gate{position:fixed;inset:0;background:rgba(38,48,43,.55);z-index:100;
+  .gate{position:fixed;inset:0;background:rgba(15,26,30,.55);z-index:100;
     display:flex;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
   .gate[hidden]{display:none}
   .gate-card{background:var(--card);border-radius:var(--radius);padding:24px 20px;
-    max-width:520px;width:100%;margin:auto}
+    max-width:520px;width:100%;margin:auto;box-shadow:var(--shadow-lg)}
   .gate-card h2{font-size:23px;margin-bottom:16px}
   .gate-item{margin-bottom:15px;padding-left:12px;border-left:3px solid var(--line)}
   .gate-item.warn{border-left-color:var(--red)}
   .gate-item b{display:block;font-size:16px;margin-bottom:3px}
   .gate-item p{font-size:14px;color:var(--ink-soft);line-height:1.55}
   .gate-agree{display:flex;gap:10px;align-items:flex-start;margin:18px 0 4px;
-    padding:13px;background:#F3F6F1;border-radius:10px;cursor:pointer;font-size:14px}
+    padding:13px;background:#F1F5F6;border-radius:10px;cursor:pointer;font-size:14px}
   .gate-agree input{margin-top:3px;flex-shrink:0;width:18px;height:18px}
   .gate-foot{text-align:center;margin-top:12px;font-size:13px}
   .gate-foot a{color:var(--blue)}
@@ -232,11 +255,11 @@
   .disease-nudge[hidden]{display:none}
 
   /* ── 설정 패널 ── */
-  .settings-panel{position:fixed;inset:0;background:rgba(38,48,43,.55);z-index:110;
+  .settings-panel{position:fixed;inset:0;background:rgba(15,26,30,.55);z-index:110;
     display:flex;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
   .settings-panel[hidden]{display:none}
   .settings-card{background:var(--card);border-radius:var(--radius);padding:22px 20px;
-    max-width:520px;width:100%;margin:auto}
+    max-width:520px;width:100%;margin:auto;box-shadow:var(--shadow-lg)}
   .settings-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
   .settings-head h2{font-size:22px}
   .icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);
@@ -246,10 +269,24 @@
   .settings-section h3{font-size:16px;margin-bottom:8px}
   .settings-section .hint{font-size:13px;color:var(--ink-soft);margin-bottom:10px}
 
+  /* 질환·체중나이성별·Gemini 키 섹션은 <details>로 접어 두고,
+     누르면 펼쳐지게 한다(한 번에 다 보여주지 않는다). */
+  details.settings-section{padding:0}
+  details.settings-section summary{list-style:none;cursor:pointer;padding:16px 0;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-size:16px;font-weight:600;color:var(--ink)}
+  details.settings-section summary::-webkit-details-marker{display:none}
+  details.settings-section summary .opt-tag{font-weight:700;margin-left:0}
+  details.settings-section .chev{flex-shrink:0;color:var(--ink-soft);transition:transform .2s var(--ease)}
+  details.settings-section[open] .chev{transform:rotate(180deg)}
+  details.settings-section .acc-body{padding-bottom:16px;animation:acc-in .18s var(--ease)}
+  @keyframes acc-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  @media (prefers-reduced-motion:reduce){details.settings-section .acc-body{animation:none}}
+
   .lang-toggle{display:flex;gap:8px}
-  .lang-btn{flex:1;border:1.5px solid var(--line);background:#FAFBF8;border-radius:10px;padding:10px;
+  .lang-btn{flex:1;border:1.5px solid var(--line);background:#F5F9FA;border-radius:10px;padding:10px;
     font-size:15px;font-family:inherit;color:var(--ink);cursor:pointer}
-  .lang-btn.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+  .lang-btn.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
 
   .guide-steps{margin:10px 0 0 20px}
   .guide-steps li{margin-bottom:16px;font-size:14px;line-height:1.5}
@@ -264,39 +301,39 @@
      건강 판정을 내리는 앱이므로 한계를 사용자가 반드시 보고 넘어가게 만든다. -->
 <div id="gate" class="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="gate-card">
-    <h2 id="gateTitle">먼저 읽어 주세요</h2>
+    <h2 id="gateTitle" data-i18n="gateTitle">먼저 읽어 주세요</h2>
 
     <div class="gate-item">
-      <b>의료기기가 아닙니다</b>
-      <p>일반적인 식이 지침을 규칙으로 옮긴 참고 도구입니다. 진단·처방·치료를 대신하지 않습니다.
+      <b data-i18n="gateItem1Title">의료기기가 아닙니다</b>
+      <p data-i18n="gateItem1Body">일반적인 식이 지침을 규칙으로 옮긴 참고 도구입니다. 진단·처방·치료를 대신하지 않습니다.
          약 복용, 식사 계획 변경은 반드시 담당 의사·영양사와 상의하세요.</p>
     </div>
 
     <div class="gate-item warn">
-      <b>영양 수치는 검증되지 않은 추정치입니다</b>
-      <p>수록된 음식 대부분의 영양값이 일반 조리법 기준 추정치이며 아직 영양사 검토를 거치지 않았습니다.
-         같은 이름의 음식이라도 조리법·업체에 따라 나트륨이 두 배까지 차이 납니다.
-         <b>판정이 실제와 다를 수 있습니다.</b></p>
+      <b data-i18n="gateItem2Title">영양 수치는 검증되지 않은 추정치입니다</b>
+      <p><span data-i18n="gateItem2Body">수록된 음식 대부분의 영양값이 일반 조리법 기준 추정치이며 아직 영양사 검토를 거치지 않았습니다.
+         같은 이름의 음식이라도 조리법·업체에 따라 나트륨이 두 배까지 차이 납니다.</span>
+         <b data-i18n="gateItem2Bold">판정이 실제와 다를 수 있습니다.</b></p>
     </div>
 
     <div class="gate-item warn">
-      <b>일부 항목은 정확도가 특히 낮습니다</b>
-      <p>퓨린·비타민K·요오드·철·카페인·레티놀은 공공 데이터베이스에 없어 문헌 추정치를 씁니다.
+      <b data-i18n="gateItem3Title">일부 항목은 정확도가 특히 낮습니다</b>
+      <p data-i18n="gateItem3Body">퓨린·비타민K·요오드·철·카페인·레티놀은 공공 데이터베이스에 없어 문헌 추정치를 씁니다.
          통풍·와파린·갑상선·빈혈·임신 판정은 다른 항목보다 오차가 큽니다.</p>
     </div>
 
     <div class="gate-item">
-      <b>응급 상황에는 쓰지 마세요</b>
-      <p>알레르기 반응, 저혈당, 호흡곤란, 삼킴 사고가 의심되면 이 앱을 보지 말고 119에 연락하세요.</p>
+      <b data-i18n="gateItem4Title">응급 상황에는 쓰지 마세요</b>
+      <p data-i18n="gateItem4Body">알레르기 반응, 저혈당, 호흡곤란, 삼킴 사고가 의심되면 이 앱을 보지 말고 119에 연락하세요.</p>
     </div>
 
     <label class="gate-agree">
       <input type="checkbox" id="gateCheck">
-      <span>위 내용을 이해했으며, 이 앱의 판정을 의료적 판단의 근거로 삼지 않겠습니다.</span>
+      <span data-i18n="gateAgree">위 내용을 이해했으며, 이 앱의 판정을 의료적 판단의 근거로 삼지 않겠습니다.</span>
     </label>
 
-    <button class="go-btn" id="gateBtn" disabled>이해했습니다</button>
-    <p class="gate-foot"><a href="./privacy.html" target="_blank" rel="noopener">개인정보 처리방침</a></p>
+    <button class="go-btn" id="gateBtn" disabled data-i18n="gateBtn">이해했습니다</button>
+    <p class="gate-foot"><a href="./privacy.html" target="_blank" rel="noopener" data-i18n="gateFootLink">개인정보 처리방침</a></p>
   </div>
 </div>
 
@@ -306,7 +343,7 @@
     <h1 data-i18n="title">이 밥상, 나에게 괜찮을까?</h1>
     <p data-i18n="tagline">앓고 있는 질환이나 상태를 고르고 음식을 알려 주면, 각각의 식이 기준에 따라 판정해 드립니다.</p>
   </div>
-  <button type="button" id="settingsBtn" class="hamburger-btn" aria-haspopup="dialog" aria-controls="settingsPanel" aria-label="설정">
+  <button type="button" id="settingsBtn" class="hamburger-btn" aria-haspopup="dialog" aria-controls="settingsPanel" data-i18n-aria-label="ariaSettings" aria-label="설정">
     <span></span><span></span><span></span>
   </button>
 </header>
@@ -320,9 +357,9 @@
 <!-- 네이티브 앱에서는 인식 방법 선택을 사용자에게 노출하지 않는다(자체 모델 고정 사용).
      DOM에는 남겨 두어야 renderAdapterOptions() 등 기존 로직이 그대로 동작한다. -->
 <details class="settings" hidden>
-  <summary>⚙️ 음식 인식 방법 바꾸기</summary>
+  <summary data-i18n="recognitionMethodSummary">⚙️ 음식 인식 방법 바꾸기</summary>
   <div id="adapterOptions" style="margin-top:10px"></div>
-  <p style="font-size:13px;color:var(--ink-soft);margin-top:10px">
+  <p style="font-size:13px;color:var(--ink-soft);margin-top:10px" data-i18n="recognitionMethodNote">
     어떤 방법을 쓰든 판정 기준은 똑같습니다. 인식 방법만 달라집니다.
   </p>
 </details>
@@ -334,89 +371,107 @@
   <div class="settings-card">
     <div class="settings-head">
       <h2 id="settingsTitle" data-i18n="settingsTitle">설정</h2>
-      <button type="button" id="settingsClose" class="icon-btn" aria-label="설정 닫기">✕</button>
+      <button type="button" id="settingsClose" class="icon-btn" data-i18n-aria-label="ariaSettingsClose" aria-label="설정 닫기">✕</button>
     </div>
 
     <section class="settings-section" id="secLang">
       <h3 data-i18n="langLabel">언어 · Language</h3>
-      <div class="lang-toggle" role="group" aria-label="언어 선택">
+      <div class="lang-toggle" role="group" data-i18n-aria-label="ariaLangSelect" aria-label="언어 선택">
         <button type="button" class="lang-btn" data-lang="ko">한국어</button>
         <button type="button" class="lang-btn" data-lang="en">English</button>
       </div>
     </section>
 
-    <section class="settings-section" id="secDisease">
-      <h3 data-i18n="diseaseLabel">앓고 있는 질환·상태</h3>
-      <p class="hint" data-i18n="diseaseHint">해당하는 것을 모두 눌러 주세요. 여러 개를 골라도 됩니다. 한 번 고르면 계속 저장됩니다.</p>
-      <div id="chips" role="group" aria-label="질환 및 상태 선택"></div>
-    </section>
-
-    <section class="settings-section" id="profileBox">
-      <h3><span data-i18n="profileLabel">체중 · 나이 · 성별</span> <span class="opt-tag" data-i18n="optTag">선택</span></h3>
-      <p class="hint" data-i18n="profileHint">
-        넣지 않아도 판정됩니다. 넣으면 체중·나이에 맞춰 기준이 조정됩니다.
-        입력값은 이 기기 안에만 저장되고 어디로도 전송되지 않습니다.
-      </p>
-      <div class="profile-grid">
-        <label><span data-i18n="weightLabel">체중</span>
-          <input type="number" id="pfWeight" min="10" max="200" step="1" placeholder="예: 62" inputmode="numeric">
-          <small data-i18n="weightHint">kg · 콩팥병 단백질, 심부전 수분 기준에 쓰입니다</small>
-        </label>
-        <label><span data-i18n="ageLabel">나이</span>
-          <input type="number" id="pfAge" min="1" max="120" step="1" placeholder="예: 34" inputmode="numeric">
-          <small data-i18n="ageHint">세 · 소아·청소년은 기준이 더 낮게 조정됩니다</small>
-        </label>
-        <label><span data-i18n="sexLabel">성별</span>
-          <select id="pfSex">
-            <option value="" data-i18n="sexNone">고르지 않음</option>
-            <option value="f" data-i18n="sexF">여성</option>
-            <option value="m" data-i18n="sexM">남성</option>
-          </select>
-          <small data-i18n="sexHint">철·칼슘 안내에 참고됩니다</small>
-        </label>
+    <details class="settings-section" id="secDisease">
+      <summary><span data-i18n="diseaseLabel">앓고 있는 질환·상태</span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </summary>
+      <div class="acc-body">
+        <p class="hint" data-i18n="diseaseHint">해당하는 것을 모두 눌러 주세요. 여러 개를 골라도 됩니다. 한 번 고르면 계속 저장됩니다.</p>
+        <div id="chips" role="group" data-i18n-aria-label="ariaDiseaseSelect" aria-label="질환 및 상태 선택"></div>
       </div>
-      <button class="ghost-btn" id="pfClear" style="margin-top:12px" data-i18n="profileClear">입력값 지우기</button>
-    </section>
+    </details>
 
-    <section class="settings-section" id="secGemini">
-      <h3 data-i18n="geminiLabel">Gemini API 키</h3>
-      <p class="hint" data-i18n="geminiHint">
-        가장 정확한 인식을 위해 필요합니다. 키를 넣으면 여러분 본인의
-        무료 한도를 쓰게 되어, 저희 서버 비용도 안 들고 여러분이 결제할 일도 없습니다.
-      </p>
+    <details class="settings-section" id="profileBox">
+      <summary><span><span data-i18n="profileLabel">체중 · 나이 · 성별</span> <span class="opt-tag" data-i18n="optTag">선택</span></span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </summary>
+      <div class="acc-body">
+        <p class="hint" data-i18n="profileHint">
+          넣지 않아도 판정됩니다. 넣으면 체중·나이에 맞춰 기준이 조정됩니다.
+          입력값은 이 기기 안에만 저장되고 어디로도 전송되지 않습니다.
+        </p>
+        <div class="profile-grid">
+          <label><span data-i18n="weightLabel">체중</span>
+            <input type="number" id="pfWeight" min="10" max="200" step="1" data-i18n-placeholder="pfWeightPlaceholder" placeholder="예: 62" inputmode="numeric">
+            <small data-i18n="weightHint">kg · 콩팥병 단백질, 심부전 수분 기준에 쓰입니다</small>
+          </label>
+          <label><span data-i18n="ageLabel">나이</span>
+            <input type="number" id="pfAge" min="1" max="120" step="1" data-i18n-placeholder="pfAgePlaceholder" placeholder="예: 34" inputmode="numeric">
+            <small data-i18n="ageHint">세 · 소아·청소년은 기준이 더 낮게 조정됩니다</small>
+          </label>
+          <label><span data-i18n="sexLabel">성별</span>
+            <select id="pfSex">
+              <option value="" data-i18n="sexNone">고르지 않음</option>
+              <option value="f" data-i18n="sexF">여성</option>
+              <option value="m" data-i18n="sexM">남성</option>
+            </select>
+            <small data-i18n="sexHint">철·칼슘 안내에 참고됩니다</small>
+          </label>
+        </div>
+        <button class="ghost-btn" id="pfClear" style="margin-top:12px" data-i18n="profileClear">입력값 지우기</button>
+      </div>
+    </details>
 
-      <ol class="guide-steps">
-        <li>
-          <span data-i18n="geminiStep1">아래 링크로 이동해 구글 계정으로 로그인한 뒤, "API 키 만들기"를 누릅니다.</span>
-          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>
-          <img data-src-ko="./gemini-guide-step1-create-btn.jpg" data-src-en="./gemini-guide-step1-create-btn-en.jpg"
-               src="./gemini-guide-step1-create-btn.jpg" alt="Google AI Studio API 키 화면, 오른쪽 위 'API 키 만들기' 버튼" class="guide-shot">
-        </li>
-        <li>
-          <span data-i18n="geminiStep2">이름은 아무거나 두고 프로젝트도 기본값 그대로 "키 만들기"를 누릅니다.</span>
-          <img data-src-ko="./gemini-guide-step2-modal.jpg" data-src-en="./gemini-guide-step2-modal-en.jpg"
-               src="./gemini-guide-step2-modal.jpg" alt="새 키 만들기 창, 키 이름과 프로젝트 선택 후 '키 만들기' 버튼" class="guide-shot">
-        </li>
-        <li>
-          <span data-i18n="geminiStep3">만들어진 키 옆의 네모 상자(복사) 아이콘을 눌러 키를 복사합니다.</span>
-          <img data-src-ko="./gemini-guide-step3-copy.jpg" data-src-en="./gemini-guide-step3-copy-en.jpg"
-               src="./gemini-guide-step3-copy.jpg" alt="API 키 목록, 키 옆 복사 아이콘에 'API 키 복사' 툴팁이 뜬 모습" class="guide-shot">
-        </li>
-        <li><span data-i18n="geminiStep4">이 화면으로 돌아와 아래 입력칸에 붙여넣고 "저장"을 누릅니다.</span></li>
-      </ol>
+    <details class="settings-section" id="secGemini">
+      <summary><span data-i18n="geminiLabel">Gemini API 키</span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </summary>
+      <div class="acc-body">
+        <p class="hint" data-i18n="geminiHint">
+          가장 정확한 인식을 위해 필요합니다. 키를 넣으면 여러분 본인의
+          무료 한도를 쓰게 되어, 저희 서버 비용도 안 들고 여러분이 결제할 일도 없습니다.
+        </p>
 
-      <input type="text" id="geminiKeyInput" autocomplete="off" spellcheck="false"
-             style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;
-                    font-size:15px;font-family:inherit;background:#FAFBF8;color:var(--ink);margin-top:14px">
-      <button class="ghost-btn" id="geminiKeySave" style="margin-top:10px" data-i18n="geminiSave">저장</button>
-      <button class="ghost-btn" id="geminiKeyClear" style="margin-top:8px" data-i18n="geminiClear">키 지우기</button>
-      <p id="geminiKeyStatus" style="font-size:13px;color:var(--green);margin-top:8px" hidden></p>
+        <ol class="guide-steps">
+          <li>
+            <span data-i18n="geminiStep1">아래 링크로 이동해 구글 계정으로 로그인한 뒤, "API 키 만들기"를 누릅니다.</span>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>
+            <img data-src-ko="./assets/gemini-guide-step1-create-btn.jpg" data-src-en="./assets/gemini-guide-step1-create-btn-en.jpg"
+                 src="./assets/gemini-guide-step1-create-btn.jpg" alt="Google AI Studio API 키 화면, 오른쪽 위 'API 키 만들기' 버튼" class="guide-shot">
+          </li>
+          <li>
+            <span data-i18n="geminiStep2">이름은 아무거나 두고 프로젝트도 기본값 그대로 "키 만들기"를 누릅니다.</span>
+            <img data-src-ko="./assets/gemini-guide-step2-modal.jpg" data-src-en="./assets/gemini-guide-step2-modal-en.jpg"
+                 src="./assets/gemini-guide-step2-modal.jpg" alt="새 키 만들기 창, 키 이름과 프로젝트 선택 후 '키 만들기' 버튼" class="guide-shot">
+          </li>
+          <li>
+            <span data-i18n="geminiStep3">만들어진 키 옆의 네모 상자(복사) 아이콘을 눌러 키를 복사합니다.</span>
+            <img data-src-ko="./assets/gemini-guide-step3-copy.jpg" data-src-en="./assets/gemini-guide-step3-copy-en.jpg"
+                 src="./assets/gemini-guide-step3-copy.jpg" alt="API 키 목록, 키 옆 복사 아이콘에 'API 키 복사' 툴팁이 뜬 모습" class="guide-shot">
+          </li>
+          <li><span data-i18n="geminiStep4">이 화면으로 돌아와 아래 입력칸에 붙여넣고 "저장"을 누릅니다.</span></li>
+        </ol>
 
-      <p class="guide-note" data-i18n="geminiGuideNote">
-        이 키는 이 기기에만 저장되며, 저희 서버로 전송되지 않습니다. 구글의 무료 한도 안에서 쓰이며,
-        한도를 넘으면 자체 모델의 결과만 쓰이니 앱이 멈추지 않습니다. 설정에서 언제든 바꾸거나 지울 수 있습니다.
-      </p>
-    </section>
+        <input type="text" id="geminiKeyInput" autocomplete="off" spellcheck="false"
+               style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;
+                      font-size:15px;font-family:inherit;background:#F5F9FA;color:var(--ink);margin-top:14px">
+        <button class="ghost-btn" id="geminiKeySave" style="margin-top:10px" data-i18n="geminiSave">저장</button>
+        <button class="ghost-btn" id="geminiKeyClear" style="margin-top:8px" data-i18n="geminiClear">키 지우기</button>
+        <p id="geminiKeyStatus" style="font-size:13px;color:var(--green);margin-top:8px" hidden></p>
+
+        <p class="guide-note" data-i18n="geminiGuideNote">
+          이 키는 이 기기에만 저장되며, 저희 서버로 전송되지 않습니다. 구글의 무료 한도 안에서 쓰이며,
+          한도를 넘으면 자체 모델의 결과만 쓰이니 앱이 멈추지 않습니다. 설정에서 언제든 바꾸거나 지울 수 있습니다.
+        </p>
+      </div>
+    </details>
 
     <!-- 첫 실행 온보딩에서만 쓰는 "다음/완료" 버튼. 평소 설정 화면에선 숨김. -->
     <button type="button" class="go-btn" id="wizardNextBtn" hidden style="margin-top:6px"></button>
@@ -431,13 +486,17 @@
   <p id="usageNote" class="usage" hidden></p>
 
   <div id="photoBlock">
-    <div class="photo-zone" id="photoZone" tabindex="0" role="button" aria-label="사진 찍기 또는 올리기">
-      <strong>📷 사진 찍기 · 올리기</strong>
-      <span>여기를 누르면 카메라나 앨범이 열립니다</span>
+    <div class="photo-zone" id="photoZone" tabindex="0" role="button" data-i18n-aria-label="ariaPhotoZone" aria-label="사진 찍기 또는 올리기">
+      <svg class="zone-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 8.5C4 7.67 4.67 7 5.5 7H8L9.2 5.4C9.4 5.15 9.7 5 10 5H14C14.3 5 14.6 5.15 14.8 5.4L16 7H18.5C19.33 7 20 7.67 20 8.5V17.5C20 18.33 19.33 19 18.5 19H5.5C4.67 19 4 18.33 4 17.5V8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      <strong data-i18n="photoZoneTitle">사진 찍기 · 올리기</strong>
+      <span data-i18n="photoZoneHint">여기를 누르면 카메라나 앨범이 열립니다</span>
     </div>
     <input type="file" id="fileInput" accept="image/*" capture="environment" hidden>
-    <img id="preview" alt="선택한 음식 사진 미리보기">
-    <button class="go-btn" id="scanBtn" disabled>사진에서 음식 찾기</button>
+    <img id="preview" data-i18n-alt="previewAlt" alt="선택한 음식 사진 미리보기">
+    <button class="go-btn" id="scanBtn" disabled data-i18n="scanBtnLabel">사진에서 음식 찾기</button>
   </div>
 
   <div id="loading" aria-live="polite">
@@ -451,35 +510,35 @@
 <!-- 확인·보정 -->
 <section class="step" id="confirmStep">
   <h2 data-i18n="confirmTitle">음식 목록 확인하기</h2>
-  <p class="hint">AI가 틀릴 수 있습니다. 빠진 것은 더하고, 잘못된 것은 지워 주세요. 양도 고칠 수 있습니다.</p>
+  <p class="hint" data-i18n="confirmHint">AI가 틀릴 수 있습니다. 빠진 것은 더하고, 잘못된 것은 지워 주세요. 양도 고칠 수 있습니다.</p>
 
   <!-- 최근 먹은 것. 사람은 같은 걸 반복해서 먹으므로 이 경로가 가장 자주 쓰인다.
        AI 호출이 전혀 없어 원가도 0이다. 그래서 검색창보다 위에 둔다. -->
   <div id="recentBox" class="recent" hidden>
     <div class="recent-head">
-      <span class="recent-label">최근 먹은 것</span>
-      <button type="button" id="recentClear" class="linkish">지우기</button>
+      <span class="recent-label" data-i18n="recentLabel">최근 먹은 것</span>
+      <button type="button" id="recentClear" class="linkish" data-i18n="recentClear">지우기</button>
     </div>
     <div class="chips" id="recentChips"></div>
   </div>
 
   <div class="search-row">
-    <input type="text" id="foodSearch" placeholder="음식 이름을 넣어 찾기 (예: 된장찌개)"
-           autocomplete="off" aria-label="음식 검색">
+    <input type="text" id="foodSearch" data-i18n-placeholder="foodSearchPlaceholder" placeholder="음식 이름을 넣어 찾기 (예: 된장찌개)"
+           autocomplete="off" data-i18n-aria-label="ariaFoodSearch" aria-label="음식 검색">
   </div>
   <ul class="suggest" id="suggest"></ul>
 
   <div id="altBox" class="alt" hidden></div>
 
   <ul class="picked" id="picked"></ul>
-  <p class="empty-note" id="emptyNote">아직 고른 음식이 없습니다. 위에서 검색해 더해 주세요.</p>
+  <p class="empty-note" id="emptyNote" data-i18n="emptyNote">아직 고른 음식이 없습니다. 위에서 검색해 더해 주세요.</p>
 
   <button class="go-btn" id="judgeBtn" disabled>밥상 판정 받기</button>
 </section>
 
 <!-- 4단계 : 결과 -->
 <section class="step" id="result" hidden aria-live="polite">
-  <span class="step-tag">판정 결과</span>
+  <span class="step-tag" data-i18n="stepTagResult">판정 결과</span>
   <div class="verdict-wrap">
     <div class="stamp" id="stamp"></div>
     <p id="overallComment"></p>
@@ -489,14 +548,18 @@
   <div id="noteBox"></div>
   <div id="diseaseCards"></div>
   <div class="tips" id="tipsBox">
-    <h3>이렇게 드시면 더 좋아요</h3>
+    <h3 data-i18n="tipsHeading">이렇게 드시면 더 좋아요</h3>
     <ul id="tipsList"></ul>
   </div>
   <div class="provenance" id="provenance"></div>
-  <button class="ghost-btn" id="retryBtn">다른 음식 판정하기</button>
-  <p class="disclaimer">⚠️ 이 판정은 일반적인 식이 원칙을 규칙으로 옮긴 참고 정보이며, 의료 진단이나 처방이 아닙니다.
+  <button class="ghost-btn" id="retryBtn" data-i18n="retryBtn">다른 음식 판정하기</button>
+  <p class="disclaimer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="warn-icon">
+      <path d="M12 3.5L21.5 20H2.5L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M12 10V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="12" cy="17.3" r="1" fill="currentColor"/>
+    </svg> <span data-i18n="disclaimerText">이 판정은 일반적인 식이 원칙을 규칙으로 옮긴 참고 정보이며, 의료 진단이나 처방이 아닙니다.
   정확한 식사 계획은 담당 의사·영양사와 상의하세요. 음식 인식과 양 추정에는 오차가 있습니다.
-  임신 중이거나 성장기 아동의 식사는 특히 임의로 줄이지 마시고 전문가와 상의하세요.</p>
+  임신 중이거나 성장기 아동의 식사는 특히 임의로 줄이지 마시고 전문가와 상의하세요.</span></p>
 </section>
 
 <script type="module" src="./js/app.js"></script>

@@ -8,12 +8,11 @@
     "build": "node build.mjs",
     "icons": "python3 tools/make-icons.py",
     "serve": "python3 -m http.server 8000",
-    "test": "npm run test:rules && npm run test:integration && npm run test:proxy && npm run test:ui && npm run build && npm run test:dist",
+    "test": "npm run test:rules && npm run test:integration && npm run test:ui && npm run build && npm run test:dist",
     "test:rules": "node test/rules.test.mjs",
     "test:integration": "node test/integration.test.mjs",
     "test:ui": "node test/ui.test.mjs",
     "test:dist": "node test/dist.test.mjs",
-    "test:proxy": "node test/proxy.test.mjs",
     "test:clip": "node test/clip-smoke.mjs"
   },
   "devDependencies": {

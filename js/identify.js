@@ -41,7 +41,16 @@ async function fetchWithRetry(url, init, retries = 2, attempt = 0, timeoutMs = 4
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...init, signal: controller.signal });
+    const res = await fetch(url, { ...init, signal: controller.signal });
+    /* 503은 구글 쪽 일시적 과부하라 몇 초 뒤 같은 요청이 성공하는 경우가 실제로 있다
+       (직접 curl로 반복 호출해 확인함). 429(쿼터 초과)는 계정 단위 한도라 짧은
+       backoff로는 안 풀리므로 여기서 재시도하지 않고 그대로 올려 보낸다 —
+       상위(app.js)가 "잠시 후 다시" 안내로 처리한다. */
+    if (res.status === 503 && retries > 0) {
+      await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+      return fetchWithRetry(url, init, retries - 1, attempt + 1, timeoutMs);
+    }
+    return res;
   } catch (e) {
     if (e.name === 'AbortError') {
       if (retries <= 0) throw new Error('TIMEOUT');
@@ -142,10 +151,9 @@ export class OnDeviceIdentifier {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   2. Gemini 프록시 — 사용자는 키를 입력하지 않는다
+   2. Gemini — 사용자 본인의 API 키로 구글에 직접 붙는다
    ═══════════════════════════════════════════════════════════
-   키는 Cloudflare Worker가 들고 있다. 정확도가 가장 높지만
-   사진이 외부로 전송되고 무료 등급 한도가 있다.
+   정확도가 가장 높지만 사진이 외부(구글)로 전송되고 무료 등급 한도가 있다.
 
    프롬프트는 "식별만" 요구한다. 판정을 시키지 않는 것이 이 설계의 핵심이다.
 */
@@ -155,20 +163,14 @@ export class GeminiIdentifier {
   static blurb = '가장 정확합니다. 사진이 서버로 전송되며 하루 사용 한도가 있습니다.';
 
   /**
-   * @param {string} proxyUrl  Cloudflare Worker 주소 (배포용, 권장)
-   * @param {string} devApiKey 내 컴퓨터에서만 쓰는 임시 키 (테스트용)
-   *   ⚠️ devApiKey가 든 파일을 인터넷에 올리면 누구나 키를 훔쳐 쓴다.
-   *      품질만 확인하고 반드시 지운 뒤 proxyUrl로 배포할 것.
+   * @param {string} devApiKey 사용자 본인의 Gemini API 키
    */
-  constructor({ proxyUrl = '', devApiKey = '', model = 'gemini-3.7-flash',
-                userToken = '' } = {}) {
-    this.proxyUrl = proxyUrl;
+  constructor({ devApiKey = '', model = 'gemini-flash-latest' } = {}) {
     this.devApiKey = devApiKey;
     this.model = model;
-    this.userToken = userToken;   // 프록시가 사용자별 쿼터를 세는 데 쓴다
   }
 
-  async available() { return !!(this.proxyUrl || this.devApiKey); }
+  async available() { return !!this.devApiKey; }
   async prepare() {}
 
   /** 판정은 요구하지 않는다. 이름·양과, 이 앱 DB에 없을 때 쓸 예비 영양 추정치만 받는다.
@@ -263,32 +265,17 @@ export class GeminiIdentifier {
       }
     });
 
-    /* 프록시가 있으면 프록시로, 없고 임시 키만 있으면 구글로 직접. */
-    let url, headers;
-    if (this.proxyUrl) {
-      url = `${this.proxyUrl}/gemini`;
-      headers = { 'Content-Type': 'application/json' };
-      if (this.userToken) headers.Authorization = `Bearer ${this.userToken}`;
-    } else {
-      url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`;
-      headers = { 'Content-Type': 'application/json', 'x-goog-api-key': this.devApiKey };
-    }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`;
+    const headers = { 'Content-Type': 'application/json', 'x-goog-api-key': this.devApiKey };
 
     const res = await fetchWithRetry(url, { method: 'POST', headers, body });
 
-    if (res.status === 429) {
-      /* 프록시의 쿼터 초과와 구글의 rate limit을 구분한다.
-         전자는 "구독 등급 한도", 후자는 "잠시 기다리면 됨"으로 안내가 달라진다. */
-      let info = null;
-      try { info = await res.clone().json(); } catch { /* 무시 */ }
-      if (info?.error === 'QUOTA_EXCEEDED') {
-        const e = new Error('QUOTA_EXCEEDED');
-        e.quota = info;
-        throw e;
-      }
-      throw new Error('RATE_LIMIT');
-    }
+    /* 구글의 무료 등급 분당/일일 한도 초과. "잠시 후 다시"로 안내한다. */
+    if (res.status === 429) throw new Error('RATE_LIMIT');
     if (res.status === 400 || res.status === 403) throw new Error('BAD_KEY');
+    /* 5xx는 우리 요청이 아니라 구글 서버 쪽 문제라는 뜻이다. "음식을 못 찾았다"는
+       일반 메시지로 뭉뚱그리면 사용자 잘못처럼 보인다 — 분명하게 구분해 안내한다. */
+    if (res.status >= 500) throw new Error('SERVER_ERROR');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
@@ -378,10 +365,10 @@ ${list}
  * @param {string} imageDataUrl
  * @param {{id:string,name:string,focus:string}[]} diseases  DISEASE_BY_ID에서 뽑은 항목들
  * @param {object} profile  resolveProfile() 결과 (선택)
- * @param {{proxyUrl?:string, devApiKey?:string, model?:string, userToken?:string}} opts
+ * @param {{devApiKey?:string, model?:string}} opts
  */
 export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts = {}) {
-  const { proxyUrl = '', devApiKey = '', model = 'gemini-3.7-flash', userToken = '' } = opts;
+  const { devApiKey = '', model = 'gemini-flash-latest' } = opts;
   const [, mime = 'image/jpeg', b64] = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
   if (!b64) throw new Error('이미지 형식을 읽지 못했습니다.');
 
@@ -398,29 +385,14 @@ export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts 
     }
   });
 
-  let url, headers;
-  if (proxyUrl) {
-    url = `${proxyUrl}/gemini`;
-    headers = { 'Content-Type': 'application/json' };
-    if (userToken) headers.Authorization = `Bearer ${userToken}`;
-  } else {
-    url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-    headers = { 'Content-Type': 'application/json', 'x-goog-api-key': devApiKey };
-  }
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+  const headers = { 'Content-Type': 'application/json', 'x-goog-api-key': devApiKey };
 
   const res = await fetchWithRetry(url, { method: 'POST', headers, body });
 
-  if (res.status === 429) {
-    let info = null;
-    try { info = await res.clone().json(); } catch { /* 무시 */ }
-    if (info?.error === 'QUOTA_EXCEEDED') {
-      const e = new Error('QUOTA_EXCEEDED');
-      e.quota = info;
-      throw e;
-    }
-    throw new Error('RATE_LIMIT');
-  }
+  if (res.status === 429) throw new Error('RATE_LIMIT');
   if (res.status === 400 || res.status === 403) throw new Error('BAD_KEY');
+  if (res.status >= 500) throw new Error('SERVER_ERROR');
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   const data = await res.json();
@@ -429,116 +401,6 @@ export async function judgeMealWithGemini(imageDataUrl, diseases, profile, opts 
   const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
   if (!Array.isArray(parsed.foods) || !Array.isArray(parsed.byDisease)) throw new Error('PARSE');
   return parsed;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   3. Pollinations — 키도 가입도 없이 쓰는 클라우드 비전
-   ═══════════════════════════════════════════════════════════
-   베를린 기반 오픈소스 GenAI 게이트웨이. 익명 등급은 회원가입 없이 쓸 수 있고
-   OpenAI 호환 형식으로 base64 이미지를 그대로 받는다.
-   즉 프록시도 API 키도 없이 "제대로 된 비전 모델"을 브라우저에서 쓸 수 있다.
-
-   대가:
-     · 익명 등급은 15초에 1회 제한 (연타하면 429)
-     · 사진이 Pollinations 서버로 전송된다
-     · 서비스 가용성 보장(SLA)이 없다
-   그래도 CLIP이 한국 음식을 못 맞히는 상황에서 설정 없이 쓸 수 있는
-   유일한 실용적 대안이다.
-*/
-export class PollinationsIdentifier {
-  static id = 'cloud';
-  static label = '클라우드 AI로 인식 (Pollinations)';
-  static blurb = '무료 토큰이 필요합니다. auth.pollinations.ai에서 가입하면 pk_ 토큰을 받을 수 있습니다. ' +
-                 '토큰 없이 쓰면 크레딧 부족(402)으로 실패합니다. 사진이 외부 서버로 전송됩니다.';
-
-  static ENDPOINT = 'https://text.pollinations.ai/openai';
-
-  /**
-   * @param {string} token  auth.pollinations.ai에서 받는 pk_ 퍼블리셔블 토큰.
-   *   비워 두면 익명으로 시도하는데, 지금은 크레딧제라 대부분 402가 난다.
-   */
-  constructor({ model = 'openai', referrer = 'meal-check', token = '' } = {}) {
-    this.model = model;
-    this.referrer = referrer;
-    this.token = token;
-  }
-
-  async available() { return true; }
-  async prepare() {}
-
-  static PROMPT =
-`이 사진에 담긴 음식을 식별하세요. 판정이나 건강 조언은 하지 마세요. 식별만 하면 됩니다.
-
-규칙:
-1. 보이는 음식마다 한국어 이름을 쓰세요. 한국 음식이면 한국 이름을 그대로 쓰세요(예: 된장찌개, 시금치나물).
-2. 밥·국·반찬을 각각 따로 항목으로 나누세요. "한식 정식" 같이 뭉뚱그리지 마세요.
-3. portion은 흔한 1인분을 1.0으로 보고 눈에 보이는 양의 비율을 쓰세요. 반 그릇이면 0.5.
-4. confidence는 0~1. 확신할 때만 0.8 이상을 쓰세요. 애매하면 낮게. 틀린 이름을 자신 있게 쓰는 것이 가장 나쁩니다.
-5. 음식이 아닌 것(그릇, 수저, 손, 식탁)은 넣지 마세요.
-
-반드시 아래 JSON 형식으로만 답하세요. 설명 문장을 덧붙이지 마세요.
-{"items":[{"name":"음식이름","portion":1.0,"confidence":0.9}]}`;
-
-  async identify(imageDataUrl, store) {
-    const url = `${PollinationsIdentifier.ENDPOINT}?referrer=${encodeURIComponent(this.referrer)}`;
-    const headers = { 'Content-Type': 'application/json' };
-    // pk_ 토큰은 브라우저에 노출돼도 되는 퍼블리셔블 키다(발급처 정책).
-    if (this.token) headers.Authorization = `Bearer ${this.token}`;
-
-    let res;
-    try {
-      res = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          model: this.model,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: PollinationsIdentifier.PROMPT },
-              { type: 'image_url', image_url: { url: imageDataUrl } }
-            ]
-          }],
-          max_tokens: 600,
-          temperature: 0.1
-        })
-      });
-    } catch {
-      throw new Error('NETWORK');
-    }
-
-    if (res.status === 429) throw new Error('RATE_LIMIT');
-    /* 402 = 크레딧 부족. Pollinations가 텍스트·비전 모델을 Pollen 크레딧제로
-       바꾸면서 익명 호출은 대부분 여기서 걸린다. 일반 오류와 구분해
-       "토큰을 받으라"고 안내해야 사용자가 다음 행동을 할 수 있다. */
-    if (res.status === 402) throw new Error('NO_CREDIT');
-    if (res.status === 401 || res.status === 403) throw new Error('BAD_TOKEN');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content;
-    if (!text) throw new Error('EMPTY');
-
-    return matchItems(parseItems(text), store);
-  }
-}
-
-/* 모델이 코드펜스나 설명을 덧붙여도 JSON만 뽑아낸다.
-   responseSchema로 형식을 강제할 수 없는 엔드포인트라 방어가 필요하다. */
-function parseItems(text) {
-  const cleaned = text.replace(/```json|```/g, '').trim();
-  const tryParse = s => { try { return JSON.parse(s); } catch { return null; } };
-
-  let obj = tryParse(cleaned);
-  if (!obj) {
-    // 앞뒤에 말이 붙은 경우 가장 바깥 중괄호만 잘라 본다
-    const a = cleaned.indexOf('{'), b = cleaned.lastIndexOf('}');
-    if (a >= 0 && b > a) obj = tryParse(cleaned.slice(a, b + 1));
-  }
-  if (!obj) throw new Error('PARSE');
-  const items = Array.isArray(obj) ? obj : obj.items;
-  if (!Array.isArray(items)) throw new Error('PARSE');
-  return items;
 }
 
 const EST_NUMERIC_AXES = [
@@ -567,8 +429,8 @@ function estimatedFood(name, est) {
    매칭에 성공하면 우리 데이터베이스의 값(더 정확함)을 그대로 쓰고, 실패하면
    Gemini가 함께 준 est(영양 추정치)로 가상의 음식을 만들어 담는다 — 조용히
    버리지 않는다. 버리면 나트륨이 과소 집계돼 판정이 실제보다 관대해진다.
-   est조차 없는 경우(Pollinations 등 est를 안 주는 어댑터)에는 예전처럼
-   unmatched로 넘겨 사용자가 직접 고르게 한다. */
+   Gemini가 est조차 하나도 안 채운 경우에는 예전처럼 unmatched로 넘겨
+   사용자가 직접 고르게 한다. */
 function matchItems(items, store) {
   const matched = [], unmatched = [];
   for (const it of items) {
@@ -731,30 +593,28 @@ export class ManualIdentifier {
    추정해 주는 유일한 경로다. 자체 모델은 Gemini가 준비되지 않았을 때 쓰는
    차선책(한국 음식 한정, 비용 0)이다. */
 export const ADAPTERS = [
-  GeminiIdentifier, LocalModelIdentifier, PollinationsIdentifier,
-  OnDeviceIdentifier, ManualIdentifier
+  GeminiIdentifier, LocalModelIdentifier, OnDeviceIdentifier, ManualIdentifier
 ];
 
 /**
  * 설정에 맞는 어댑터 인스턴스를 만든다.
  *
- * ⚠️ 옵션을 통째로 넘기지 않는다. 어댑터마다 `model`이 뜻하는 바가 다르기 때문이다.
- *    (Gemini는 'gemini-3.7-flash', 온디바이스는 'Xenova/clip-...')
- *    예전에 공통 opts를 그대로 전달했다가 Gemini 모델명이 CLIP 모델명을 덮어써서,
- *    Transformers.js가 허깅페이스에서 'gemini-3.7-flash'를 찾는 오류가 났다.
- *    그래서 어댑터별로 필요한 키만 골라 넘긴다.
+ * ⚠️ opts를 그대로 각 생성자에 넘기지 않는다. 어댑터마다 "model"이 뜻하는 바가
+ *    다르기 때문이다(Gemini는 'gemini-flash-latest' 같은 API 모델 ID, 온디바이스는
+ *    'Xenova/clip-...' 같은 로컬 모델 ID — 온디바이스는 그래서 opts.onDeviceModel이라는
+ *    별도 이름을 쓴다). 예전에 공통 opts를 그대로 전달했다가 Gemini 모델명이 CLIP
+ *    모델명을 덮어써서, Transformers.js가 허깅페이스에서 Gemini 모델 ID를 찾는
+ *    오류가 났다. 그래서 case마다 필요한 키만 명시적으로 골라 넘긴다.
  */
 export function makeIdentifier(id, opts = {}) {
-  const { proxyUrl, devApiKey, userToken, token,
-          geminiModel, onDeviceModel, localModelUrl, topK, referrer } = opts;
+  const { devApiKey,
+          model, onDeviceModel, localModelUrl, topK } = opts;
 
   switch (id) {
     case 'local':
       return new LocalModelIdentifier({ modelUrl: localModelUrl, topK });
-    case 'cloud':
-      return new PollinationsIdentifier({ token, referrer });
     case 'gemini':
-      return new GeminiIdentifier({ proxyUrl, devApiKey, userToken, model: geminiModel });
+      return new GeminiIdentifier({ devApiKey, model });
     case 'ondevice':
       return new OnDeviceIdentifier({ model: onDeviceModel, topK });
     default:

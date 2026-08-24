@@ -21,6 +21,14 @@
 
 const LOCAL_DB_URL = new URL('../data/foods-ko.json', import.meta.url);
 
+/* data.go.kr 발급 서비스키("Encoding" 값, %-인코딩된 그대로) — 이 앱은 프록시를
+   거치지 않고 브라우저에서 이 API를 직접 호출한다(2026-08-21, apis.data.go.kr가
+   CORS를 지원함을 확인). 공개·무료 등급 키라 노출돼도 과금 위험은 없고, 최악의
+   경우 남용되면 이 앱의 하루 호출 한도를 다 같이 쓰게 되는 정도다.
+   ⚠️ 반드시 "Encoding" 키를 그대로 써야 한다 — encodeURIComponent()를 또 씌우면
+   이중 인코딩돼 깨진다. */
+const MFDS_API_KEY = 'gZQ506%2FyXWNJMRT3wOyRKwMy9SM8LJkpslXnGsAMfywVm%2B9AwfbPJk%2BZbvZAyEHNuu6o4fxDquII5QWv7z3dig%3D%3D';
+
 /* ────────────────────────────────────────────────────────────
    식약처 API 필드 매핑
    ────────────────────────────────────────────────────────────
@@ -56,7 +64,7 @@ export const MFDS_PROFILES = {
 
   /* 신 서비스 — 2026-08-13 실제 키로 검증 완료.
      I2790과 URL·응답 껍데기가 완전히 다르다(data.go.kr 표준 REST 포맷으로 이전됨).
-     검증 방법: worker/proxy.js의 handleMfds 주석, tools/verify-mfds.mjs 참조. */
+     검증 방법: tools/verify-mfds.mjs 참조. */
   I0750: {
     service: 'I0750',
     envelope: 'datago',            // { header:{resultCode,resultMsg}, body:{items:[...]} }
@@ -119,11 +127,9 @@ function extractRows(data, p) {
 export class NutritionStore {
   /**
    * @param {object} opts
-   * @param {string} opts.proxyUrl   Cloudflare Worker 주소. 비우면 내장 테이블만 사용.
    * @param {string} opts.profile    'I2790' | 'I0750'
    */
-  constructor({ proxyUrl = '', profile = 'I2790' } = {}) {
-    this.proxyUrl = proxyUrl;
+  constructor({ profile = 'I2790' } = {}) {
     this.profile = MFDS_PROFILES[profile] || MFDS_PROFILES.I2790;
     this.foods = [];
     this.meta = null;
@@ -179,7 +185,7 @@ export class NutritionStore {
     const sources = {};
     for (const k of Object.keys(base)) sources[k] = 'builtin';
 
-    if (!useMfds || !this.proxyUrl) return { ...base, _sources: sources, _mfdsName: null };
+    if (!useMfds || !MFDS_API_KEY) return { ...base, _sources: sources, _mfdsName: null };
 
     let rec;
     try {
@@ -210,15 +216,19 @@ export class NutritionStore {
     return { ...base, _sources: sources, _mfdsName: rec[p.nameField] || null };
   }
 
+  /* 브라우저에서 식약처 API를 직접 부른다. */
   async _fetchMfds(name, rows = 1) {
     const key = `${name}::${rows}`;
     if (this._cache.has(key)) return this._cache.get(key);
     const p = this.profile;
-    const res = await fetch(`${this.proxyUrl}/mfds`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ service: p.service, param: p.searchParam, value: name, rows })
-    });
+    const n = Math.min(Math.max(Number(rows) || 1, 1), 10);
+    const url = p.service === 'I0750'
+      ? `https://apis.data.go.kr/1471000/FoodNtrCpntDbInfo02/getFoodNtrCpntDbInq02` +
+        `?serviceKey=${MFDS_API_KEY}&type=json&numOfRows=${n}&pageNo=1&${p.searchParam}=${encodeURIComponent(name)}`
+      : `http://openapi.foodsafetykorea.go.kr/api/${MFDS_API_KEY}` +
+        `/${p.service}/json/1/${n}/${p.searchParam}=${encodeURIComponent(name)}`;
+
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`MFDS HTTP ${res.status}`);
     const data = await res.json();
     const list = extractRows(data, p);
@@ -239,7 +249,7 @@ export class NutritionStore {
         판정에서 과소평가된다. 이 사실을 항목에 표시해 UI가 경고할 수 있게 한다.
   */
   async searchRemote(query, limit = 6) {
-    if (!this.proxyUrl) return [];
+    if (!MFDS_API_KEY) return [];
     const q = String(query || '').trim();
     if (q.length < 2) return [];
 

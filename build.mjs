@@ -215,15 +215,19 @@ if (missingIcons.length) {
 /* 개인정보 처리방침 */
 copyFileSync(new URL('./privacy.html', import.meta.url), new URL('./privacy.html', dist));
 
-/* Gemini API 키 발급 가이드용 실제 화면 캡처 (계정·창 정보는 미리 잘라냈다) */
+/* Gemini API 키 발급 가이드용 실제 화면 캡처 (계정·창 정보는 미리 잘라냈다).
+   index.html이 ./assets/gemini-guide-*.jpg로 참조하므로(소스를 그대로 서버로
+   열어도 깨지지 않게, assets/ 경로를 그대로 쓴다) dist에도 같은 하위 경로로 넣는다. */
 const guideImgs = [
   'gemini-guide-step1-create-btn.jpg', 'gemini-guide-step1-create-btn-en.jpg',
   'gemini-guide-step2-modal.jpg', 'gemini-guide-step2-modal-en.jpg',
   'gemini-guide-step3-copy.jpg', 'gemini-guide-step3-copy-en.jpg'
 ];
+const distAssets = new URL('./assets/', dist);
+mkdirSync(distAssets, { recursive: true });
 for (const f of guideImgs) {
   const src = new URL(`./assets/${f}`, import.meta.url);
-  if (existsSync(src)) copyFileSync(src, new URL(f, dist));
+  if (existsSync(src)) copyFileSync(src, new URL(f, distAssets));
 }
 
 /* 자체 학습 모델 (js/app.js의 LOCAL_MODEL_URL이 './models'를 가리킨다) */

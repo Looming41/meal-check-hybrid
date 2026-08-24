@@ -144,6 +144,5 @@ for (const { svc, label, url, envelope, expectDead } of REQUESTS) {
 }
 
 console.log(`\n${'═'.repeat(60)}`);
-console.log('바뀐 게 있으면 js/nutrition.js의 MFDS_PROFILES와 worker/proxy.js의');
-console.log('handleMfds URL 구성을 실제 응답에 맞게 고치세요.');
+console.log('바뀐 게 있으면 js/nutrition.js의 MFDS_PROFILES를 실제 응답에 맞게 고치세요.');
 console.log('═'.repeat(60));

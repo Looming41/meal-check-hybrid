@@ -19,11 +19,6 @@ if (!existsSync(DIST)) {
   process.exit(1);
 }
 
-/* PROXY_URL은 배포마다 다르다 — 로컬 개발 빌드는 보통 비어 있고,
-   실배포판은 실제 Cloudflare Worker 주소가 박혀 있다. 둘 다 정상이므로
-   "비어 있어야 한다"고 고정하지 않고, 실제 값을 보고 기대치를 맞춘다. */
-const PROXY_CONFIGURED = /const PROXY_URL = '(?!')[^']+'/.test(readFileSync(DIST, 'utf8'));
-
 let pass = 0, fail = 0;
 const check = (name, a, b = true) => {
   const ok = a === b; ok ? pass++ : fail++;
@@ -164,7 +159,7 @@ section('초기 렌더');
 {
   check('질환 그룹 9개', document.querySelectorAll('#chips .group').length, 9);
   check('질환 칩 30개', document.querySelectorAll('#chips .chip').length, 30);
-  check('어댑터 5종', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 5);
+  check('어댑터 4종', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 4);
   check('결과 영역 숨김', $('result').hidden);
   check('오류 배너 안 뜸', $('scanErr').style.display !== 'block');
 }
@@ -182,35 +177,20 @@ section('file://에서도 사진 올리기는 열려 있다');
      어디서든 되므로, 미리 막는 것은 되는 기능까지 뺏는 짓이었다.
      지금은 막지 않고, 실패했을 때 안내한다. */
   const ondevice = document.querySelector('#adapterOptions input[value=ondevice]');
-  const cloud = document.querySelector('#adapterOptions input[value=cloud]');
   check('기기 인식이 미리 차단되지 않음', ondevice.disabled, false);
-  check('클라우드 AI도 차단되지 않음 (토큰 넣으면 되므로)', cloud.disabled, false);
-  /* 기본값 우선순위(2026-08-19 변경): Gemini를 항상 먼저 쓴다. 온보딩에서 키 등록을
-     사실상 필수로 만들었으므로 프록시가 배포된 실배포판에서는 GEMINI_READY가 참이고,
-     그 경우 기본값은 자체 모델이 아니라 Gemini여야 한다. 로컬 개발 빌드처럼 프록시가
-     없으면 GEMINI_READY가 거짓이라, 그때는 예전처럼 자체 모델(설정 없이 되는 것 중
-     가장 정확함)이 기본값이다. app.js의 pickDefaultAdapter() 참조. */
+  /* 기본값 우선순위: Gemini는 본인 키가 있을 때만 준비된 것으로 친다
+     (geminiReady() 참조). 이 테스트는 키를 아직 넣지 않은 첫 로드 상태이므로
+     자체 모델이 기본값이고 Gemini는 비활성이어야 한다. */
   const local = document.querySelector('#adapterOptions input[value=local]');
-  if (PROXY_CONFIGURED) {
-    check('프록시 배포됨 → 기본값이 Gemini (항상 먼저 인식)',
-      document.querySelector('#adapterOptions input[value=gemini]').checked);
-  } else {
-    check('프록시 없으면 자체 모델이 기본 선택 (설정 없이 성공하는 경로 중 가장 정확함)', local.checked);
-  }
+  check('키 등록 전엔 자체 모델이 기본 선택', local.checked);
   check('사진 영역이 보임', $('photoBlock').hidden, false);
 
-  // 프록시가 비어 있으면 Gemini는 못 쓰는 이유와 켜는 방법을 보여줘야 하고,
-  // 프록시가 실제로 배포돼 있으면 Gemini가 바로 켜져 있어야 한다.
+  // 키가 없으면 Gemini는 못 쓰는 이유와 켜는 방법을 보여줘야 한다.
   const gRow = document.querySelector('#adapterOptions input[value=gemini]').closest('.radio-row');
-  if (PROXY_CONFIGURED) {
-    check('프록시 배포됨 → Gemini 어댑터 활성',
-      document.querySelector('#adapterOptions input[value=gemini]').disabled, false);
-  } else {
-    check('Gemini 켜는 방법 안내', gRow.textContent.includes('aistudio.google.com'));
-    check('무료임을 명시 (돈 걱정 제거)', gRow.textContent.includes('신용카드가 필요 없'));
-    check('프록시 없는 Gemini만 비활성',
-      document.querySelector('#adapterOptions input[value=gemini]').disabled);
-  }
+  check('Gemini 켜는 방법 안내', gRow.textContent.includes('aistudio.google.com'));
+  check('무료임을 명시 (돈 걱정 제거)', gRow.textContent.includes('신용카드가 필요 없'));
+  check('본인 키 등록 전엔 Gemini 비활성',
+    document.querySelector('#adapterOptions input[value=gemini]').disabled);
   check('사진 선택 input 존재', !!$('fileInput'));
   check('카메라 우선 속성 유지', $('fileInput').getAttribute('capture'), 'environment');
   check('2단계 제목이 사진 모드', $('step2Title').textContent, '음식 사진 찍기');
@@ -295,14 +275,10 @@ section('산출물 점검');
 {
   const raw = readFileSync(DIST, 'utf8');
   const kb = Buffer.byteLength(raw) / 1024;
-  check('파일 크기 500KB 미만', kb < 500);   // 설정 패널·i18n·Gemini 키 가이드 추가로 400KB 기준을 넘었음(2026-08-19)
+  check('파일 크기 700KB 미만', kb < 700);   // rules.js 전체 영문 번역(질환별 근거·팁 문구) 추가로 500KB 기준을 넘었음(2026-08-22)
   check('자동 생성 경고 포함', raw.includes('직접 고치지 마세요'));
   check('API 키가 섞여 들어가지 않음',
     !/AIza[0-9A-Za-z_-]{30,}|sk-[0-9A-Za-z]{20,}/.test(raw));
-  // 비어 있으면(오프라인 전용 빌드) 정상, 채워져 있으면 반드시 https:// 실주소여야 한다
-  // (http:// 평문이나 'CHANGE_ME' 같은 자리표시자가 그대로 배포되는 사고를 잡는다)
-  check('PROXY_URL이 비어 있거나 유효한 https 주소',
-    /const PROXY_URL = '(|https:\/\/[^']+)'/.test(raw));
   console.log(`     크기 ${kb.toFixed(0)}KB · 음식 ${document.querySelectorAll('#chips .chip').length ? JSON.parse(raw.match(/const EMBEDDED_DB = ([\s\S]*?);\n/)[1]).foods.length : '?'}종 인라인`);
 }
 
@@ -350,12 +326,11 @@ section('개인정보 처리방침');
   const pv = readFileSync(new URL('./privacy.html', DIST_DIR), 'utf8');
   check('어댑터별 사진 처리 차이 설명', pv.includes('기기를 떠나지 않습니다'));
   check('전송되는 모드를 명시', pv.includes('사진이 외부로 전송됩니다'));
-  /* 기본값이 사진을 외부로 보내는 방식이므로, 이 사실과 끄는 방법이
-     반드시 방침에 있어야 한다. 정확도를 위해 프라이버시를 내준 선택이라
-     사용자가 알고 바꿀 수 있어야 한다. */
-  check('기본값이 전송임을 명시', pv.includes('기본값(클라우드 AI)에서는 전송되며'));
+  /* 기본값(자체 학습 모델)은 사진을 외부로 보내지 않는다 — 이 사실과, 전송이
+     켜지는 유일한 경우(Gemini)가 방침에 명시돼야 사용자가 판단할 수 있다. */
+  check('기본값이 기기 밖으로 안 나감을 명시', pv.includes('기본값(자체 학습 모델)은'));
   check('전송을 끄는 방법 안내', pv.includes('사진을 외부로 보내고 싶지 않다면'));
-  check('전송처를 실명으로 밝힘', pv.includes('Pollinations'));
+  check('전송처를 실명으로 밝힘', pv.includes('Google Gemini API'));
   check('저장 위치 localStorage 명시', pv.includes('localStorage'));
   check('삭제 방법 안내', pv.includes('입력값 지우기'));
   check('의료 고지 포함', pv.includes('의료기기가 아니며'));

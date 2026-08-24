@@ -47,7 +47,7 @@ globalThis.localStorage = {
   removeItem: k => store.delete(k)
 };
 
-/* fetch: 영양 테이블 로드만 파일 읽기로 대체. 프록시는 애초에 안 쓴다. */
+/* fetch: 영양 테이블 로드만 파일 읽기로 대체. */
 globalThis.fetch = async (url) => {
   const p = fileURLToPath(url);
   return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(p, 'utf8')) };
@@ -60,11 +60,6 @@ window.HTMLElement.prototype.scrollIntoView = () => {};
 /* ── 실행 ───────────────────────────────────────────────── */
 await import('../js/app.js');
 await new Promise(r => setTimeout(r, 60));   // store.ready() 완료 대기
-
-/* PROXY_URL은 배포마다 다르다 — 로컬 개발은 보통 비어 있고 실배포판은
-   실제 Cloudflare Worker 주소가 박혀 있다. 실제 값을 보고 기대치를 맞춘다. */
-const PROXY_CONFIGURED = /const PROXY_URL = '(?!')[^']+'/.test(
-  readFileSync(new URL('js/app.js', root), 'utf8'));
 
 /* ── 테스트 도구 ────────────────────────────────────────── */
 let pass = 0, fail = 0;
@@ -95,9 +90,9 @@ section('초기 렌더');
     [...groups].find(g => g.querySelector('.group-label').textContent === '약물·생리 상태')
       ?.textContent.includes('임신'));
 
-  check('어댑터 5종 렌더', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 5);
-  check(PROXY_CONFIGURED ? '프록시 배포됨 → Gemini 어댑터 활성' : '프록시 미설정 시 Gemini 어댑터 비활성',
-    document.querySelector('#adapterOptions input[value=gemini]').disabled, !PROXY_CONFIGURED);
+  check('어댑터 4종 렌더', document.querySelectorAll('#adapterOptions input[name=adapter]').length, 4);
+  check('본인 키 없인 Gemini 어댑터 비활성',
+    document.querySelector('#adapterOptions input[value=gemini]').disabled, true);
 
   check('결과 영역은 처음에 숨김', $('result').hidden);
   check('빈 목록 안내 표시', $('emptyNote').hidden, false);
@@ -394,7 +389,7 @@ section('XSS 방어');
 {
   // 음식 이름에 스크립트가 들어와도 실행되지 않고 글자로만 보여야 한다
   const { NutritionStore } = await import('../js/nutrition.js');
-  const s = new NutritionStore({ proxyUrl: '' });
+  const s = new NutritionStore();
   await s.ready();
   const evil = { ...s.byId('rice_white'), ko: '<img src=x onerror=alert(1)>' };
   const div = document.createElement('div');

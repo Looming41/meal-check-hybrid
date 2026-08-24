@@ -22,7 +22,7 @@ const check = (name, a, b) => {
   console.log(`${ok ? '  ✓' : '  ✗'} ${name}${ok ? '' : `  →  기대 ${b}, 실제 ${a}`}`);
 };
 
-const store = new NutritionStore({ proxyUrl: '' });   // 프록시 없이 = 오프라인 모드
+const store = new NutritionStore();   // MFDS_API_KEY 없이 = 오프라인 모드
 await store.ready();
 
 console.log('\n── 검색');
@@ -47,7 +47,7 @@ check('라벨 중복 없음', new Set(labels).size, labels.length);
 check('라벨 역매핑 동작', store.byClipLabel(labels[3])?.id, store.foods[3].id);
 check('라벨이 모두 영문 설명문', labels.every(l => /^[\x20-\x7E]+$/.test(l)), true);
 
-console.log('\n── 프록시 없는 resolve (오프라인 모드)');
+console.log('\n── 내장 DB에 있는 음식의 resolve (원격 조회 없이)');
 const rice = await store.resolve(store.byId('rice_white'));
 check('내장값 그대로 반환', rice.sodium_mg, 3);
 check('출처가 builtin으로 표시', rice._sources.sodium_mg, 'builtin');
@@ -96,7 +96,7 @@ console.log('\n── 출처 통계');
 {
   const foods = [store.byId('rice_white'), store.byId('kimchi')];
   const pv = NutritionStore.provenance(foods);
-  check('프록시 미사용 시 식약처 비율 0%', pv.pct, 0);
+  check('내장 DB 음식만 있으면 식약처 비율 0%', pv.pct, 0);
   check('집계 대상 축이 존재', pv.total > 0, true);
 }
 
@@ -210,103 +210,13 @@ console.log('\n── CLIP 라벨: 이름이 아니라 생김새를 묘사하는
   check('콩나물무침은 pale yellow', /pale yellow/.test(namul[1]), true);
 }
 
-console.log('\n── 클라우드 AI 어댑터 (Pollinations, 토큰 필요)');
-{
-  const { PollinationsIdentifier, ADAPTERS, makeIdentifier } = await import('../js/identify.js');
-  const ident = new PollinationsIdentifier();
-
-  check('어댑터 목록에 등록', ADAPTERS.some(A => A.id === 'cloud'), true);
-  check('makeIdentifier로 생성됨', makeIdentifier('cloud') instanceof PollinationsIdentifier, true);
-  check('사진 전송 사실을 blurb에 명시',
-    PollinationsIdentifier.blurb.includes('외부 서버로 전송'), true);
-  /* Pollinations가 크레딧제로 바뀐 뒤 토큰 없이는 402가 난다.
-     "설정 불필요"라고 적어 두면 사용자가 눌렀다가 그냥 실패한다.
-     실제로 그 버그를 냈으므로 문구를 테스트로 고정한다. */
-  check('토큰이 필요하다는 사실을 blurb에 명시',
-    PollinationsIdentifier.blurb.includes('무료 토큰이 필요'), true);
-  check('토큰 없을 때 실패한다는 것도 명시',
-    PollinationsIdentifier.blurb.includes('402'), true);
-  check('토큰 발급처 안내', PollinationsIdentifier.blurb.includes('auth.pollinations.ai'), true);
-  check('프롬프트가 판정을 금지', PollinationsIdentifier.PROMPT.includes('판정이나 건강 조언은 하지'), true);
-  check('프롬프트가 반찬 분리를 요구', PollinationsIdentifier.PROMPT.includes('따로 항목으로'), true);
-
-  /* 응답 파싱 방어 — responseSchema로 형식을 강제할 수 없는 엔드포인트라
-     모델이 코드펜스나 설명을 덧붙여도 뽑아낼 수 있어야 한다. */
-  const shapes = {
-    '순수 JSON': '{"items":[{"name":"김치찌개","portion":1,"confidence":0.9}]}',
-    '코드펜스로 감싼 경우': '```json\n{"items":[{"name":"김치찌개","portion":1,"confidence":0.9}]}\n```',
-    '앞뒤에 설명이 붙은 경우': '사진을 보니 다음과 같습니다.\n{"items":[{"name":"김치찌개","portion":1,"confidence":0.9}]}\n도움이 되었길 바랍니다.'
-  };
-  for (const [label, text] of Object.entries(shapes)) {
-    const fake = new PollinationsIdentifier();
-    globalThis.fetch = async () => ({
-      ok: true, status: 200,
-      json: async () => ({ choices: [{ message: { content: text } }] })
-    });
-    const out = await fake.identify('data:image/jpeg;base64,x', store);
-    check(`파싱: ${label}`, out[0]?.food?.id, 'kimchi_jjigae');
-  }
-
-  // 테이블에 없는 음식은 버리지 않고 넘겨야 한다 (버리면 판정이 관대해짐)
-  globalThis.fetch = async () => ({
-    ok: true, status: 200,
-    json: async () => ({ choices: [{ message: { content:
-      '{"items":[{"name":"김치찌개","portion":1,"confidence":0.9},' +
-      '{"name":"아귀수육","portion":1,"confidence":0.8}]}' } }] })
-  });
-  const mixed = await new PollinationsIdentifier().identify('data:image/jpeg;base64,x', store);
-  check('아는 음식은 담김', mixed.length, 1);
-  check('모르는 음식은 조용히 버리지 않고 unmatched로', mixed.unmatched.length, 1);
-  check('unmatched에 이름 보존', mixed.unmatched[0].name, '아귀수육');
-
-  // 상태 코드별로 다른 신호를 올려야 UI가 맞는 안내를 띄운다
-  const statusOf = async (status) => {
-    globalThis.fetch = async () => ({ ok: false, status });
-    try { await new PollinationsIdentifier().identify('data:image/jpeg;base64,x', store); return null; }
-    catch (e) { return e.message; }
-  };
-  check('429는 RATE_LIMIT으로 구분', await statusOf(429), 'RATE_LIMIT');
-  /* 402는 실제로 사용자가 겪은 오류다. 일반 오류로 뭉뚱그리면
-     "HTTP 402"만 보이고 다음에 뭘 해야 할지 알 수 없다. */
-  check('402는 NO_CREDIT으로 구분 (크레딧 부족)', await statusOf(402), 'NO_CREDIT');
-  check('401은 BAD_TOKEN으로 구분', await statusOf(401), 'BAD_TOKEN');
-  check('403도 BAD_TOKEN으로 구분', await statusOf(403), 'BAD_TOKEN');
-
-  // 토큰이 있으면 Authorization 헤더로 보낸다
-  let sentHeaders = {};
-  globalThis.fetch = async (u, opt) => {
-    sentHeaders = opt.headers;
-    return { ok: true, status: 200, json: async () => ({
-      choices: [{ message: { content: '{"items":[{"name":"김치찌개","portion":1,"confidence":0.9}]}' } }]
-    }) };
-  };
-  await new PollinationsIdentifier({ token: 'pk_test' }).identify('data:image/jpeg;base64,x', store);
-  check('토큰이 Bearer로 전달', sentHeaders.Authorization, 'Bearer pk_test');
-  await new PollinationsIdentifier().identify('data:image/jpeg;base64,x', store);
-  check('토큰 없으면 Authorization 없음', sentHeaders.Authorization, undefined);
-
-  let err = null;
-
-  // 깨진 응답도 죽지 않고 신호를 준다
-  globalThis.fetch = async () => ({
-    ok: true, status: 200,
-    json: async () => ({ choices: [{ message: { content: '음식을 알아볼 수 없습니다' } }] })
-  });
-  err = null;
-  try { await new PollinationsIdentifier().identify('data:image/jpeg;base64,x', store); }
-  catch (e) { err = e.message; }
-  check('JSON이 아니면 PARSE로 구분', err, 'PARSE');
-}
-
-console.log('\n── Gemini 어댑터: 프록시 없이 임시 키로도 동작');
+console.log('\n── Gemini 어댑터: 항상 본인 키로 구글에 직접 붙는다');
 {
   const { GeminiIdentifier } = await import('../js/identify.js');
-  check('프록시도 키도 없으면 사용 불가',
+  check('키가 없으면 사용 불가',
     await new GeminiIdentifier().available(), false);
-  check('임시 키만 있어도 사용 가능',
+  check('키가 있으면 사용 가능',
     await new GeminiIdentifier({ devApiKey: 'AIzaTEST' }).available(), true);
-  check('프록시만 있어도 사용 가능',
-    await new GeminiIdentifier({ proxyUrl: 'https://x.workers.dev' }).available(), true);
 
   // 임시 키 모드는 구글로 직접 간다
   let calledUrl = '', calledHeaders = {};
@@ -373,18 +283,6 @@ console.log('\n── Gemini 어댑터: 프록시 없이 임시 키로도 동작
   check('빈 필드는 0으로 안전하게 채워짐', partial[0].food.kcal, 0);
   check('있는 필드는 그대로 반영', partial[0].food.sodium_mg, 900);
 
-  // 프록시가 있으면 프록시 우선 (키가 브라우저에 안 남는 배포 경로)
-  globalThis.fetch = async (url, opt) => {
-    calledUrl = url; calledHeaders = opt.headers;
-    return { ok: true, status: 200, json: async () => ({
-      candidates: [{ content: { parts: [{ text: '{"items":[{"name":"비빔밥","portion":1,"confidence":0.9}]}' }] } }]
-    }) };
-  };
-  await new GeminiIdentifier({ proxyUrl: 'https://x.workers.dev', devApiKey: 'AIzaTEST' })
-    .identify('data:image/jpeg;base64,x', store);
-  check('프록시가 있으면 프록시 우선', calledUrl.includes('x.workers.dev'), true);
-  check('프록시 경로엔 키를 싣지 않음', calledHeaders['x-goog-api-key'], undefined);
-
   globalThis.fetch = async () => ({ ok: false, status: 403 });
   let err = null;
   try { await new GeminiIdentifier({ devApiKey: 'bad' }).identify('data:image/jpeg;base64,x', store); }
@@ -441,7 +339,7 @@ console.log('\n── Gemini 직접 판정 (judgeMealWithGemini) — 식별부�
   catch (e) { judgeErr = e.message; }
   check('형식이 깨지면 PARSE로 구분', judgeErr, 'PARSE');
 
-  globalThis.fetch = async () => ({ ok: false, status: 429, clone: () => ({ json: async () => ({}) }) });
+  globalThis.fetch = async () => ({ ok: false, status: 429 });
   judgeErr = null;
   try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
   catch (e) { judgeErr = e.message; }
@@ -472,6 +370,41 @@ console.log('\n── Gemini 직접 판정 (judgeMealWithGemini) — 식별부�
   try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
   catch (e) { judgeErr = e.message; }
   check('재시도까지 다 실패하면 원래 오류 그대로', judgeErr, 'Load failed');
+
+  /* 503은 예외를 던지는 게 아니라 정상적인 HTTP 응답으로 온다(catch가 아니라
+     res.status로 판단해야 함). 구글 쪽 일시적 과부하이므로 몇 초 뒤 같은 요청이
+     성공하는 경우가 실제로 있어, 여기서도 한 번 더 시도한다. */
+  let attempts503 = 0;
+  globalThis.fetch = async () => {
+    attempts503++;
+    if (attempts503 === 1) return { ok: false, status: 503 };
+    return { ok: true, status: 200, json: async () => ({
+      candidates: [{ content: { parts: [{ text: JSON.stringify({
+        foods: [{ name: '비빔밥' }],
+        byDisease: [{ id: 'htn', verdict: 'good', reason: '괜찮습니다.' }],
+        overall: 'good', overallComment: '좋습니다.', tips: []
+      }) }] } }]
+    }) };
+  };
+  const retried503 = await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' });
+  check('첫 시도가 503이어도 한 번 더 시도해 성공', attempts503, 2);
+  check('503 재시도 후 정상 결과 반환', retried503.overall, 'good');
+
+  // 재시도까지 계속 503이면(=소진) 결국 SERVER_ERROR를 던진다
+  globalThis.fetch = async () => ({ ok: false, status: 503 });
+  judgeErr = null;
+  try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
+  catch (e) { judgeErr = e.message; }
+  check('503이 재시도까지 계속되면 SERVER_ERROR', judgeErr, 'SERVER_ERROR');
+
+  // 429는 재시도하지 않고 즉시 실패해야 한다(계정 단위 한도라 backoff로 안 풀림)
+  let attempts429 = 0;
+  globalThis.fetch = async () => { attempts429++; return { ok: false, status: 429 }; };
+  judgeErr = null;
+  try { await judgeMealWithGemini('data:image/jpeg;base64,x', diseases, profile, { devApiKey: 'AIzaTEST' }); }
+  catch (e) { judgeErr = e.message; }
+  check('429는 재시도하지 않고 즉시 실패', attempts429, 1);
+  check('429는 여전히 RATE_LIMIT으로 구분', judgeErr, 'RATE_LIMIT');
 }
 
 console.log('\n── 자체 학습 모델 어댑터');
@@ -495,7 +428,7 @@ console.log('\n── 자체 학습 모델 어댑터');
   // localModelUrl로만 전달돼야 한다 (다른 어댑터 옵션과 섞이면 안 됨)
   const made = makeIdentifier('local', {
     localModelUrl: 'https://cdn.example/models',
-    devApiKey: 'AIzaTEST', geminiModel: 'gemini-flash-latest'
+    devApiKey: 'AIzaTEST', model: 'gemini-flash-latest'
   });
   check('자체 모델 주소 전달', made.modelUrl, 'https://cdn.example/models');
   check('Gemini 키가 새지 않음', made.devApiKey, undefined);
@@ -524,11 +457,8 @@ console.log('\n── 어댑터 옵션 격리 (모델명이 섞이면 안 된다
   const { makeIdentifier, ONDEVICE_MODELS } = await import('../js/identify.js');
 
   const opts = {
-    proxyUrl: 'https://x.workers.dev',
     devApiKey: 'AIzaTEST',
-    geminiModel: 'gemini-flash-latest',
-    token: 'pk_test',
-    userToken: 'devicetoken'
+    model: 'gemini-flash-latest'
   };
 
   const od = makeIdentifier('ondevice', opts);
@@ -536,18 +466,10 @@ console.log('\n── 어댑터 옵션 격리 (모델명이 섞이면 안 된다
   check('온디바이스에 Gemini 모델명이 새지 않음',
     od.model.includes('gemini'), false);
   check('온디바이스에 API 키가 새지 않음', od.devApiKey, undefined);
-  check('온디바이스에 프록시 주소가 새지 않음', od.proxyUrl, undefined);
 
   const gm = makeIdentifier('gemini', opts);
   check('Gemini는 지정한 모델을 씀', gm.model, 'gemini-flash-latest');
-  check('Gemini에 프록시 전달', gm.proxyUrl, 'https://x.workers.dev');
-  check('Gemini에 사용자 토큰 전달', gm.userToken, 'devicetoken');
-
-  const cl = makeIdentifier('cloud', opts);
-  check('클라우드에 Pollinations 토큰 전달', cl.token, 'pk_test');
-  check('클라우드에 Gemini 키가 새지 않음', cl.devApiKey, undefined);
-  /* 클라우드의 model은 Pollinations 모델명이지 Gemini 것이 아니다 */
-  check('클라우드는 자기 기본 모델 유지', cl.model, 'openai');
+  check('Gemini에 키 전달', gm.devApiKey, 'AIzaTEST');
 
   // 명시적으로 지정하면 바뀌어야 한다
   const od2 = makeIdentifier('ondevice', { onDeviceModel: ONDEVICE_MODELS.siglip.id });
@@ -572,7 +494,7 @@ console.log('\n── 식약처 검색 확장 (내장 148종 밖의 음식)');
   globalThis.fetch = async (url) => ({
     ok: true, status: 200, json: async () => JSON.parse(readFileSync(fileURLToPath(url), 'utf8'))
   });
-  const remoteStore = new NutritionStore({ proxyUrl: 'https://x.workers.dev' });
+  const remoteStore = new NutritionStore();
   await remoteStore.ready();
 
   const row = {
@@ -612,7 +534,6 @@ console.log('\n── 식약처 검색 확장 (내장 148종 밖의 음식)');
   globalThis.fetch = async () => { throw new Error('network'); };
   check('원격 실패해도 빈 배열 (앱은 계속 동작)',
     (await remoteStore.searchRemote('아귀수육2')).length, 0);
-  check('프록시 없으면 원격 검색 안 함', (await store.searchRemote('아귀수육')).length, 0);
 }
 
 console.log('\n── 식약처 I0750(신) — data.go.kr 포맷 파싱');
@@ -622,7 +543,7 @@ console.log('\n── 식약처 I0750(신) — data.go.kr 포맷 파싱');
   globalThis.fetch = async (url) => ({
     ok: true, status: 200, json: async () => JSON.parse(readFileSync(fileURLToPath(url), 'utf8'))
   });
-  const i0750Store = new NutritionStore({ proxyUrl: 'https://x.workers.dev', profile: 'I0750' });
+  const i0750Store = new NutritionStore({ profile: 'I0750' });
   await i0750Store.ready();
 
   const item = {
