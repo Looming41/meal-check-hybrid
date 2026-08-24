@@ -32,7 +32,15 @@ const DEV_GEMINI_KEY = '';
 // 테스트에서도 -latest가 503을 낸 반면 3.7-flash는 200이 나왔다. 그럼에도
 // 2026-08-22에 사용자 요청으로 다시 -latest로 바꿨다 — 재발하면 위 이력을
 // 참고해 gemini-3.7-flash로 되돌릴 것.
-const GEMINI_MODEL = 'gemini-flash-latest';
+//
+// 2026-08-24: 재발함. 이번엔 -latest뿐 아니라 고정 버전 gemini-3.7-flash까지
+// 같이 503을 냈다(새로 발급한 키로도 재현, 키 문제 아님 확인) — 즉 이번 장애는
+// 별칭 문제가 아니라 flash 계열(중간 크기 모델) 자체가 구글 쪽에서 과부하였던
+// 것으로 보인다. 같은 시각 gemini-flash-lite-latest는 매번 200으로 성공해서
+// 이쪽으로 바꾼다. 다시 실패하면 이때도 flash-lite 계열이 아직 살아있는지부터
+// curl로 직접 확인할 것 — 별칭 vs 모델 크기(flash vs flash-lite) 중 어느 쪽이
+// 원인인지 매번 다를 수 있다.
+const GEMINI_MODEL = 'gemini-flash-lite-latest';
 const GEMINI_DAILY_LIMIT = 250;   // 참고용 로컬 카운터일 뿐 실제 한도는 모델·계정마다 다름
 
 // 사진을 보내기 전 줄일 크기(긴 변, 픽셀). 작을수록 토큰=원가와 업로드 용량이 줄어듭니다.
